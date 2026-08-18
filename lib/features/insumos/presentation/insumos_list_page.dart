@@ -61,40 +61,66 @@ class InsumosListPage extends ConsumerWidget {
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(8),
-      itemCount: state.insumos.length,
-      itemBuilder: (context, index) {
-        final insumo = state.insumos[index];
-        return Card(
-          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: insumo.isEstoqueBaixo
-                  ? Colors.red[100]
-                  : Colors.green[100],
-              child: Icon(
-                Icons.inventory,
-                color: insumo.isEstoqueBaixo ? Colors.red : Colors.green,
-              ),
-            ),
-            title: Text(insumo.nome),
-            subtitle: Text(
-              '${insumo.quantidade} ${insumo.unidadeMedida}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
+    final estoqueBaixo = state.insumos.where((i) => i.isEstoqueBaixo).toList();
+
+    return Column(
+      children: [
+        if (estoqueBaixo.isNotEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            color: Colors.orange[100],
+            child: Row(
               children: [
-                if (insumo.isEstoqueBaixo)
-                  const Icon(Icons.warning, color: Colors.orange, size: 20),
-                const Icon(Icons.chevron_right),
+                const Icon(Icons.warning, color: Colors.orange),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '${estoqueBaixo.length} insumo(s) com estoque baixo',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
               ],
             ),
-            onTap: () => context.push('/insumos/${insumo.id}'),
           ),
-        );
-      },
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.all(8),
+            itemCount: state.insumos.length,
+            itemBuilder: (context, index) {
+              final insumo = state.insumos[index];
+              return Card(
+                margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: insumo.isEstoqueBaixo
+                        ? Colors.red[100]
+                        : Colors.green[100],
+                    child: Icon(
+                      Icons.inventory,
+                      color: insumo.isEstoqueBaixo ? Colors.red : Colors.green,
+                    ),
+                  ),
+                  title: Text(insumo.nome),
+                  subtitle: Text(
+                    '${insumo.quantidade} ${insumo.unidadeMedida} (mín: ${insumo.estoqueMinimo})',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (insumo.isEstoqueBaixo)
+                        const Icon(Icons.warning, color: Colors.orange, size: 20),
+                      const Icon(Icons.chevron_right),
+                    ],
+                  ),
+                  onTap: () => context.push('/insumos/${insumo.id}'),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

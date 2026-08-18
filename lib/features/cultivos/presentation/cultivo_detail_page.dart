@@ -5,7 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/models/foto.dart';
+import '../../../core/api/foto_service.dart';
 import '../../../shared/widgets/confirmation_dialog.dart';
+import '../../../shared/widgets/full_screen_image_viewer.dart';
+import '../../../shared/widgets/grouped_photo_timeline.dart';
 import '../../../shared/widgets/photo_upload_button.dart';
 import '../providers/cultivos_provider.dart';
 import 'widgets/state_badge.dart';
@@ -20,12 +24,28 @@ class CultivoDetailPage extends ConsumerStatefulWidget {
 }
 
 class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
+  List<Foto> _fotos = [];
+  bool _isLoadingFotos = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(cultivosProvider.notifier).loadCultivo(widget.id);
+      _carregarFotos();
     });
+  }
+
+  void _carregarFotos() async {
+    setState(() => _isLoadingFotos = true);
+    try {
+      final fotos = await ref.read(fotoServiceProvider).listarPorEntidade('CULTIVO', widget.id);
+      setState(() => _fotos = fotos);
+    } catch (e) {
+      // Silently fail - fotos are optional
+    } finally {
+      setState(() => _isLoadingFotos = false);
+    }
   }
 
   @override
@@ -143,6 +163,19 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
                     ),
                   ),
                 ],
+                const SizedBox(height: 16),
+                Text(
+                  'Fotos',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 8),
+                if (_isLoadingFotos)
+                  const Center(child: CircularProgressIndicator())
+                else
+                  GroupedPhotoTimeline(
+                    fotos: _fotos,
+                    onFotoTap: (foto) => _showFotoFullScreen(context, foto),
+                  ),
               ],
             ),
     );
@@ -249,5 +282,13 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
     if (confirmed == true && context.mounted) {
       await ref.read(cultivosProvider.notifier).cancelar(widget.id, motivoController.text);
     }
+  }
+
+  void _showFotoFullScreen(BuildContext context, Foto foto) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => FullScreenImageViewer(foto: foto),
+      ),
+    );
   }
 }
