@@ -1,0 +1,113 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+
+import '../../../shared/widgets/confirmation_dialog.dart';
+import '../providers/diario_provider.dart';
+
+class DiarioDetailPage extends ConsumerStatefulWidget {
+  final int id;
+
+  const DiarioDetailPage({super.key, required this.id});
+
+  @override
+  ConsumerState<DiarioDetailPage> createState() => _DiarioDetailPageState();
+}
+
+class _DiarioDetailPageState extends ConsumerState<DiarioDetailPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(diarioProvider.notifier).loadDiario(widget.id);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final diarioState = ref.watch(diarioProvider);
+
+    ref.listen<DiarioState>(diarioProvider, (previous, next) {
+      if (next.error != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.error!),
+            backgroundColor: Colors.red,
+          ),
+        );
+        ref.read(diarioProvider.notifier).clearError();
+      }
+    });
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Detalhes do Diário'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () => context.push('/diario/${widget.id}/editar'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () => _showDeleteDialog(context, ref),
+          ),
+        ],
+      ),
+      body: diarioState.selectedDiario == null
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          diarioState.selectedDiario!.titulo,
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        const SizedBox(height: 8),
+                        if (diarioState.selectedDiario!.data != null)
+                          Text(
+                            DateFormat('dd/MM/yyyy')
+                                .format(diarioState.selectedDiario!.data!),
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Colors.grey[600],
+                                ),
+                          ),
+                        const SizedBox(height: 16),
+                        const Divider(),
+                        const SizedBox(height: 16),
+                        Text(
+                          diarioState.selectedDiario!.conteudo,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+
+  void _showDeleteDialog(BuildContext context, WidgetRef ref) async {
+    final confirmed = await ConfirmationDialog.show(
+      context: context,
+      title: 'Excluir Entrada',
+      message: 'Tem certeza que deseja excluir esta entrada do diário?',
+      confirmText: 'Excluir',
+      isDestructive: true,
+    );
+
+    if (confirmed && context.mounted) {
+      await ref.read(diarioProvider.notifier).deleteDiario(widget.id);
+      if (context.mounted) {
+        context.pop();
+      }
+    }
+  }
+}

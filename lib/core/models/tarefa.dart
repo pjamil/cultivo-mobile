@@ -1,0 +1,106 @@
+import '../utils/date_utils.dart';
+import 'package:hive/hive.dart';
+
+part 'tarefa.g.dart';
+
+@HiveType(typeId: 8)
+class Tarefa extends HiveObject {
+  @HiveField(0)
+  final int id;
+
+  @HiveField(1)
+  final String titulo;
+
+  @HiveField(2)
+  final String? descricao;
+
+  @HiveField(3)
+  final String status;
+
+  @HiveField(4)
+  final String prioridade;
+
+  @HiveField(5)
+  final DateTime? dataCriacao;
+
+  @HiveField(6)
+  final DateTime? dataVencimento;
+
+  @HiveField(7)
+  final int? usuarioId;
+
+  @HiveField(8)
+  final int? cultivoId;
+
+  Tarefa({
+    required this.id,
+    required this.titulo,
+    this.descricao,
+    this.status = 'PENDENTE',
+    this.prioridade = 'MEDIA',
+    this.dataCriacao,
+    this.dataVencimento,
+    this.usuarioId,
+    this.cultivoId,
+  });
+
+  factory Tarefa.fromJson(Map<String, dynamic> json) {
+    return Tarefa(
+      id: json['id'] ?? 0,
+      titulo: json['titulo'] ?? '',
+      descricao: json['descricao'],
+      status: json['status'] ?? 'PENDENTE',
+      prioridade: json['prioridade'] ?? 'MEDIA',
+      dataCriacao: json['dataCriacao'] != null
+          ? parseDate(json['dataCriacao'])
+          : null,
+      dataVencimento: json['dataVencimento'] != null
+          ? parseDate(json['dataVencimento'])
+          : null,
+      usuarioId: json['usuarioId'],
+      cultivoId: json['cultivoId'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'titulo': titulo,
+      'descricao': descricao,
+      'status': status,
+      'prioridade': prioridade,
+      'dataCriacao': dataCriacao?.toIso8601String(),
+      'dataVencimento': dataVencimento?.toIso8601String(),
+      'usuarioId': usuarioId,
+      'cultivoId': cultivoId,
+    };
+  }
+
+  Tarefa copyWith({
+    int? id,
+    String? titulo,
+    String? descricao,
+    String? status,
+    String? prioridade,
+    DateTime? dataCriacao,
+    DateTime? dataVencimento,
+    int? usuarioId,
+    int? cultivoId,
+  }) {
+    return Tarefa(
+      id: id ?? this.id,
+      titulo: titulo ?? this.titulo,
+      descricao: descricao ?? this.descricao,
+      status: status ?? this.status,
+      prioridade: prioridade ?? this.prioridade,
+      dataCriacao: dataCriacao ?? this.dataCriacao,
+      dataVencimento: dataVencimento ?? this.dataVencimento,
+      usuarioId: usuarioId ?? this.usuarioId,
+      cultivoId: cultivoId ?? this.cultivoId,
+    );
+  }
+
+  bool get isConcluida => status == 'CONCLUIDA';
+  bool get isPendente => status == 'PENDENTE';
+  bool get isEmAndamento => status == 'EM_ANDAMENTO';
+}
