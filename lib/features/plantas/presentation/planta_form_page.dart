@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/models/planta.dart';
-import '../../../core/models/variedade.dart';
 import '../../variedade/providers/variedade_provider.dart';
 import '../providers/plantas_provider.dart';
 

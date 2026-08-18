@@ -18,6 +18,12 @@
 @import image_picker_ios;
 #endif
 
+#if __has_include(<integration_test/IntegrationTestPlugin.h>)
+#import <integration_test/IntegrationTestPlugin.h>
+#else
+@import integration_test;
+#endif
+
 #if __has_include(<permission_handler_apple/PermissionHandlerPlugin.h>)
 #import <permission_handler_apple/PermissionHandlerPlugin.h>
 #else
@@ -35,6 +41,7 @@
 + (void)registerWithRegistry:(NSObject<FlutterPluginRegistry>*)registry {
   [ImageCompressPlugin registerWithRegistrar:[registry registrarForPlugin:@"ImageCompressPlugin"]];
   [FLTImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImagePickerPlugin"]];
+  [IntegrationTestPlugin registerWithRegistrar:[registry registrarForPlugin:@"IntegrationTestPlugin"]];
   [PermissionHandlerPlugin registerWithRegistrar:[registry registrarForPlugin:@"PermissionHandlerPlugin"]];
   [SqflitePlugin registerWithRegistrar:[registry registrarForPlugin:@"SqflitePlugin"]];
 }

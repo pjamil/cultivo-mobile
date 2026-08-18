@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:cultivo_mobile/main.dart' as app;
+import 'package:cultivo_mobile/features/tarefas/presentation/widgets/calendar_view.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +41,7 @@ void main() {
       if (calendarButton.evaluate().isNotEmpty) {
         await tester.tap(calendarButton);
         await tester.pumpAndSettle();
-        expect(find.byType(Calendar), findsOneWidget);
+        expect(find.byType(CalendarView), findsOneWidget);
       }
     });
   });
