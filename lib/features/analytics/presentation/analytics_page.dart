@@ -1,6 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
+import '../data/analytics_repository.dart';
 import '../providers/analytics_provider.dart';
 import 'widgets/yield_chart.dart';
 import 'widgets/cycle_chart.dart';
@@ -16,6 +22,14 @@ class AnalyticsPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Analytics'),
+        actions: [
+          if (analyticsState.data != null)
+            IconButton(
+              icon: const Icon(Icons.file_download),
+              onPressed: () => _exportCsv(context, analyticsState.data!),
+              tooltip: 'Exportar CSV',
+            ),
+        ],
       ),
       body: _buildBody(context, ref, analyticsState),
     );
@@ -66,5 +80,35 @@ class AnalyticsPage extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _exportCsv(BuildContext context, AnalyticsData data) async {
+    final buffer = StringBuffer();
+    buffer.writeln('Rendimento por Variedade');
+    buffer.writeln('Variedade,Rendimento Médio (g)');
+    for (final item in data.rendimentoPorVariedade) {
+      buffer.writeln('${item.variedade},${item.rendimentoMedio}');
+    }
+    buffer.writeln('');
+    buffer.writeln('Duração do Ciclo');
+    buffer.writeln('Fase,Dias Médios');
+    for (final item in data.duracaoCiclo) {
+      buffer.writeln('${item.fase},${item.diasMedios}');
+    }
+    buffer.writeln('');
+    buffer.writeln('Custo por Cultivo');
+    buffer.writeln('Cultivo,Custo Total (R\$)');
+    for (final item in data.custoPorCultivo) {
+      buffer.writeln('${item.cultivo},${item.custoTotal}');
+    }
+
+    final directory = await getApplicationDocumentsDirectory();
+    final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+    final file = File('${directory.path}/analytics_$timestamp.csv');
+    await file.writeAsString(buffer.toString());
+
+    if (context.mounted) {
+      await Share.shareXFiles([XFile(file.path)], text: 'Relatório de Analytics');
+    }
   }
 }
