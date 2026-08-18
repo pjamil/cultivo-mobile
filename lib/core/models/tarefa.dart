@@ -32,6 +32,12 @@ class Tarefa extends HiveObject {
   @HiveField(8)
   final int? cultivoId;
 
+  @HiveField(9)
+  final String? recorrencia;
+
+  @HiveField(10)
+  final DateTime? dataFimRecorrencia;
+
   Tarefa({
     required this.id,
     required this.titulo,
@@ -42,6 +48,8 @@ class Tarefa extends HiveObject {
     this.dataVencimento,
     this.usuarioId,
     this.cultivoId,
+    this.recorrencia,
+    this.dataFimRecorrencia,
   });
 
   factory Tarefa.fromJson(Map<String, dynamic> json) {
@@ -59,6 +67,10 @@ class Tarefa extends HiveObject {
           : null,
       usuarioId: json['usuarioId'],
       cultivoId: json['cultivoId'],
+      recorrencia: json['recorrencia'],
+      dataFimRecorrencia: json['dataFimRecorrencia'] != null
+          ? parseDate(json['dataFimRecorrencia'])
+          : null,
     );
   }
 
@@ -73,6 +85,8 @@ class Tarefa extends HiveObject {
       'dataVencimento': dataVencimento?.toIso8601String(),
       'usuarioId': usuarioId,
       'cultivoId': cultivoId,
+      'recorrencia': recorrencia,
+      'dataFimRecorrencia': dataFimRecorrencia?.toIso8601String(),
     };
   }
 
@@ -86,6 +100,8 @@ class Tarefa extends HiveObject {
     DateTime? dataVencimento,
     int? usuarioId,
     int? cultivoId,
+    String? recorrencia,
+    DateTime? dataFimRecorrencia,
   }) {
     return Tarefa(
       id: id ?? this.id,
@@ -97,10 +113,13 @@ class Tarefa extends HiveObject {
       dataVencimento: dataVencimento ?? this.dataVencimento,
       usuarioId: usuarioId ?? this.usuarioId,
       cultivoId: cultivoId ?? this.cultivoId,
+      recorrencia: recorrencia ?? this.recorrencia,
+      dataFimRecorrencia: dataFimRecorrencia ?? this.dataFimRecorrencia,
     );
   }
 
   bool get isConcluida => status == 'CONCLUIDA';
   bool get isPendente => status == 'PENDENTE';
   bool get isEmAndamento => status == 'EM_ANDAMENTO';
+  bool get temRecorrencia => recorrencia != null && recorrencia != 'NENHUMA';
 }

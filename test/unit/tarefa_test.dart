@@ -75,6 +75,31 @@ void main() {
       expect(tarefa.descricao, isNull);
       expect(tarefa.dataCriacao, isNull);
       expect(tarefa.dataVencimento, isNull);
+      expect(tarefa.recorrencia, isNull);
+      expect(tarefa.dataFimRecorrencia, isNull);
+    });
+
+    test('should handle recurrence fields', () {
+      final tarefa = Tarefa(
+        id: 1,
+        titulo: 'Tarefa Recorrente',
+        recorrencia: 'SEMANAL',
+        dataVencimento: DateTime(2024, 1, 20),
+        dataFimRecorrencia: DateTime(2024, 6, 30),
+      );
+      expect(tarefa.recorrencia, 'SEMANAL');
+      expect(tarefa.temRecorrencia, true);
+      expect(tarefa.dataFimRecorrencia, DateTime(2024, 6, 30));
+    });
+
+    test('should check temRecorrencia getter', () {
+      final comRecorrencia = Tarefa(id: 1, titulo: 'T', recorrencia: 'DIARIA');
+      final semRecorrencia = Tarefa(id: 2, titulo: 'T', recorrencia: 'NENHUMA');
+      final nula = Tarefa(id: 3, titulo: 'T');
+
+      expect(comRecorrencia.temRecorrencia, true);
+      expect(semRecorrencia.temRecorrencia, false);
+      expect(nula.temRecorrencia, false);
     });
   });
 }

@@ -22,6 +22,8 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
   DateTime? _dataVencimento;
   String _status = 'PENDENTE';
   String _prioridade = 'MEDIA';
+  String _recorrencia = 'NENHUMA';
+  DateTime? _dataFimRecorrencia;
   bool _fieldsPopulated = false;
 
   @override
@@ -46,6 +48,8 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
     _dataVencimento = tarefa.dataVencimento;
     _status = tarefa.status;
     _prioridade = tarefa.prioridade;
+    _recorrencia = tarefa.recorrencia ?? 'NENHUMA';
+    _dataFimRecorrencia = tarefa.dataFimRecorrencia;
   }
 
   @override
@@ -66,6 +70,8 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
         status: _status,
         prioridade: _prioridade,
         dataVencimento: _dataVencimento,
+        recorrencia: _recorrencia == 'NENHUMA' ? null : _recorrencia,
+        dataFimRecorrencia: _dataFimRecorrencia,
       );
 
       if (widget.id != null) {
@@ -182,6 +188,51 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
                   });
                 },
               ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: _recorrencia,
+                decoration: const InputDecoration(
+                  labelText: 'Recorrência',
+                  prefixIcon: Icon(Icons.repeat),
+                ),
+                items: const [
+                  DropdownMenuItem(value: 'NENHUMA', child: Text('Nenhuma')),
+                  DropdownMenuItem(value: 'DIARIA', child: Text('Diária')),
+                  DropdownMenuItem(value: 'SEMANAL', child: Text('Semanal')),
+                  DropdownMenuItem(value: 'QUINZENAL', child: Text('Quinzenal')),
+                  DropdownMenuItem(value: 'MENSAL', child: Text('Mensal')),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _recorrencia = value!;
+                  });
+                },
+              ),
+              if (_recorrencia != 'NENHUMA') ...[
+                const SizedBox(height: 16),
+                ListTile(
+                  leading: const Icon(Icons.event_repeat),
+                  title: Text(
+                    _dataFimRecorrencia != null
+                        ? DateFormat('dd/MM/yyyy').format(_dataFimRecorrencia!)
+                        : 'Selecionar data fim da recorrência',
+                  ),
+                  subtitle: const Text('Data Fim Recorrência'),
+                  onTap: () async {
+                    final date = await showDatePicker(
+                      context: context,
+                      initialDate: _dataFimRecorrencia ?? DateTime.now().add(const Duration(days: 30)),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+                    );
+                    if (date != null) {
+                      setState(() {
+                        _dataFimRecorrencia = date;
+                      });
+                    }
+                  },
+                ),
+              ],
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: tarefasState.status == TarefasStatus.loading

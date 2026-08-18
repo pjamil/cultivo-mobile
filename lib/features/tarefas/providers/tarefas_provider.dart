@@ -98,11 +98,71 @@ class TarefasNotifier extends StateNotifier<TarefasState> {
             t.id == updatedTarefa.id ? updatedTarefa : t).toList(),
         selectedTarefa: updatedTarefa,
       );
+
+      // Auto-create next occurrence for recurring tasks
+      if (updatedTarefa.isConcluida && updatedTarefa.temRecorrencia) {
+        await _createNextOccurrence(updatedTarefa);
+      }
     } catch (e) {
       state = state.copyWith(
         status: TarefasStatus.error,
         error: e.toString(),
       );
+    }
+  }
+
+  Future<void> _createNextOccurrence(Tarefa completedTarefa) async {
+    final nextDate = _calculateNextDate(
+      completedTarefa.dataVencimento!,
+      completedTarefa.recorrencia!,
+    );
+
+    if (nextDate == null) return;
+
+    // Check if recurrence end date is reached
+    if (completedTarefa.dataFimRecorrencia != null &&
+        nextDate.isAfter(completedTarefa.dataFimRecorrencia!)) {
+      return;
+    }
+
+    final nextTarefa = Tarefa(
+      id: 0,
+      titulo: completedTarefa.titulo,
+      descricao: completedTarefa.descricao,
+      status: 'PENDENTE',
+      prioridade: completedTarefa.prioridade,
+      dataVencimento: nextDate,
+      usuarioId: completedTarefa.usuarioId,
+      cultivoId: completedTarefa.cultivoId,
+      recorrencia: completedTarefa.recorrencia,
+      dataFimRecorrencia: completedTarefa.dataFimRecorrencia,
+    );
+
+    try {
+      final created = await _repository.create(nextTarefa);
+      state = state.copyWith(
+        tarefas: [...state.tarefas, created],
+      );
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  DateTime? _calculateNextDate(DateTime current, String recorrencia) {
+    switch (recorrencia) {
+      case 'DIARIA':
+        return current.add(const Duration(days: 1));
+      case 'SEMANAL':
+        return current.add(const Duration(days: 7));
+      case 'QUINZENAL':
+        return current.add(const Duration(days: 15));
+      case 'MENSAL':
+        final nextMonth = current.month + 1;
+        final nextYear = nextMonth > 12 ? current.year + 1 : current.year;
+        final month = nextMonth > 12 ? 1 : nextMonth;
+        return DateTime(nextYear, month, current.day);
+      default:
+        return null;
     }
   }
 

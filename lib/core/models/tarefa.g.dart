@@ -26,13 +26,15 @@ class TarefaAdapter extends TypeAdapter<Tarefa> {
       dataVencimento: fields[6] as DateTime?,
       usuarioId: fields[7] as int?,
       cultivoId: fields[8] as int?,
+      recorrencia: fields[9] as String?,
+      dataFimRecorrencia: fields[10] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Tarefa obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,7 +52,11 @@ class TarefaAdapter extends TypeAdapter<Tarefa> {
       ..writeByte(7)
       ..write(obj.usuarioId)
       ..writeByte(8)
-      ..write(obj.cultivoId);
+      ..write(obj.cultivoId)
+      ..writeByte(9)
+      ..write(obj.recorrencia)
+      ..writeByte(10)
+      ..write(obj.dataFimRecorrencia);
   }
 
   @override

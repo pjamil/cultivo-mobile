@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/models/foto.dart';
 import '../../../shared/widgets/confirmation_dialog.dart';
+import '../../../shared/widgets/full_screen_image_viewer.dart';
 import '../../../shared/widgets/photo_timeline.dart';
 import '../../../shared/widgets/photo_upload_button.dart';
 import '../providers/diario_provider.dart';
@@ -140,20 +141,7 @@ class _DiarioDetailPageState extends ConsumerState<DiarioDetailPage> {
   void _showFotoFullScreen(BuildContext context, Foto foto) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => Scaffold(
-          appBar: AppBar(
-            title: Text(foto.legenda ?? 'Foto'),
-          ),
-          body: Center(
-            child: Image.network(
-              foto.url,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(Icons.error, size: 48);
-              },
-            ),
-          ),
-        ),
+        builder: (context) => FullScreenImageViewer(foto: foto),
       ),
     );
   }
