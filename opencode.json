@@ -1,0 +1,34 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "username": "paulo",
+
+  "model": "opencode-go/deepseek-v4-flash",
+  "small_model": "opencode-go/deepseek-v4-flash",
+  "default_agent": "plan",
+
+  "logLevel": "INFO",
+  "share": "manual",
+  "autoupdate": "notify",
+  "snapshot": true,
+
+  "instructions": ["AGENTS.md"],
+
+  "permission": {
+    "edit": "allow",
+    "bash": {
+      "*": "allow",
+      "rm *": "ask"
+    }
+  },
+
+
+  "plugin": [],
+
+  "formatter": true,
+  "lsp": true,
+
+  "experimental": {
+    "primary_tools": ["edit", "bash"]
+  }
+}
