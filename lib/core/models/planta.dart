@@ -1,5 +1,7 @@
 import 'package:hive/hive.dart';
 
+import '../utils/date_utils.dart';
+
 part 'planta.g.dart';
 
 @HiveType(typeId: 3)
@@ -40,6 +42,9 @@ class Planta extends HiveObject {
   @HiveField(11)
   final int? usuarioId;
 
+  @HiveField(12)
+  final String comecandoDe;
+
   Planta({
     required this.id,
     required this.nome,
@@ -53,6 +58,7 @@ class Planta extends HiveObject {
     this.meioCultivoId,
     this.ambienteId,
     this.usuarioId,
+    this.comecandoDe = 'SEMENTE',
   });
 
   factory Planta.fromJson(Map<String, dynamic> json) {
@@ -64,11 +70,14 @@ class Planta extends HiveObject {
       dataPlantio: _parseDate(json['dataPlantio']),
       dataColheita: _parseDate(json['dataColheita']),
       notas: json['notas'],
-      rendimentoGramas: (json['rendimentoGramas'] ?? json['rendimento_gramas'])?.toDouble(),
-      variedadeId: json['variedadeId'] ?? json['geneticaId'] ?? json['genetica_id'],
+      rendimentoGramas:
+          (json['rendimentoGramas'] ?? json['rendimento_gramas'])?.toDouble(),
+      variedadeId:
+          json['variedadeId'] ?? json['geneticaId'] ?? json['genetica_id'],
       meioCultivoId: json['meioCultivoId'] ?? json['meio_cultivo_id'],
       ambienteId: json['ambienteId'] ?? json['ambiente_id'],
       usuarioId: json['usuarioId'] ?? json['usuario_id'],
+      comecandoDe: json['comecandoDe'] ?? 'SEMENTE',
     );
   }
 
@@ -87,22 +96,24 @@ class Planta extends HiveObject {
     }
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() => toCreateJson();
+
+  Map<String, dynamic> toCreateJson() {
     return {
-      'id': id,
       'nome': nome,
       'especie': especie,
+      'comecandoDe': comecandoDe,
+      'dataPlantio': formatDateOnly(dataPlantio),
+      'dataColheita': formatDateOnly(dataColheita),
       'status': status,
-      'dataPlantio': dataPlantio?.toIso8601String(),
-      'dataColheita': dataColheita?.toIso8601String(),
       'notas': notas,
-      'rendimentoGramas': rendimentoGramas,
-      'variedadeId': variedadeId,
-      'meioCultivoId': meioCultivoId,
-      'ambienteId': ambienteId,
-      'usuarioId': usuarioId,
+      'genetica_id': variedadeId,
+      'meio_cultivo_id': meioCultivoId,
+      'ambiente_id': ambienteId,
     };
   }
+
+  Map<String, dynamic> toUpdateJson() => toCreateJson();
 
   Planta copyWith({
     int? id,
@@ -117,6 +128,7 @@ class Planta extends HiveObject {
     int? meioCultivoId,
     int? ambienteId,
     int? usuarioId,
+    String? comecandoDe,
   }) {
     return Planta(
       id: id ?? this.id,
@@ -131,6 +143,7 @@ class Planta extends HiveObject {
       meioCultivoId: meioCultivoId ?? this.meioCultivoId,
       ambienteId: ambienteId ?? this.ambienteId,
       usuarioId: usuarioId ?? this.usuarioId,
+      comecandoDe: comecandoDe ?? this.comecandoDe,
     );
   }
 

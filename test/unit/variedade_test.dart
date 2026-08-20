@@ -44,9 +44,9 @@ void main() {
         tipoEspecie: 'FEMININA',
       );
       final json = variedade.toJson();
-      expect(json['id'], 1);
+      expect(json['id'], isNull);
       expect(json['nome'], 'Amnesia Haze');
-      expect(json['tipoVariedade'], 'SATIVA');
+      expect(json['tipoGenetica'], 'SATIVA');
       expect(json['tipoEspecie'], 'FEMININA');
     });
 
@@ -57,7 +57,8 @@ void main() {
         tipoVariedade: 'INDICA',
         tipoEspecie: 'REGULAR',
       );
-      final copied = original.copyWith(nome: 'Atualizado', tipoVariedade: 'SATIVA');
+      final copied =
+          original.copyWith(nome: 'Atualizado', tipoVariedade: 'SATIVA');
       expect(copied.id, 1);
       expect(copied.nome, 'Atualizado');
       expect(copied.tipoVariedade, 'SATIVA');

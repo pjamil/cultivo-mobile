@@ -43,7 +43,7 @@ class UsuarioRepository {
 
   Future<void> deleteAccount() async {
     try {
-      await _api.delete('/minha-conta');
+      await _api.delete(Endpoints.minhaConta);
     } on DioException catch (e) {
       throw Exception(e.error ?? 'Erro ao excluir conta');
     }

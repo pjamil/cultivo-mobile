@@ -57,36 +57,94 @@ class Tarefa extends HiveObject {
       id: json['id'] ?? 0,
       titulo: json['titulo'] ?? '',
       descricao: json['descricao'],
-      status: json['status'] ?? 'PENDENTE',
-      prioridade: json['prioridade'] ?? 'MEDIA',
+      status: _normalizeStatus(json['status']),
+      prioridade: _normalizePrioridade(json['prioridade']),
       dataCriacao: json['dataCriacao'] != null
           ? parseDate(json['dataCriacao'])
-          : null,
+          : (json['data_criacao'] != null
+              ? parseDate(json['data_criacao'])
+              : null),
       dataVencimento: json['dataVencimento'] != null
           ? parseDate(json['dataVencimento'])
-          : null,
-      usuarioId: json['usuarioId'],
+          : (json['data_vencimento'] != null
+              ? parseDate(json['data_vencimento'])
+              : null),
+      usuarioId: json['usuarioId'] ?? json['usuario_id'],
       cultivoId: json['cultivoId'],
-      recorrencia: json['recorrencia'],
+      recorrencia: _normalizeRecorrencia(json['recorrencia']),
       dataFimRecorrencia: json['dataFimRecorrencia'] != null
           ? parseDate(json['dataFimRecorrencia'])
-          : null,
+          : (json['data_fim_recorrencia'] != null
+              ? parseDate(json['data_fim_recorrencia'])
+              : null),
     );
   }
 
-  Map<String, dynamic> toJson() {
+  static String _normalizeStatus(dynamic value) {
+    if (value == null) return 'PENDENTE';
+    switch (value.toString()) {
+      case 'pendente':
+        return 'PENDENTE';
+      case 'em_andamento':
+        return 'EM_ANDAMENTO';
+      case 'concluida':
+        return 'CONCLUIDA';
+      default:
+        return value.toString().toUpperCase();
+    }
+  }
+
+  static String _normalizePrioridade(dynamic value) {
+    if (value == null) return 'MEDIA';
+    switch (value.toString()) {
+      case 'baixa':
+        return 'BAIXA';
+      case 'media':
+        return 'MEDIA';
+      case 'alta':
+        return 'ALTA';
+      default:
+        return value.toString().toUpperCase();
+    }
+  }
+
+  static String _normalizeRecorrencia(dynamic value) {
+    if (value == null) return 'NENHUMA';
+    return value.toString().toUpperCase();
+  }
+
+  String _statusToApi() => switch (status) {
+        'PENDENTE' => 'pendente',
+        'EM_ANDAMENTO' => 'em_andamento',
+        'CONCLUIDA' => 'concluida',
+        _ => status.toLowerCase(),
+      };
+
+  String _prioridadeToApi() => switch (prioridade) {
+        'BAIXA' => 'baixa',
+        'MEDIA' => 'media',
+        'ALTA' => 'alta',
+        _ => prioridade.toLowerCase(),
+      };
+
+  Map<String, dynamic> toJson() => toCreateJson();
+
+  Map<String, dynamic> toCreateJson() {
     return {
-      'id': id,
       'titulo': titulo,
       'descricao': descricao,
-      'status': status,
-      'prioridade': prioridade,
-      'dataCriacao': dataCriacao?.toIso8601String(),
-      'dataVencimento': dataVencimento?.toIso8601String(),
-      'usuarioId': usuarioId,
-      'cultivoId': cultivoId,
-      'recorrencia': recorrencia,
-      'dataFimRecorrencia': dataFimRecorrencia?.toIso8601String(),
+      'prioridade': _prioridadeToApi(),
+      'data_vencimento': formatDateOnly(dataVencimento),
+    };
+  }
+
+  Map<String, dynamic> toUpdateJson() {
+    return {
+      'titulo': titulo,
+      'descricao': descricao,
+      'status': _statusToApi(),
+      'prioridade': _prioridadeToApi(),
+      'data_vencimento': formatDateOnly(dataVencimento),
     };
   }
 

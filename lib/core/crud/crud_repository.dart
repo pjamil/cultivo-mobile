@@ -63,7 +63,7 @@ abstract class CrudRepository<T> {
     try {
       final response = await _api.post(
         basePath,
-        data: _toJson(item)..remove('id'),
+        data: createBody(item),
       );
       return fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
@@ -76,7 +76,7 @@ abstract class CrudRepository<T> {
       final id = _getId(item);
       final response = await _api.put(
         byIdPath(id),
-        data: _toJson(item),
+        data: updateBody(item),
       );
       return fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
@@ -93,6 +93,24 @@ abstract class CrudRepository<T> {
   }
 
   Map<String, dynamic> _toJson(T item) => (item as dynamic).toJson();
+
+  Map<String, dynamic> createBody(T item) {
+    final d = item as dynamic;
+    try {
+      return d.toCreateJson() as Map<String, dynamic>;
+    } on NoSuchMethodError {
+      return _toJson(item)..remove('id');
+    }
+  }
+
+  Map<String, dynamic> updateBody(T item) {
+    final d = item as dynamic;
+    try {
+      return d.toUpdateJson() as Map<String, dynamic>;
+    } on NoSuchMethodError {
+      return _toJson(item);
+    }
+  }
 
   int _getId(T item) => (item as dynamic).id as int;
 }

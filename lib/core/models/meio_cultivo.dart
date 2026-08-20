@@ -27,13 +27,16 @@ class MeioCultivo extends HiveObject {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() => toCreateJson();
+
+  Map<String, dynamic> toCreateJson() {
     return {
-      'id': id,
       'tipo': tipo,
       'descricao': descricao,
     };
   }
+
+  Map<String, dynamic> toUpdateJson() => toCreateJson();
 
   MeioCultivo copyWith({
     int? id,

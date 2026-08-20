@@ -1,11 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../core/api/endpoints.dart';
-
 final analyticsRepositoryProvider = Provider<AnalyticsRepository>((ref) {
-  return AnalyticsRepository(ref);
+  return AnalyticsRepository();
 });
 
 class AnalyticsData {
@@ -80,18 +76,14 @@ class CostData {
 }
 
 class AnalyticsRepository {
-  final Ref _ref;
-
-  AnalyticsRepository(this._ref);
-
-  ApiClient get _api => _ref.read(apiClientProvider);
-
   Future<AnalyticsData> getAnalytics() async {
-    try {
-      final response = await _api.get(Endpoints.analytics);
-      return AnalyticsData.fromJson(response.data);
-    } on DioException catch (e) {
-      throw Exception(e.error ?? 'Erro ao carregar analytics');
-    }
+    // O backend ainda não expõe um endpoint dedicado de analytics.
+    // Enquanto isso, retorna dados vazios (mock local) em vez de chamar
+    // uma rota inexistente, mantendo a página funcional para exportação CSV.
+    return AnalyticsData(
+      rendimentoPorVariedade: const [],
+      duracaoCiclo: const [],
+      custoPorCultivo: const [],
+    );
   }
 }

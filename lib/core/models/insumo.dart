@@ -47,24 +47,35 @@ class Insumo extends HiveObject {
       nome: json['nome'] ?? '',
       tipo: json['tipo'] ?? 'OUTRO',
       quantidade: json['quantidade']?.toDouble() ?? 0,
-      unidadeMedida: json['unidadeMedida'] ?? '',
-      estoqueMinimo: json['estoqueMinimo']?.toDouble() ?? 0,
+      unidadeMedida: json['unidadeMedida'] ?? json['unidade_medida'] ?? '',
+      estoqueMinimo:
+          (json['estoqueMinimo'] ?? json['estoque_minimo'])?.toDouble() ?? 0,
       dataCadastro: json['dataCadastro'] != null
           ? parseDate(json['dataCadastro'])
-          : null,
+          : (json['data_cadastro'] != null
+              ? parseDate(json['data_cadastro'])
+              : null),
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() => toCreateJson();
+
+  Map<String, dynamic> toCreateJson() {
     return {
-      'id': id,
       'codigo': codigo,
       'nome': nome,
       'tipo': tipo,
       'quantidade': quantidade,
-      'unidadeMedida': unidadeMedida,
+      'unidade_medida': unidadeMedida,
+      'estoque_minimo': estoqueMinimo,
+    };
+  }
+
+  Map<String, dynamic> toUpdateJson() {
+    return {
+      'nome': nome,
+      'quantidade': quantidade,
       'estoqueMinimo': estoqueMinimo,
-      'dataCadastro': dataCadastro?.toIso8601String(),
     };
   }
 

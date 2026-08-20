@@ -40,11 +40,9 @@ class DiarioCultivo extends HiveObject {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'titulo': titulo,
       'conteudo': conteudo,
-      'data': data?.toIso8601String(),
-      'userId': userId,
+      'data': formatDateOnly(data),
     };
   }
 

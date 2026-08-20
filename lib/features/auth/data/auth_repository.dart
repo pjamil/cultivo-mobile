@@ -34,14 +34,13 @@ class AuthRepository {
       final data = response.data;
       final accessToken = data['accessToken'] ?? data['token'];
       final refreshToken = data['refreshToken'];
-      final userData = data['user'] ?? data['usuario'];
 
       if (accessToken != null) {
         await _storage.setTokens(accessToken, refreshToken ?? '');
       }
 
-      if (userData != null) {
-        final usuario = Usuario.fromJson(userData);
+      final usuario = await getCurrentUser();
+      if (usuario != null) {
         await _storage.setUserInfo(usuario.id, usuario.email);
         return usuario;
       }
@@ -68,10 +67,20 @@ class AuthRepository {
       );
 
       final data = response.data;
+      final accessToken = data['accessToken'];
+      final refreshToken = data['refreshToken'];
       final userData = data['user'] ?? data['usuario'];
+
+      if (accessToken != null) {
+        await _storage.setTokens(accessToken, refreshToken ?? '');
+      }
 
       if (userData != null) {
         return Usuario.fromJson(userData);
+      }
+
+      if (data['id'] != null) {
+        return Usuario.fromJson(data);
       }
 
       // Se não retornar usuário, retorna um básico
@@ -87,6 +96,17 @@ class AuthRepository {
   }
 
   Future<void> logout() async {
+    try {
+      final refreshToken = await _storage.getRefreshToken();
+      if (refreshToken != null && refreshToken.isNotEmpty) {
+        await _api.post(
+          Endpoints.refreshToken.replaceAll('/refresh', '/logout'),
+          data: {'refreshToken': refreshToken},
+        );
+      }
+    } catch (_) {
+      // Ignora falha no logout remoto
+    }
     await _storage.removeTokens();
     await _storage.removeUserInfo();
   }

@@ -52,18 +52,21 @@ class Variedade extends HiveObject {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() => toCreateJson();
+
+  Map<String, dynamic> toCreateJson() {
     return {
-      'id': id,
       'nome': nome,
       'descricao': descricao,
-      'tipoVariedade': tipoVariedade,
+      'tipoGenetica': tipoVariedade,
       'tipoEspecie': tipoEspecie,
-      'tempoFloracao': tempoFloracao,
+      'tempoFloracao': int.tryParse(tempoFloracao ?? ''),
       'origem': origem,
       'caracteristicas': caracteristicas,
     };
   }
+
+  Map<String, dynamic> toUpdateJson() => toCreateJson();
 
   Variedade copyWith({
     int? id,

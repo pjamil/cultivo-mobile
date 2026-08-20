@@ -35,10 +35,10 @@ void main() {
         prioridade: 'ALTA',
       );
       final json = tarefa.toJson();
-      expect(json['id'], 1);
+      expect(json['id'], isNull);
       expect(json['titulo'], 'Podar plantas');
-      expect(json['status'], 'PENDENTE');
-      expect(json['prioridade'], 'ALTA');
+      expect(json['status'], isNull);
+      expect(json['prioridade'], 'alta');
     });
 
     test('should check status getters', () {
@@ -61,7 +61,8 @@ void main() {
 
     test('should copyWith correctly', () {
       final original = Tarefa(id: 1, titulo: 'Original', status: 'PENDENTE');
-      final copied = original.copyWith(titulo: 'Atualizado', status: 'CONCLUIDA');
+      final copied =
+          original.copyWith(titulo: 'Atualizado', status: 'CONCLUIDA');
       expect(copied.id, 1);
       expect(copied.titulo, 'Atualizado');
       expect(copied.status, 'CONCLUIDA');
@@ -75,7 +76,7 @@ void main() {
       expect(tarefa.descricao, isNull);
       expect(tarefa.dataCriacao, isNull);
       expect(tarefa.dataVencimento, isNull);
-      expect(tarefa.recorrencia, isNull);
+      expect(tarefa.recorrencia, 'NENHUMA');
       expect(tarefa.dataFimRecorrencia, isNull);
     });
 

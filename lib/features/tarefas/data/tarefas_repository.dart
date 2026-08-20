@@ -28,8 +28,7 @@ class TarefasRepository {
       } else {
         rawList = [];
       }
-      return rawList
-          .map((json) =>Tarefa.fromJson(json)).toList();
+      return rawList.map((json) => Tarefa.fromJson(json)).toList();
     } on DioException catch (e) {
       throw Exception(e.error ?? 'Erro ao carregar tarefas');
     }
@@ -48,7 +47,7 @@ class TarefasRepository {
     try {
       final response = await _api.post(
         Endpoints.tarefas,
-        data: tarefa.toJson()..remove('id'),
+        data: tarefa.toCreateJson(),
       );
       return Tarefa.fromJson(response.data);
     } on DioException catch (e) {
@@ -60,7 +59,7 @@ class TarefasRepository {
     try {
       final response = await _api.put(
         Endpoints.tarefaById(tarefa.id),
-        data: tarefa.toJson(),
+        data: tarefa.toUpdateJson(),
       );
       return Tarefa.fromJson(response.data);
     } on DioException catch (e) {

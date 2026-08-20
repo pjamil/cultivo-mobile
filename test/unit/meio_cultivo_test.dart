@@ -22,7 +22,7 @@ void main() {
         descricao: 'Sistema NFT',
       );
       final json = meio.toJson();
-      expect(json['id'], 1);
+      expect(json['id'], isNull);
       expect(json['tipo'], 'hidroponia');
       expect(json['descricao'], 'Sistema NFT');
     });

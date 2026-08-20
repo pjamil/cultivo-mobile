@@ -38,10 +38,10 @@ void main() {
         userId: 1,
       );
       final json = diario.toJson();
-      expect(json['id'], 1);
+      expect(json['id'], isNull);
       expect(json['titulo'], 'Teste');
       expect(json['conteudo'], 'Conteúdo teste');
-      expect(json['userId'], 1);
+      expect(json['userId'], isNull);
     });
 
     test('should copyWith correctly', () {
@@ -57,7 +57,11 @@ void main() {
     });
 
     test('should handle null fields in JSON', () {
-      final json = <String, dynamic>{'id': 1, 'titulo': 'Teste', 'conteudo': 'Texto'};
+      final json = <String, dynamic>{
+        'id': 1,
+        'titulo': 'Teste',
+        'conteudo': 'Texto'
+      };
       final diario = DiarioCultivo.fromJson(json);
       expect(diario.data, isNull);
       expect(diario.userId, isNull);

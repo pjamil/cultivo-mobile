@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/endpoints.dart';
 import '../../../core/crud/crud_repository.dart';
 import '../../../core/models/planta.dart';
+import '../../../core/utils/date_utils.dart';
 
 final plantasRepositoryProvider = Provider<PlantasRepository>((ref) {
   return PlantasRepository(ref);
@@ -37,9 +38,9 @@ class PlantasRepository extends CrudRepository<Planta> {
 
   Future<Planta> colher(int id, DateTime dataColheita, String? notas) async {
     final response = await api.post(
-      '/plantas/$id/colher',
+      '${Endpoints.plantas}/$id/colher',
       data: {
-        'dataColheita': dataColheita.toIso8601String(),
+        'dataColheita': formatDateOnly(dataColheita),
         'notas': notas,
       },
     );
@@ -48,7 +49,7 @@ class PlantasRepository extends CrudRepository<Planta> {
 
   Future<Planta> perder(int id, String motivo) async {
     final response = await api.post(
-      '/plantas/$id/perder',
+      '${Endpoints.plantas}/$id/perder',
       data: {'motivo': motivo},
     );
     return Planta.fromJson(response.data as Map<String, dynamic>);

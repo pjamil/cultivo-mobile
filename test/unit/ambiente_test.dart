@@ -36,7 +36,7 @@ void main() {
         largura: 5.0,
       );
       final json = ambiente.toJson();
-      expect(json['id'], 1);
+      expect(json['id'], isNull);
       expect(json['nome'], 'Jardim');
       expect(json['tipo'], 'externo');
       expect(json['comprimento'], 6.0);
@@ -52,7 +52,11 @@ void main() {
     });
 
     test('should handle null fields in JSON', () {
-      final json = <String, dynamic>{'id': 1, 'nome': 'Teste', 'tipo': 'interno'};
+      final json = <String, dynamic>{
+        'id': 1,
+        'nome': 'Teste',
+        'tipo': 'interno'
+      };
       final ambiente = Ambiente.fromJson(json);
       expect(ambiente.descricao, isNull);
       expect(ambiente.comprimento, isNull);

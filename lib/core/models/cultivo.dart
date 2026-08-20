@@ -51,28 +51,39 @@ class Cultivo extends HiveObject {
       status: json['status'] ?? 'PLANEJADO',
       dataInicio: json['dataInicio'] != null
           ? parseDate(json['dataInicio'])
-          : null,
+          : (json['data_inicio'] != null
+              ? parseDate(json['data_inicio'])
+              : null),
       dataFim: json['dataFim'] != null
           ? parseDate(json['dataFim'])
-          : null,
-      notas: json['notas'],
-      plantaId: json['plantaId'],
-      ambienteId: json['ambienteId'],
-      usuarioId: json['usuarioId'],
+          : (json['data_fim'] != null ? parseDate(json['data_fim']) : null),
+      notas: json['notas'] ?? json['observacoes'],
+      plantaId: json['plantaId'] ?? json['planta_id'],
+      ambienteId: json['ambienteId'] ?? json['ambiente_id'],
+      usuarioId: json['usuarioId'] ?? json['usuario_id'],
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() => toCreateJson();
+
+  Map<String, dynamic> toCreateJson() {
     return {
-      'id': id,
       'nome': nome,
-      'status': status,
-      'dataInicio': dataInicio?.toIso8601String(),
-      'dataFim': dataFim?.toIso8601String(),
+      'planta_id': plantaId,
+      'data_inicio': formatDateOnly(dataInicio),
+      'data_fim': formatDateOnly(dataFim),
+      'ambiente_id': ambienteId,
       'notas': notas,
-      'plantaId': plantaId,
-      'ambienteId': ambienteId,
-      'usuarioId': usuarioId,
+    };
+  }
+
+  Map<String, dynamic> toUpdateJson() {
+    return {
+      'nome': nome,
+      'data_inicio': formatDateOnly(dataInicio),
+      'data_fim': formatDateOnly(dataFim),
+      'ambiente_id': ambienteId,
+      'notas': notas,
     };
   }
 

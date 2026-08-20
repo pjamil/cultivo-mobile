@@ -1,54 +1,60 @@
 class Endpoints {
-  static const String baseUrl = 'https://searches-winds-wiki-prominent.trycloudflare.com';
+  static const String _baseUrlFromEnv = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'https://cultivo-dev.pjamil.dev/api',
+  );
+
+  static String get baseUrl => _baseUrlFromEnv;
 
   // Auth
-  static const String login = '/auth/login';
-  static const String register = '/auth/register';
-  static const String refreshToken = '/auth/refresh';
+  static const String login = '/v1/auth/login';
+  static const String register = '/v1/auth/register';
+  static const String refreshToken = '/v1/auth/refresh';
 
   // Usuarios
-  static const String usuarios = '/usuarios';
-  static const String meusDados = '/meus-dados';
+  static const String usuarios = '/v1/usuarios';
+  static const String meusDados = '/v1/meus-dados';
+  static const String minhaConta = '/v1/minha-conta';
 
   // Plantas
-  static const String plantas = '/plantas';
+  static const String plantas = '/v1/plantas';
 
   // Cultivos
-  static const String cultivos = '/cultivos';
+  static const String cultivos = '/v1/cultivos';
 
   // Diário
-  static const String diario = '/diario-cultivo';
+  static const String diario = '/v1/diario-cultivo';
 
   // Ambientes
-  static const String ambientes = '/ambientes';
+  static const String ambientes = '/v1/ambientes';
 
   // Variedades (antes Genética)
-  static const String variedades = '/geneticas';
+  static const String variedades = '/v1/geneticas';
 
   // Meios de Cultivo
-  static const String meiosCultivo = '/meios-cultivos';
+  static const String meiosCultivo = '/v1/meios-cultivos';
 
   // Tarefas
-  static const String tarefas = '/tarefas';
+  static const String tarefas = '/v1/tarefas';
 
   // Insumos
-  static const String insumos = '/insumos';
+  static const String insumos = '/v1/insumos';
 
   // Dados Ambientais
-  static const String dadosAmbientais = '/dados-ambientais';
+  static const String dadosAmbientais = '/v1/dados-ambientais';
 
   // Dashboard
-  static const String dashboard = '/dashboard';
+  static const String dashboard = '/v1/dashboard';
 
   // Analytics
-  static const String analytics = '/analytics';
+  static const String analytics = '/v1/analytics';
 
   // Fotos
-  static const String fotos = '/fotos';
-  static const String fotosPresignedUrl = '/fotos/presigned-url';
+  static const String fotos = '/v1/fotos';
+  static const String fotosPresignedUrl = '/v1/fotos/presigned-url';
 
   // Push Tokens
-  static const String pushTokens = '/push-tokens';
+  static const String pushTokens = '/v1/push-tokens';
 
   // Helper methods
   static String plantaById(int id) => '$plantas/$id';

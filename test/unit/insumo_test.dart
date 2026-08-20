@@ -36,7 +36,7 @@ void main() {
         estoqueMinimo: 5.0,
       );
       final json = insumo.toJson();
-      expect(json['id'], 1);
+      expect(json['id'], isNull);
       expect(json['codigo'], 'ADB-001');
       expect(json['nome'], 'Adubo NPK');
       expect(json['quantidade'], 25.0);

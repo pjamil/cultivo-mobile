@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/api/endpoints.dart';
 import '../../../core/models/cultivo.dart';
+import '../../../core/utils/date_utils.dart';
 
 final cultivosRepositoryProvider = Provider<CultivosRepository>((ref) {
   return CultivosRepository(ref);
@@ -28,8 +29,7 @@ class CultivosRepository {
       } else {
         rawList = [];
       }
-      return rawList
-          .map((json) =>Cultivo.fromJson(json)).toList();
+      return rawList.map((json) => Cultivo.fromJson(json)).toList();
     } on DioException catch (e) {
       throw Exception(e.error ?? 'Erro ao carregar cultivos');
     }
@@ -48,7 +48,7 @@ class CultivosRepository {
     try {
       final response = await _api.post(
         Endpoints.cultivos,
-        data: cultivo.toJson()..remove('id'),
+        data: cultivo.toCreateJson(),
       );
       return Cultivo.fromJson(response.data);
     } on DioException catch (e) {
@@ -60,7 +60,7 @@ class CultivosRepository {
     try {
       final response = await _api.put(
         Endpoints.cultivoById(cultivo.id),
-        data: cultivo.toJson(),
+        data: cultivo.toUpdateJson(),
       );
       return Cultivo.fromJson(response.data);
     } on DioException catch (e) {
@@ -102,8 +102,9 @@ class CultivosRepository {
       final response = await _api.post(
         Endpoints.cultivoColher(id),
         data: {
+          'dataColheita': formatDateOnly(DateTime.now()),
           'quantidade': quantidade,
-          'notas': notas,
+          'observacoes': notas,
         },
       );
       return Cultivo.fromJson(response.data);

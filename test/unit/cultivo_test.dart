@@ -36,11 +36,11 @@ void main() {
         ambienteId: 20,
       );
       final json = cultivo.toJson();
-      expect(json['id'], 1);
+      expect(json['id'], isNull);
       expect(json['nome'], 'Cultivo Teste');
-      expect(json['status'], 'VEGETATIVO');
-      expect(json['plantaId'], 10);
-      expect(json['ambienteId'], 20);
+      expect(json['status'], isNull);
+      expect(json['planta_id'], 10);
+      expect(json['ambiente_id'], 20);
     });
 
     test('should check if cultivo is active', () {
@@ -57,7 +57,8 @@ void main() {
 
     test('should copyWith correctly', () {
       final original = Cultivo(id: 1, nome: 'Original', status: 'PLANEJADO');
-      final copied = original.copyWith(nome: 'Atualizado', status: 'VEGETATIVO');
+      final copied =
+          original.copyWith(nome: 'Atualizado', status: 'VEGETATIVO');
       expect(copied.id, 1);
       expect(copied.nome, 'Atualizado');
       expect(copied.status, 'VEGETATIVO');
