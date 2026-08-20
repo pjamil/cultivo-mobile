@@ -104,13 +104,16 @@ jobs:
       - name: Tune Gradle memory for CI
         run: |
           # The repo's gradle.properties requests -Xmx8G, which can OOM the
-          # runner container. Lower it and disable the daemon for CI builds.
+          # runner container. Lower it, cap workers and disable the daemon.
           cat > android/gradle.properties <<EOF
-          org.gradle.jvmargs=-Xmx2G -XX:MaxMetaspaceSize=1G -XX:ReservedCodeCacheSize=256m
+          org.gradle.jvmargs=-Xmx1536M -XX:MaxMetaspaceSize=512M -XX:ReservedCodeCacheSize=128m
           org.gradle.daemon=false
+          org.gradle.workers.max=2
+          org.gradle.parallel=false
           android.useAndroidX=true
           android.newDsl=false
           android.builtInKotlin=false
+          kotlin.compiler.execution.strategy=in-process
           EOF
 
       - name: Build release APK (split per ABI)
