@@ -101,6 +101,18 @@ jobs:
       - name: Unit tests
         run: flutter test
 
+      - name: Tune Gradle memory for CI
+        run: |
+          # The repo's gradle.properties requests -Xmx8G, which can OOM the
+          # runner container. Lower it and disable the daemon for CI builds.
+          cat > android/gradle.properties <<EOF
+          org.gradle.jvmargs=-Xmx2G -XX:MaxMetaspaceSize=1G -XX:ReservedCodeCacheSize=256m
+          org.gradle.daemon=false
+          android.useAndroidX=true
+          android.newDsl=false
+          android.builtInKotlin=false
+          EOF
+
       - name: Build release APK (split per ABI)
         run: flutter build apk --release --split-per-abi
 
