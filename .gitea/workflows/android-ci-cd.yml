@@ -61,6 +61,9 @@ jobs:
           curl -fsSL -o /tmp/flutter.tar.xz \
             "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_$FLUTTER_VERSION-stable.tar.xz"
           tar xf /tmp/flutter.tar.xz -C /opt
+          # Flutter SDK is a git repo; trust it to avoid "dubious ownership"
+          git config --global --add safe.directory /opt/flutter
+          git config --global --add safe.directory /opt/flutter/packages/flutter_tools
           echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
           echo "/opt/flutter/bin" >> "$GITHUB_PATH"
 
