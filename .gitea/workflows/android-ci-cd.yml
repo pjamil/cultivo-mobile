@@ -111,7 +111,7 @@ jobs:
 
           OWNER="$(echo "${{ gitea.repository }}" | cut -d'/' -f1)"
           REPO="$(echo "${{ gitea.repository }}" | cut -d'/' -f2)"
-          AUTH="Authorization: token ${{ secrets.GITEA_TOKEN }}"
+          AUTH="Authorization: token ${{ secrets.RELEASE_TOKEN }}"
           SHORT_SHA=$(echo "${{ gitea.sha }}" | cut -c1-7)
 
           # Remove existing release with the same tag (if any)
@@ -130,5 +130,3 @@ jobs:
             "$GITEA_API/repos/$OWNER/$REPO/releases/$RELEASE_ID/assets?name=$APK_NAME"
 
           echo "Published: https://gitea.pjamil.dev/$OWNER/$REPO/releases/latest"
-        env:
-          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}

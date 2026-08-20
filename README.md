@@ -147,7 +147,7 @@ APK Android e publica na release `latest` do repositório.
 3. Instale. Nas próximas versões, a mesma URL aponta para o build mais recente — instale
    por cima (mesma assinatura, sem desinstalar).
 
-> O CI publica a release `latest` a cada push usando o `GITEA_TOKEN` (admin). Para mudar o
+> O CI publica a release `latest` a cada push usando o `RELEASE_TOKEN` (admin). Para mudar o
 > backend usado no APK, defina `API_BASE_URL` no build ou edite `lib/core/api/endpoints.dart`.
 
 ### Via ADB wireless

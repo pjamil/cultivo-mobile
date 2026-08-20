@@ -71,7 +71,7 @@ flutter test integration_test/
 
 - O `build.gradle.kts` assina releases lendo `android/key.properties` (não versionado).
   Se ausente, usa a keystore de debug (fallback para dev local).
-- Secrets do Gitea usados no CI: `GITEA_TOKEN`, `ANDROID_KEYSTORE_BASE64`,
+- Secrets do Gitea usados no CI: `RELEASE_TOKEN`, `ANDROID_KEYSTORE_BASE64`,
   `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`.
 - `android/key.properties` e `**/*.jks` estão no `.gitignore` — nunca commitar.
 
