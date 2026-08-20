@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/models/diario.dart';
+import '../../../core/crud/crud_provider.dart';
 import '../providers/diario_provider.dart';
 
 class DiarioFormPage extends ConsumerStatefulWidget {
@@ -78,9 +79,9 @@ class _DiarioFormPageState extends ConsumerState<DiarioFormPage> {
     final diarioState = ref.watch(diarioProvider);
 
     // Populate fields when editing
-    if (widget.id != null && diarioState.selectedDiario != null) {
+    if (widget.id != null && diarioState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _populateFields(diarioState.selectedDiario!);
+        _populateFields(diarioState.selected!);
       });
     }
 
@@ -148,10 +149,9 @@ class _DiarioFormPageState extends ConsumerState<DiarioFormPage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: diarioState.status == DiarioStatus.loading
-                    ? null
-                    : _submit,
-                child: diarioState.status == DiarioStatus.loading
+                onPressed:
+                    diarioState.status == CrudStatus.loading ? null : _submit,
+                child: diarioState.status == CrudStatus.loading
                     ? const SizedBox(
                         width: 24,
                         height: 24,

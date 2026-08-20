@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/models/ambiente.dart';
 import '../providers/ambientes_provider.dart';
+import '../../../core/crud/crud_provider.dart';
 
 class AmbienteFormPage extends ConsumerStatefulWidget {
   final int? id;
@@ -107,9 +108,9 @@ class _AmbienteFormPageState extends ConsumerState<AmbienteFormPage> {
     final ambientesState = ref.watch(ambientesProvider);
 
     // Populate fields when editing
-    if (widget.id != null && ambientesState.selectedAmbiente != null) {
+    if (widget.id != null && ambientesState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _populateFields(ambientesState.selectedAmbiente!);
+        _populateFields(ambientesState.selected!);
       });
     }
 
@@ -138,7 +139,7 @@ class _AmbienteFormPageState extends ConsumerState<AmbienteFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _tipo,
+                initialValue: _tipo,
                 decoration: const InputDecoration(
                   labelText: 'Tipo *',
                   prefixIcon: Icon(Icons.category),
@@ -147,7 +148,8 @@ class _AmbienteFormPageState extends ConsumerState<AmbienteFormPage> {
                   DropdownMenuItem(value: 'INDOOR', child: Text('Indoor')),
                   DropdownMenuItem(value: 'OUTDOOR', child: Text('Outdoor')),
                   DropdownMenuItem(value: 'ESTUFA', child: Text('Estufa')),
-                  DropdownMenuItem(value: 'GROW_TENT', child: Text('Grow Tent')),
+                  DropdownMenuItem(
+                      value: 'GROW_TENT', child: Text('Grow Tent')),
                   DropdownMenuItem(value: 'OUTRO', child: Text('Outro')),
                 ],
                 onChanged: (value) {
@@ -218,10 +220,10 @@ class _AmbienteFormPageState extends ConsumerState<AmbienteFormPage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: ambientesState.status == AmbientesStatus.loading
+                onPressed: ambientesState.status == CrudStatus.loading
                     ? null
                     : _submit,
-                child: ambientesState.status == AmbientesStatus.loading
+                child: ambientesState.status == CrudStatus.loading
                     ? const SizedBox(
                         width: 24,
                         height: 24,

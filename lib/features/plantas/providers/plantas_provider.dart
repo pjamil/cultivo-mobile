@@ -1,129 +1,42 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/crud/crud_provider.dart';
 import '../../../core/models/planta.dart';
 import '../data/plantas_repository.dart';
 
-enum PlantasStatus { initial, loading, loaded, error }
+typedef PlantasState = CrudState<Planta>;
 
-class PlantasState {
-  final PlantasStatus status;
-  final List<Planta> plantas;
-  final Planta? selectedPlanta;
-  final String? error;
+class PlantasNotifier extends CrudNotifier<Planta> {
+  PlantasNotifier(super.repository);
 
-  PlantasState({
-    this.status = PlantasStatus.initial,
-    this.plantas = const [],
-    this.selectedPlanta,
-    this.error,
-  });
+  Future<void> loadPlantas() => load();
 
-  PlantasState copyWith({
-    PlantasStatus? status,
-    List<Planta>? plantas,
-    Planta? selectedPlanta,
-    String? error,
-  }) {
-    return PlantasState(
-      status: status ?? this.status,
-      plantas: plantas ?? this.plantas,
-      selectedPlanta: selectedPlanta,
-      error: error,
+  Future<void> loadPlanta(int id) => loadById(id);
+
+  Future<void> createPlanta(Planta planta) => create(planta);
+
+  Future<void> updatePlanta(Planta planta) => update(planta);
+
+  Future<void> deletePlanta(int id) => delete(id);
+
+  Future<void> colher(int id, DateTime dataColheita, String? notas) async {
+    final updated =
+        await (repository as PlantasRepository).colher(id, dataColheita, notas);
+    _replaceInState(updated);
+  }
+
+  Future<void> perder(int id, String motivo) async {
+    final updated = await (repository as PlantasRepository).perder(id, motivo);
+    _replaceInState(updated);
+  }
+
+  void _replaceInState(Planta updated) {
+    final id = updated.id;
+    state = state.copyWith(
+      status: CrudStatus.loaded,
+      items: state.items.map((p) => p.id == id ? updated : p).toList(),
+      selected: updated,
     );
-  }
-}
-
-class PlantasNotifier extends StateNotifier<PlantasState> {
-  final PlantasRepository _repository;
-
-  PlantasNotifier(this._repository) : super(PlantasState()) {
-    loadPlantas();
-  }
-
-  Future<void> loadPlantas() async {
-    state = state.copyWith(status: PlantasStatus.loading);
-    try {
-      final plantas = await _repository.getAll();
-      state = state.copyWith(
-        status: PlantasStatus.loaded,
-        plantas: plantas,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: PlantasStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
-  Future<void> loadPlanta(int id) async {
-    state = state.copyWith(status: PlantasStatus.loading);
-    try {
-      final planta = await _repository.getById(id);
-      state = state.copyWith(
-        status: PlantasStatus.loaded,
-        selectedPlanta: planta,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: PlantasStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
-  Future<void> createPlanta(Planta planta) async {
-    state = state.copyWith(status: PlantasStatus.loading);
-    try {
-      final newPlanta = await _repository.create(planta);
-      state = state.copyWith(
-        status: PlantasStatus.loaded,
-        plantas: [...state.plantas, newPlanta],
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: PlantasStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
-  Future<void> updatePlanta(Planta planta) async {
-    state = state.copyWith(status: PlantasStatus.loading);
-    try {
-      final updatedPlanta = await _repository.update(planta);
-      state = state.copyWith(
-        status: PlantasStatus.loaded,
-        plantas: state.plantas.map((p) =>
-            p.id == updatedPlanta.id ? updatedPlanta : p).toList(),
-        selectedPlanta: updatedPlanta,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: PlantasStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
-  Future<void> deletePlanta(int id) async {
-    state = state.copyWith(status: PlantasStatus.loading);
-    try {
-      await _repository.delete(id);
-      state = state.copyWith(
-        status: PlantasStatus.loaded,
-        plantas: state.plantas.where((p) => p.id != id).toList(),
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: PlantasStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
-  void clearError() {
-    state = state.copyWith(error: null);
   }
 }
 

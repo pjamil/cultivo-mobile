@@ -11,7 +11,8 @@ class MeioCultivoDetailPage extends ConsumerStatefulWidget {
   const MeioCultivoDetailPage({super.key, required this.id});
 
   @override
-  ConsumerState<MeioCultivoDetailPage> createState() => _MeioCultivoDetailPageState();
+  ConsumerState<MeioCultivoDetailPage> createState() =>
+      _MeioCultivoDetailPageState();
 }
 
 class _MeioCultivoDetailPageState extends ConsumerState<MeioCultivoDetailPage> {
@@ -53,7 +54,7 @@ class _MeioCultivoDetailPageState extends ConsumerState<MeioCultivoDetailPage> {
           ),
         ],
       ),
-      body: meioCultivoState.selectedMeio == null
+      body: meioCultivoState.selected == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(16),
@@ -67,15 +68,14 @@ class _MeioCultivoDetailPageState extends ConsumerState<MeioCultivoDetailPage> {
                         _buildInfoRow(
                           context,
                           'Tipo',
-                          meioCultivoState.selectedMeio!.tipo,
+                          meioCultivoState.selected!.tipo,
                         ),
-                        if (meioCultivoState.selectedMeio!.descricao !=
-                            null) ...[
+                        if (meioCultivoState.selected!.descricao != null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Descrição',
-                            meioCultivoState.selectedMeio!.descricao!,
+                            meioCultivoState.selected!.descricao!,
                           ),
                         ],
                       ],

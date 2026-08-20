@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/models/meio_cultivo.dart';
+import '../../../core/crud/crud_provider.dart';
 import '../providers/meio_cultivo_provider.dart';
 
 class MeioCultivoFormPage extends ConsumerStatefulWidget {
@@ -11,7 +12,8 @@ class MeioCultivoFormPage extends ConsumerStatefulWidget {
   const MeioCultivoFormPage({super.key, this.id});
 
   @override
-  ConsumerState<MeioCultivoFormPage> createState() => _MeioCultivoFormPageState();
+  ConsumerState<MeioCultivoFormPage> createState() =>
+      _MeioCultivoFormPageState();
 }
 
 class _MeioCultivoFormPageState extends ConsumerState<MeioCultivoFormPage> {
@@ -73,9 +75,9 @@ class _MeioCultivoFormPageState extends ConsumerState<MeioCultivoFormPage> {
     final meioCultivoState = ref.watch(meioCultivoProvider);
 
     // Populate fields when editing
-    if (widget.id != null && meioCultivoState.selectedMeio != null) {
+    if (widget.id != null && meioCultivoState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _populateFields(meioCultivoState.selectedMeio!);
+        _populateFields(meioCultivoState.selected!);
       });
     }
 
@@ -90,16 +92,19 @@ class _MeioCultivoFormPageState extends ConsumerState<MeioCultivoFormPage> {
           child: ListView(
             children: [
               DropdownButtonFormField<String>(
-                value: _tipo,
+                initialValue: _tipo,
                 decoration: const InputDecoration(
                   labelText: 'Tipo *',
                   prefixIcon: Icon(Icons.category),
                 ),
                 items: const [
                   DropdownMenuItem(value: 'solo', child: Text('Solo')),
-                  DropdownMenuItem(value: 'hidroponia', child: Text('Hidroponia')),
-                  DropdownMenuItem(value: 'aeroponia', child: Text('Aeroponia')),
-                  DropdownMenuItem(value: 'substrato', child: Text('Substrato')),
+                  DropdownMenuItem(
+                      value: 'hidroponia', child: Text('Hidroponia')),
+                  DropdownMenuItem(
+                      value: 'aeroponia', child: Text('Aeroponia')),
+                  DropdownMenuItem(
+                      value: 'substrato', child: Text('Substrato')),
                 ],
                 onChanged: (value) {
                   setState(() {
@@ -118,10 +123,10 @@ class _MeioCultivoFormPageState extends ConsumerState<MeioCultivoFormPage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: meioCultivoState.status == MeioCultivoStatus.loading
+                onPressed: meioCultivoState.status == CrudStatus.loading
                     ? null
                     : _submit,
-                child: meioCultivoState.status == MeioCultivoStatus.loading
+                child: meioCultivoState.status == CrudStatus.loading
                     ? const SizedBox(
                         width: 24,
                         height: 24,

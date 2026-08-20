@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/models/insumo.dart';
+import '../../../core/crud/crud_provider.dart';
 import '../providers/insumos_provider.dart';
 
 class InsumoFormPage extends ConsumerStatefulWidget {
@@ -91,9 +92,9 @@ class _InsumoFormPageState extends ConsumerState<InsumoFormPage> {
     final insumosState = ref.watch(insumosProvider);
 
     // Populate fields when editing
-    if (widget.id != null && insumosState.selectedInsumo != null) {
+    if (widget.id != null && insumosState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _populateFields(insumosState.selectedInsumo!);
+        _populateFields(insumosState.selected!);
       });
     }
 
@@ -136,7 +137,7 @@ class _InsumoFormPageState extends ConsumerState<InsumoFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _tipo,
+                initialValue: _tipo,
                 decoration: const InputDecoration(
                   labelText: 'Tipo *',
                   prefixIcon: Icon(Icons.category),
@@ -144,9 +145,12 @@ class _InsumoFormPageState extends ConsumerState<InsumoFormPage> {
                 items: const [
                   DropdownMenuItem(value: 'ADUBO', child: Text('Adubo')),
                   DropdownMenuItem(value: 'SEMENTE', child: Text('Semente')),
-                  DropdownMenuItem(value: 'DEFENSIVO', child: Text('Defensivo')),
-                  DropdownMenuItem(value: 'SUBSTRATO', child: Text('Substrato')),
-                  DropdownMenuItem(value: 'FERRAMENTA', child: Text('Ferramenta')),
+                  DropdownMenuItem(
+                      value: 'DEFENSIVO', child: Text('Defensivo')),
+                  DropdownMenuItem(
+                      value: 'SUBSTRATO', child: Text('Substrato')),
+                  DropdownMenuItem(
+                      value: 'FERRAMENTA', child: Text('Ferramenta')),
                   DropdownMenuItem(value: 'OUTRO', child: Text('Outro')),
                 ],
                 onChanged: (value) {
@@ -203,10 +207,9 @@ class _InsumoFormPageState extends ConsumerState<InsumoFormPage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: insumosState.status == InsumosStatus.loading
-                    ? null
-                    : _submit,
-                child: insumosState.status == InsumosStatus.loading
+                onPressed:
+                    insumosState.status == CrudStatus.loading ? null : _submit,
+                child: insumosState.status == CrudStatus.loading
                     ? const SizedBox(
                         width: 24,
                         height: 24,

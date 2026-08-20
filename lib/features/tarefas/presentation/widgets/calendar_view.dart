@@ -88,14 +88,16 @@ class CalendarView extends StatelessWidget {
     final hasTarefas = dayTarefas.isNotEmpty;
 
     return GestureDetector(
-      onTap: hasTarefas ? () => _showTarefasDialog(context, date, dayTarefas) : null,
+      onTap: hasTarefas
+          ? () => _showTarefasDialog(context, date, dayTarefas)
+          : null,
       child: Container(
         margin: const EdgeInsets.all(2),
         decoration: BoxDecoration(
           color: isToday
-              ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
               : hasTarefas
-                  ? Colors.orange.withOpacity(0.1)
+                  ? Colors.orange.withValues(alpha: 0.1)
                   : null,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
@@ -111,9 +113,7 @@ class CalendarView extends StatelessWidget {
               '${date.day}',
               style: TextStyle(
                 fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                color: isToday
-                    ? Theme.of(context).colorScheme.primary
-                    : null,
+                color: isToday ? Theme.of(context).colorScheme.primary : null,
               ),
             ),
             if (hasTarefas)

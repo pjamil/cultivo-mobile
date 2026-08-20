@@ -54,7 +54,7 @@ class _InsumoDetailPageState extends ConsumerState<InsumoDetailPage> {
           ),
         ],
       ),
-      body: insumosState.selectedInsumo == null
+      body: insumosState.selected == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(16),
@@ -69,11 +69,12 @@ class _InsumoDetailPageState extends ConsumerState<InsumoDetailPage> {
                           children: [
                             Expanded(
                               child: Text(
-                                insumosState.selectedInsumo!.nome,
-                                style: Theme.of(context).textTheme.headlineSmall,
+                                insumosState.selected!.nome,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                               ),
                             ),
-                            if (insumosState.selectedInsumo!.isEstoqueBaixo)
+                            if (insumosState.selected!.isEstoqueBaixo)
                               const Icon(Icons.warning, color: Colors.orange),
                           ],
                         ),
@@ -81,41 +82,40 @@ class _InsumoDetailPageState extends ConsumerState<InsumoDetailPage> {
                         _buildInfoRow(
                           context,
                           'Código',
-                          insumosState.selectedInsumo!.codigo,
+                          insumosState.selected!.codigo,
                         ),
                         const Divider(),
                         _buildInfoRow(
                           context,
                           'Tipo',
-                          insumosState.selectedInsumo!.tipo,
+                          insumosState.selected!.tipo,
                         ),
                         const Divider(),
                         _buildInfoRow(
                           context,
                           'Quantidade',
-                          '${insumosState.selectedInsumo!.quantidade} ${insumosState.selectedInsumo!.unidadeMedida}',
+                          '${insumosState.selected!.quantidade} ${insumosState.selected!.unidadeMedida}',
                         ),
                         const Divider(),
                         _buildInfoRow(
                           context,
                           'Estoque Mínimo',
-                          '${insumosState.selectedInsumo!.estoqueMinimo} ${insumosState.selectedInsumo!.unidadeMedida}',
+                          '${insumosState.selected!.estoqueMinimo} ${insumosState.selected!.unidadeMedida}',
                         ),
-                        if (insumosState.selectedInsumo!.dataCadastro !=
-                            null) ...[
+                        if (insumosState.selected!.dataCadastro != null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Cadastrado em',
                             DateFormat('dd/MM/yyyy')
-                                .format(insumosState.selectedInsumo!.dataCadastro!),
+                                .format(insumosState.selected!.dataCadastro!),
                           ),
                         ],
                       ],
                     ),
                   ),
                 ),
-                if (insumosState.selectedInsumo!.isEstoqueBaixo) ...[
+                if (insumosState.selected!.isEstoqueBaixo) ...[
                   const SizedBox(height: 16),
                   Card(
                     color: Colors.orange[50],
@@ -128,7 +128,10 @@ class _InsumoDetailPageState extends ConsumerState<InsumoDetailPage> {
                           Expanded(
                             child: Text(
                               'Estoque abaixo do mínimo! Considere repor.',
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
                                     color: Colors.orange[800],
                                   ),
                             ),

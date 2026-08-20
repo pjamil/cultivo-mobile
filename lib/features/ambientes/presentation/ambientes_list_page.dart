@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/crud/crud_provider.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../providers/ambientes_provider.dart';
 
@@ -29,11 +30,11 @@ class AmbientesListPage extends ConsumerWidget {
     WidgetRef ref,
     AmbientesState state,
   ) {
-    if (state.status == AmbientesStatus.loading) {
+    if (state.status == CrudStatus.loading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (state.status == AmbientesStatus.error) {
+    if (state.status == CrudStatus.error) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -43,7 +44,8 @@ class AmbientesListPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar ambientes'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => ref.read(ambientesProvider.notifier).loadAmbientes(),
+              onPressed: () =>
+                  ref.read(ambientesProvider.notifier).loadAmbientes(),
               child: const Text('Tentar novamente'),
             ),
           ],
@@ -51,7 +53,7 @@ class AmbientesListPage extends ConsumerWidget {
       );
     }
 
-    if (state.ambientes.isEmpty) {
+    if (state.items.isEmpty) {
       return EmptyState(
         icon: Icons.home_work,
         title: 'Nenhum ambiente',
@@ -63,9 +65,9 @@ class AmbientesListPage extends ConsumerWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: state.ambientes.length,
+      itemCount: state.items.length,
       itemBuilder: (context, index) {
-        final ambiente = state.ambientes[index];
+        final ambiente = state.items[index];
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           child: ListTile(

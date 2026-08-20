@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/models/planta.dart';
+import '../../../core/crud/crud_provider.dart';
 import '../../variedade/providers/variedade_provider.dart';
 import '../providers/plantas_provider.dart';
 
@@ -44,7 +45,7 @@ class _PlantaFormPageState extends ConsumerState<PlantaFormPage> {
   void _populateFields(Planta planta) {
     if (_fieldsPopulated) return;
     _fieldsPopulated = true;
-    
+
     _nomeController.text = planta.nome;
     _especieController.text = planta.especie;
     _notasController.text = planta.notas ?? '';
@@ -96,9 +97,9 @@ class _PlantaFormPageState extends ConsumerState<PlantaFormPage> {
     final variedadeState = ref.watch(variedadeProvider);
 
     // Populate fields when editing
-    if (widget.id != null && plantasState.selectedPlanta != null) {
+    if (widget.id != null && plantasState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _populateFields(plantasState.selectedPlanta!);
+        _populateFields(plantasState.selected!);
       });
     }
 
@@ -165,9 +166,10 @@ class _PlantaFormPageState extends ConsumerState<PlantaFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<int>(
-                value: variedadeState.variedades.any((v) => v.id == _variedadeId)
-                    ? _variedadeId
-                    : null,
+                initialValue:
+                    variedadeState.items.any((v) => v.id == _variedadeId)
+                        ? _variedadeId
+                        : null,
                 decoration: const InputDecoration(
                   labelText: 'Variedade',
                   prefixIcon: Icon(Icons.local_florist),
@@ -177,12 +179,12 @@ class _PlantaFormPageState extends ConsumerState<PlantaFormPage> {
                     value: null,
                     child: Text('Nenhuma'),
                   ),
-                  ...variedadeState.variedades.map((v) => DropdownMenuItem(
+                  ...variedadeState.items.map((v) => DropdownMenuItem(
                         value: v.id,
                         child: Text(v.nome),
                       )),
                 ],
-                onChanged: variedadeState.status == VariedadeStatus.loading
+                onChanged: variedadeState.status == CrudStatus.loading
                     ? null
                     : (value) {
                         setState(() {
@@ -201,10 +203,9 @@ class _PlantaFormPageState extends ConsumerState<PlantaFormPage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: plantasState.status == PlantasStatus.loading
-                    ? null
-                    : _submit,
-                child: plantasState.status == PlantasStatus.loading
+                onPressed:
+                    plantasState.status == CrudStatus.loading ? null : _submit,
+                child: plantasState.status == CrudStatus.loading
                     ? const SizedBox(
                         width: 24,
                         height: 24,

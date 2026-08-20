@@ -154,15 +154,17 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _status,
+                initialValue: _status,
                 decoration: const InputDecoration(
                   labelText: 'Status',
                   prefixIcon: Icon(Icons.flag),
                 ),
                 items: const [
                   DropdownMenuItem(value: 'PENDENTE', child: Text('Pendente')),
-                  DropdownMenuItem(value: 'EM_ANDAMENTO', child: Text('Em Andamento')),
-                  DropdownMenuItem(value: 'CONCLUIDA', child: Text('Concluída')),
+                  DropdownMenuItem(
+                      value: 'EM_ANDAMENTO', child: Text('Em Andamento')),
+                  DropdownMenuItem(
+                      value: 'CONCLUIDA', child: Text('Concluída')),
                 ],
                 onChanged: (value) {
                   setState(() {
@@ -172,7 +174,7 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _prioridade,
+                initialValue: _prioridade,
                 decoration: const InputDecoration(
                   labelText: 'Prioridade',
                   prefixIcon: Icon(Icons.priority_high),
@@ -190,7 +192,7 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _recorrencia,
+                initialValue: _recorrencia,
                 decoration: const InputDecoration(
                   labelText: 'Recorrência',
                   prefixIcon: Icon(Icons.repeat),
@@ -199,7 +201,8 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
                   DropdownMenuItem(value: 'NENHUMA', child: Text('Nenhuma')),
                   DropdownMenuItem(value: 'DIARIA', child: Text('Diária')),
                   DropdownMenuItem(value: 'SEMANAL', child: Text('Semanal')),
-                  DropdownMenuItem(value: 'QUINZENAL', child: Text('Quinzenal')),
+                  DropdownMenuItem(
+                      value: 'QUINZENAL', child: Text('Quinzenal')),
                   DropdownMenuItem(value: 'MENSAL', child: Text('Mensal')),
                 ],
                 onChanged: (value) {
@@ -221,9 +224,11 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
                   onTap: () async {
                     final date = await showDatePicker(
                       context: context,
-                      initialDate: _dataFimRecorrencia ?? DateTime.now().add(const Duration(days: 30)),
+                      initialDate: _dataFimRecorrencia ??
+                          DateTime.now().add(const Duration(days: 30)),
                       firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+                      lastDate:
+                          DateTime.now().add(const Duration(days: 365 * 2)),
                     );
                     if (date != null) {
                       setState(() {

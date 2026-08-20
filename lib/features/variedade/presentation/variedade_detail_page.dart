@@ -11,7 +11,8 @@ class VariedadeDetailPage extends ConsumerStatefulWidget {
   const VariedadeDetailPage({super.key, required this.id});
 
   @override
-  ConsumerState<VariedadeDetailPage> createState() => _VariedadeDetailPageState();
+  ConsumerState<VariedadeDetailPage> createState() =>
+      _VariedadeDetailPageState();
 }
 
 class _VariedadeDetailPageState extends ConsumerState<VariedadeDetailPage> {
@@ -53,7 +54,7 @@ class _VariedadeDetailPageState extends ConsumerState<VariedadeDetailPage> {
           ),
         ],
       ),
-      body: variedadeState.selectedVariedade == null
+      body: variedadeState.selected == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(16),
@@ -67,54 +68,51 @@ class _VariedadeDetailPageState extends ConsumerState<VariedadeDetailPage> {
                         _buildInfoRow(
                           context,
                           'Nome',
-                          variedadeState.selectedVariedade!.nome,
+                          variedadeState.selected!.nome,
                         ),
                         const Divider(),
                         _buildInfoRow(
                           context,
                           'Tipo',
-                          variedadeState.selectedVariedade!.tipoVariedade,
+                          variedadeState.selected!.tipoVariedade,
                         ),
                         const Divider(),
                         _buildInfoRow(
                           context,
                           'Espécie',
-                          variedadeState.selectedVariedade!.tipoEspecie,
+                          variedadeState.selected!.tipoEspecie,
                         ),
-                        if (variedadeState.selectedVariedade!.descricao !=
-                            null) ...[
+                        if (variedadeState.selected!.descricao != null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Descrição',
-                            variedadeState.selectedVariedade!.descricao!,
+                            variedadeState.selected!.descricao!,
                           ),
                         ],
-                        if (variedadeState.selectedVariedade!.tempoFloracao !=
-                            null) ...[
+                        if (variedadeState.selected!.tempoFloracao != null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Tempo de Floração',
-                            variedadeState.selectedVariedade!.tempoFloracao!,
+                            variedadeState.selected!.tempoFloracao!,
                           ),
                         ],
-                        if (variedadeState.selectedVariedade!.origem !=
-                            null) ...[
+                        if (variedadeState.selected!.origem != null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Origem',
-                            variedadeState.selectedVariedade!.origem!,
+                            variedadeState.selected!.origem!,
                           ),
                         ],
-                        if (variedadeState.selectedVariedade!.caracteristicas !=
+                        if (variedadeState.selected!.caracteristicas !=
                             null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Características',
-                            variedadeState.selectedVariedade!.caracteristicas!,
+                            variedadeState.selected!.caracteristicas!,
                           ),
                         ],
                       ],

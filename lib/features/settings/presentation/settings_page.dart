@@ -29,10 +29,10 @@ class SettingsPage extends ConsumerWidget {
             onTap: () => context.push('/meus-dados'),
           ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('Sobre'),
-            subtitle: const Text('Cultivo v1.0.0'),
+          const ListTile(
+            leading: Icon(Icons.info),
+            title: Text('Sobre'),
+            subtitle: Text('Cultivo v1.0.0'),
           ),
         ],
       ),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../shared/widgets/empty_state.dart';
+import '../../../core/crud/crud_provider.dart';
 import '../providers/diario_provider.dart';
 
 class DiarioListPage extends ConsumerWidget {
@@ -30,11 +31,11 @@ class DiarioListPage extends ConsumerWidget {
     WidgetRef ref,
     DiarioState state,
   ) {
-    if (state.status == DiarioStatus.loading) {
+    if (state.status == CrudStatus.loading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (state.status == DiarioStatus.error) {
+    if (state.status == CrudStatus.error) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -52,7 +53,7 @@ class DiarioListPage extends ConsumerWidget {
       );
     }
 
-    if (state.diarios.isEmpty) {
+    if (state.items.isEmpty) {
       return EmptyState(
         icon: Icons.book,
         title: 'Nenhuma entrada',
@@ -64,9 +65,9 @@ class DiarioListPage extends ConsumerWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: state.diarios.length,
+      itemCount: state.items.length,
       itemBuilder: (context, index) {
-        final diario = state.diarios[index];
+        final diario = state.items[index];
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           child: ListTile(

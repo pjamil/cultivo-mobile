@@ -142,7 +142,7 @@ class _CultivoFormPageState extends ConsumerState<CultivoFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<int>(
-                value: _plantaId,
+                initialValue: _plantaId,
                 decoration: const InputDecoration(
                   labelText: 'Planta',
                   prefixIcon: Icon(Icons.grass),
@@ -152,7 +152,7 @@ class _CultivoFormPageState extends ConsumerState<CultivoFormPage> {
                     value: null,
                     child: Text('Nenhuma'),
                   ),
-                  ...plantasState.plantas.map((p) => DropdownMenuItem(
+                  ...plantasState.items.map((p) => DropdownMenuItem(
                         value: p.id,
                         child: Text(p.nome),
                       )),

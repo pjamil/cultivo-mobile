@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/widgets/empty_state.dart';
+import '../../../core/crud/crud_provider.dart';
 import '../providers/insumos_provider.dart';
 
 class InsumosListPage extends ConsumerWidget {
@@ -29,11 +30,11 @@ class InsumosListPage extends ConsumerWidget {
     WidgetRef ref,
     InsumosState state,
   ) {
-    if (state.status == InsumosStatus.loading) {
+    if (state.status == CrudStatus.loading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (state.status == InsumosStatus.error) {
+    if (state.status == CrudStatus.error) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +52,7 @@ class InsumosListPage extends ConsumerWidget {
       );
     }
 
-    if (state.insumos.isEmpty) {
+    if (state.items.isEmpty) {
       return EmptyState(
         icon: Icons.inventory,
         title: 'Nenhum insumo',
@@ -61,7 +62,7 @@ class InsumosListPage extends ConsumerWidget {
       );
     }
 
-    final estoqueBaixo = state.insumos.where((i) => i.isEstoqueBaixo).toList();
+    final estoqueBaixo = state.items.where((i) => i.isEstoqueBaixo).toList();
 
     return Column(
       children: [
@@ -86,9 +87,9 @@ class InsumosListPage extends ConsumerWidget {
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(8),
-            itemCount: state.insumos.length,
+            itemCount: state.items.length,
             itemBuilder: (context, index) {
-              final insumo = state.insumos[index];
+              final insumo = state.items[index];
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 child: ListTile(
@@ -110,7 +111,8 @@ class InsumosListPage extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (insumo.isEstoqueBaixo)
-                        const Icon(Icons.warning, color: Colors.orange, size: 20),
+                        const Icon(Icons.warning,
+                            color: Colors.orange, size: 20),
                       const Icon(Icons.chevron_right),
                     ],
                   ),

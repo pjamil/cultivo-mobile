@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/crud/crud_provider.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../providers/plantas_provider.dart';
 import 'widgets/planta_card.dart';
@@ -30,11 +31,11 @@ class PlantasListPage extends ConsumerWidget {
     WidgetRef ref,
     PlantasState state,
   ) {
-    if (state.status == PlantasStatus.loading) {
+    if (state.status == CrudStatus.loading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (state.status == PlantasStatus.error) {
+    if (state.status == CrudStatus.error) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -52,7 +53,7 @@ class PlantasListPage extends ConsumerWidget {
       );
     }
 
-    if (state.plantas.isEmpty) {
+    if (state.items.isEmpty) {
       return EmptyState(
         icon: Icons.grass,
         title: 'Nenhuma planta',
@@ -64,9 +65,9 @@ class PlantasListPage extends ConsumerWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: state.plantas.length,
+      itemCount: state.items.length,
       itemBuilder: (context, index) {
-        final planta = state.plantas[index];
+        final planta = state.items[index];
         return PlantaCard(
           planta: planta,
           onTap: () => context.push('/plantas/${planta.id}'),

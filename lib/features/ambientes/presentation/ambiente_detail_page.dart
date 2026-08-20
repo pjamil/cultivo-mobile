@@ -53,7 +53,7 @@ class _AmbienteDetailPageState extends ConsumerState<AmbienteDetailPage> {
           ),
         ],
       ),
-      body: ambientesState.selectedAmbiente == null
+      body: ambientesState.selected == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(16),
@@ -67,66 +67,61 @@ class _AmbienteDetailPageState extends ConsumerState<AmbienteDetailPage> {
                         _buildInfoRow(
                           context,
                           'Nome',
-                          ambientesState.selectedAmbiente!.nome,
+                          ambientesState.selected!.nome,
                         ),
                         const Divider(),
                         _buildInfoRow(
                           context,
                           'Tipo',
-                          ambientesState.selectedAmbiente!.tipo,
+                          ambientesState.selected!.tipo,
                         ),
-                        if (ambientesState.selectedAmbiente!.descricao !=
-                            null) ...[
+                        if (ambientesState.selected!.descricao != null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Descrição',
-                            ambientesState.selectedAmbiente!.descricao!,
+                            ambientesState.selected!.descricao!,
                           ),
                         ],
-                        if (ambientesState.selectedAmbiente!.comprimento !=
-                            null) ...[
+                        if (ambientesState.selected!.comprimento != null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Comprimento',
-                            '${ambientesState.selectedAmbiente!.comprimento}m',
+                            '${ambientesState.selected!.comprimento}m',
                           ),
                         ],
-                        if (ambientesState.selectedAmbiente!.largura !=
-                            null) ...[
+                        if (ambientesState.selected!.largura != null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Largura',
-                            '${ambientesState.selectedAmbiente!.largura}m',
+                            '${ambientesState.selected!.largura}m',
                           ),
                         ],
-                        if (ambientesState.selectedAmbiente!.altura !=
-                            null) ...[
+                        if (ambientesState.selected!.altura != null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Altura',
-                            '${ambientesState.selectedAmbiente!.altura}m',
+                            '${ambientesState.selected!.altura}m',
                           ),
                         ],
-                        if (ambientesState.selectedAmbiente!.tempoExposicao !=
+                        if (ambientesState.selected!.tempoExposicao !=
                             null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Tempo de Exposição',
-                            ambientesState.selectedAmbiente!.tempoExposicao!,
+                            ambientesState.selected!.tempoExposicao!,
                           ),
                         ],
-                        if (ambientesState.selectedAmbiente!.orientacao !=
-                            null) ...[
+                        if (ambientesState.selected!.orientacao != null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Orientação',
-                            ambientesState.selectedAmbiente!.orientacao!,
+                            ambientesState.selected!.orientacao!,
                           ),
                         ],
                       ],

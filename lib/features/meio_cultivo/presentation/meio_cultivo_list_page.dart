@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/widgets/empty_state.dart';
+import '../../../core/crud/crud_provider.dart';
 import '../providers/meio_cultivo_provider.dart';
 
 class MeioCultivoListPage extends ConsumerWidget {
@@ -29,11 +30,11 @@ class MeioCultivoListPage extends ConsumerWidget {
     WidgetRef ref,
     MeioCultivoState state,
   ) {
-    if (state.status == MeioCultivoStatus.loading) {
+    if (state.status == CrudStatus.loading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (state.status == MeioCultivoStatus.error) {
+    if (state.status == CrudStatus.error) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -43,7 +44,8 @@ class MeioCultivoListPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar meios de cultivo'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => ref.read(meioCultivoProvider.notifier).loadMeiosCultivo(),
+              onPressed: () =>
+                  ref.read(meioCultivoProvider.notifier).loadMeiosCultivo(),
               child: const Text('Tentar novamente'),
             ),
           ],
@@ -51,7 +53,7 @@ class MeioCultivoListPage extends ConsumerWidget {
       );
     }
 
-    if (state.meiosCultivo.isEmpty) {
+    if (state.items.isEmpty) {
       return EmptyState(
         icon: Icons.water_drop,
         title: 'Nenhum meio de cultivo',
@@ -63,9 +65,9 @@ class MeioCultivoListPage extends ConsumerWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: state.meiosCultivo.length,
+      itemCount: state.items.length,
       itemBuilder: (context, index) {
-        final meio = state.meiosCultivo[index];
+        final meio = state.items[index];
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           child: ListTile(

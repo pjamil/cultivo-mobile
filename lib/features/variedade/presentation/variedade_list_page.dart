@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/widgets/empty_state.dart';
+import '../../../core/crud/crud_provider.dart';
 import '../providers/variedade_provider.dart';
 
 class VariedadeListPage extends ConsumerWidget {
@@ -29,11 +30,11 @@ class VariedadeListPage extends ConsumerWidget {
     WidgetRef ref,
     VariedadeState state,
   ) {
-    if (state.status == VariedadeStatus.loading) {
+    if (state.status == CrudStatus.loading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (state.status == VariedadeStatus.error) {
+    if (state.status == CrudStatus.error) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -43,7 +44,8 @@ class VariedadeListPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar variedades'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => ref.read(variedadeProvider.notifier).loadVariedades(),
+              onPressed: () =>
+                  ref.read(variedadeProvider.notifier).loadVariedades(),
               child: const Text('Tentar novamente'),
             ),
           ],
@@ -51,7 +53,7 @@ class VariedadeListPage extends ConsumerWidget {
       );
     }
 
-    if (state.variedades.isEmpty) {
+    if (state.items.isEmpty) {
       return EmptyState(
         icon: Icons.local_florist,
         title: 'Nenhuma variedade',
@@ -63,9 +65,9 @@ class VariedadeListPage extends ConsumerWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: state.variedades.length,
+      itemCount: state.items.length,
       itemBuilder: (context, index) {
-        final variedade = state.variedades[index];
+        final variedade = state.items[index];
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           child: ListTile(

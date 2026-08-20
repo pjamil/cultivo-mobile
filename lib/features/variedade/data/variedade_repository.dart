@@ -1,78 +1,37 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/api/api_client.dart';
 import '../../../core/api/endpoints.dart';
+import '../../../core/crud/crud_repository.dart';
 import '../../../core/models/variedade.dart';
 
 final variedadeRepositoryProvider = Provider<VariedadeRepository>((ref) {
   return VariedadeRepository(ref);
 });
 
-class VariedadeRepository {
-  final Ref _ref;
+class VariedadeRepository extends CrudRepository<Variedade> {
+  VariedadeRepository(super.ref);
 
-  VariedadeRepository(this._ref);
+  @override
+  String get basePath => Endpoints.variedades;
 
-  ApiClient get _api => _ref.read(apiClientProvider);
+  @override
+  String get resourceName => 'variedades';
 
-  Future<List<Variedade>> getAll() async {
-    try {
-      final response = await _api.get(Endpoints.variedades);
-      final data = response.data;
-      List<dynamic> rawList;
-      if (data is List) {
-        rawList = data;
-      } else if (data is Map<String, dynamic> && data['content'] is List) {
-        rawList = data['content'] as List;
-      } else {
-        rawList = [];
-      }
-      return rawList
-          .map((json) =>Variedade.fromJson(json)).toList();
-    } on DioException catch (e) {
-      throw Exception(e.error ?? 'Erro ao carregar variedades');
-    }
-  }
+  @override
+  String get getAllError => 'Erro ao carregar variedades';
 
-  Future<Variedade> getById(int id) async {
-    try {
-      final response = await _api.get(Endpoints.variedadeById(id));
-      return Variedade.fromJson(response.data);
-    } on DioException catch (e) {
-      throw Exception(e.error ?? 'Erro ao carregar variedade');
-    }
-  }
+  @override
+  String get getByIdError => 'Erro ao carregar variedade';
 
-  Future<Variedade> create(Variedade variedade) async {
-    try {
-      final response = await _api.post(
-        Endpoints.variedades,
-        data: variedade.toJson()..remove('id'),
-      );
-      return Variedade.fromJson(response.data);
-    } on DioException catch (e) {
-      throw Exception(e.error ?? 'Erro ao criar variedade');
-    }
-  }
+  @override
+  String get createError => 'Erro ao criar variedade';
 
-  Future<Variedade> update(Variedade variedade) async {
-    try {
-      final response = await _api.put(
-        Endpoints.variedadeById(variedade.id),
-        data: variedade.toJson(),
-      );
-      return Variedade.fromJson(response.data);
-    } on DioException catch (e) {
-      throw Exception(e.error ?? 'Erro ao atualizar variedade');
-    }
-  }
+  @override
+  String get updateError => 'Erro ao atualizar variedade';
 
-  Future<void> delete(int id) async {
-    try {
-      await _api.delete(Endpoints.variedadeById(id));
-    } on DioException catch (e) {
-      throw Exception(e.error ?? 'Erro ao excluir variedade');
-    }
-  }
+  @override
+  String get deleteError => 'Erro ao excluir variedade';
+
+  @override
+  Variedade fromJson(Map<String, dynamic> json) => Variedade.fromJson(json);
 }

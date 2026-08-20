@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/models/foto.dart';
+import '../../../core/crud/crud_provider.dart';
 import '../../../shared/widgets/confirmation_dialog.dart';
 import '../../../shared/widgets/full_screen_image_viewer.dart';
 import '../../../shared/widgets/photo_timeline.dart';
@@ -51,9 +52,11 @@ class _PlantaDetailPageState extends ConsumerState<PlantaDetailPage> {
     // Get variety name from ID
     String getVariedadeName(int? variedadeId) {
       if (variedadeId == null) return 'Nenhuma';
-      if (variedadeState.status != VariedadeStatus.loaded) return 'Carregando...';
+      if (variedadeState.status != CrudStatus.loaded) {
+        return 'Carregando...';
+      }
       try {
-        final variedade = variedadeState.variedades.firstWhere(
+        final variedade = variedadeState.items.firstWhere(
           (v) => v.id == variedadeId,
         );
         return variedade.nome;
@@ -79,7 +82,7 @@ class _PlantaDetailPageState extends ConsumerState<PlantaDetailPage> {
           ),
         ],
       ),
-      body: plantasState.selectedPlanta == null
+      body: plantasState.selected == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(16),
@@ -93,62 +96,60 @@ class _PlantaDetailPageState extends ConsumerState<PlantaDetailPage> {
                         _buildInfoRow(
                           context,
                           'Nome',
-                          plantasState.selectedPlanta!.nome,
+                          plantasState.selected!.nome,
                         ),
                         const Divider(),
                         _buildInfoRow(
                           context,
                           'Espécie',
-                          plantasState.selectedPlanta!.especie,
+                          plantasState.selected!.especie,
                         ),
                         const Divider(),
                         _buildInfoRow(
                           context,
                           'Status',
-                          plantasState.selectedPlanta!.status,
+                          plantasState.selected!.status,
                         ),
-                        if (plantasState.selectedPlanta!.dataPlantio !=
-                            null) ...[
+                        if (plantasState.selected!.dataPlantio != null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Data de Plantio',
                             DateFormat('dd/MM/yyyy')
-                                .format(plantasState.selectedPlanta!.dataPlantio!),
+                                .format(plantasState.selected!.dataPlantio!),
                           ),
                         ],
-                        if (plantasState.selectedPlanta!.dataColheita !=
-                            null) ...[
+                        if (plantasState.selected!.dataColheita != null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Data de Colheita',
                             DateFormat('dd/MM/yyyy')
-                                .format(plantasState.selectedPlanta!.dataColheita!),
+                                .format(plantasState.selected!.dataColheita!),
                           ),
                         ],
-                        if (plantasState.selectedPlanta!.notas != null &&
-                            plantasState.selectedPlanta!.notas!.isNotEmpty) ...[
+                        if (plantasState.selected!.notas != null &&
+                            plantasState.selected!.notas!.isNotEmpty) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Notas',
-                            plantasState.selectedPlanta!.notas!,
+                            plantasState.selected!.notas!,
                           ),
                         ],
                         const Divider(),
                         _buildInfoRow(
                           context,
                           'Variedade',
-                          getVariedadeName(plantasState.selectedPlanta!.variedadeId),
+                          getVariedadeName(plantasState.selected!.variedadeId),
                         ),
-                        if (plantasState.selectedPlanta!.rendimentoGramas !=
+                        if (plantasState.selected!.rendimentoGramas !=
                             null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Rendimento',
-                            '${plantasState.selectedPlanta!.rendimentoGramas!.toStringAsFixed(0)}g',
+                            '${plantasState.selected!.rendimentoGramas!.toStringAsFixed(0)}g',
                           ),
                         ],
                       ],
@@ -163,7 +164,7 @@ class _PlantaDetailPageState extends ConsumerState<PlantaDetailPage> {
                 const SizedBox(height: 8),
                 // TODO: Load photos from API
                 PhotoTimeline(
-                  fotos: [],
+                  fotos: const [],
                   onFotoTap: (foto) => _showFotoFullScreen(context, foto),
                 ),
               ],
@@ -197,7 +198,8 @@ class _PlantaDetailPageState extends ConsumerState<PlantaDetailPage> {
     // TODO: Implement photo upload via API
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Upload de foto será implementado quando o backend estiver pronto'),
+        content: Text(
+            'Upload de foto será implementado quando o backend estiver pronto'),
       ),
     );
   }

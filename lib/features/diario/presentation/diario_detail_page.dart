@@ -63,7 +63,7 @@ class _DiarioDetailPageState extends ConsumerState<DiarioDetailPage> {
           ),
         ],
       ),
-      body: diarioState.selectedDiario == null
+      body: diarioState.selected == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(16),
@@ -75,23 +75,24 @@ class _DiarioDetailPageState extends ConsumerState<DiarioDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          diarioState.selectedDiario!.titulo,
+                          diarioState.selected!.titulo,
                           style: Theme.of(context).textTheme.headlineSmall,
                         ),
                         const SizedBox(height: 8),
-                        if (diarioState.selectedDiario!.data != null)
+                        if (diarioState.selected!.data != null)
                           Text(
                             DateFormat('dd/MM/yyyy')
-                                .format(diarioState.selectedDiario!.data!),
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Colors.grey[600],
-                                ),
+                                .format(diarioState.selected!.data!),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Colors.grey[600],
+                                    ),
                           ),
                         const SizedBox(height: 16),
                         const Divider(),
                         const SizedBox(height: 16),
                         Text(
-                          diarioState.selectedDiario!.conteudo,
+                          diarioState.selected!.conteudo,
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ],
@@ -133,7 +134,8 @@ class _DiarioDetailPageState extends ConsumerState<DiarioDetailPage> {
   void _uploadPhoto(BuildContext context, WidgetRef ref, File file) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Upload de foto será implementado quando o backend estiver pronto'),
+        content: Text(
+            'Upload de foto será implementado quando o backend estiver pronto'),
       ),
     );
   }

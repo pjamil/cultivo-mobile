@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/models/variedade.dart';
+import '../../../core/crud/crud_provider.dart';
 import '../providers/variedade_provider.dart';
 
 class VariedadeFormPage extends ConsumerStatefulWidget {
@@ -44,7 +45,7 @@ class _VariedadeFormPageState extends ConsumerState<VariedadeFormPage> {
   void _populateFields(Variedade variedade) {
     if (_fieldsPopulated) return;
     _fieldsPopulated = true;
-    
+
     _nomeController.text = variedade.nome;
     _descricaoController.text = variedade.descricao ?? '';
     _tempoFloracaoController.text = variedade.tempoFloracao ?? '';
@@ -102,9 +103,9 @@ class _VariedadeFormPageState extends ConsumerState<VariedadeFormPage> {
     final variedadeState = ref.watch(variedadeProvider);
 
     // Populate fields when editing
-    if (widget.id != null && variedadeState.selectedVariedade != null) {
+    if (widget.id != null && variedadeState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _populateFields(variedadeState.selectedVariedade!);
+        _populateFields(variedadeState.selected!);
       });
     }
 
@@ -142,7 +143,8 @@ class _VariedadeFormPageState extends ConsumerState<VariedadeFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: ['INDICA', 'SATIVA', 'HIBRIDA', 'RUDERALIS'].contains(_tipoVariedade)
+                initialValue: ['INDICA', 'SATIVA', 'HIBRIDA', 'RUDERALIS']
+                        .contains(_tipoVariedade)
                     ? _tipoVariedade
                     : 'INDICA',
                 decoration: const InputDecoration(
@@ -153,7 +155,8 @@ class _VariedadeFormPageState extends ConsumerState<VariedadeFormPage> {
                   DropdownMenuItem(value: 'INDICA', child: Text('Indica')),
                   DropdownMenuItem(value: 'SATIVA', child: Text('Sativa')),
                   DropdownMenuItem(value: 'HIBRIDA', child: Text('Híbrida')),
-                  DropdownMenuItem(value: 'RUDERALIS', child: Text('Ruderalis')),
+                  DropdownMenuItem(
+                      value: 'RUDERALIS', child: Text('Ruderalis')),
                 ],
                 onChanged: (value) {
                   setState(() {
@@ -163,9 +166,10 @@ class _VariedadeFormPageState extends ConsumerState<VariedadeFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: ['REGULAR', 'FEMININA', 'AUTOMATICA'].contains(_tipoEspecie)
-                    ? _tipoEspecie
-                    : 'REGULAR',
+                initialValue:
+                    ['REGULAR', 'FEMININA', 'AUTOMATICA'].contains(_tipoEspecie)
+                        ? _tipoEspecie
+                        : 'REGULAR',
                 decoration: const InputDecoration(
                   labelText: 'Tipo de Espécie *',
                   prefixIcon: Icon(Icons.science),
@@ -173,7 +177,8 @@ class _VariedadeFormPageState extends ConsumerState<VariedadeFormPage> {
                 items: const [
                   DropdownMenuItem(value: 'REGULAR', child: Text('Regular')),
                   DropdownMenuItem(value: 'FEMININA', child: Text('Feminina')),
-                  DropdownMenuItem(value: 'AUTOMATICA', child: Text('Automática')),
+                  DropdownMenuItem(
+                      value: 'AUTOMATICA', child: Text('Automática')),
                 ],
                 onChanged: (value) {
                   setState(() {
@@ -209,10 +214,10 @@ class _VariedadeFormPageState extends ConsumerState<VariedadeFormPage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: variedadeState.status == VariedadeStatus.loading
+                onPressed: variedadeState.status == CrudStatus.loading
                     ? null
                     : _submit,
-                child: variedadeState.status == VariedadeStatus.loading
+                child: variedadeState.status == CrudStatus.loading
                     ? const SizedBox(
                         width: 24,
                         height: 24,

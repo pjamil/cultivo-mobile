@@ -24,7 +24,8 @@ class ActivityFeed extends StatelessWidget {
         final atividade = atividades[index];
         return ListTile(
           leading: CircleAvatar(
-            backgroundColor: _getIconColor(atividade.tipo).withOpacity(0.1),
+            backgroundColor:
+                _getIconColor(atividade.tipo).withValues(alpha: 0.1),
             child: Icon(
               _getIcon(atividade.tipo),
               color: _getIconColor(atividade.tipo),
