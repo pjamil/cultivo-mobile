@@ -134,6 +134,22 @@ static const String baseUrl = 'https://api.cultivo.pjamil.dev';
 
 ## Instalação no Celular (sem USB)
 
+### Via release automática do CI (recomendado)
+
+A cada push, a pipeline **Gitea Actions** (`.gitea/workflows/android-ci-cd.yml`) builda o
+APK Android e publica na release `latest` do repositório.
+
+- **URL de download (Moto G73 / arm64):**
+  `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/latest/download/app-arm64-v8a-release.apk`
+
+1. No celular, habilite "instalar de fontes desconhecidas" para o navegador.
+2. Acesse a URL acima e baixe o APK.
+3. Instale. Nas próximas versões, a mesma URL aponta para o build mais recente — instale
+   por cima (mesma assinatura, sem desinstalar).
+
+> O CI publica a release `latest` a cada push usando o `GITEA_TOKEN` (admin). Para mudar o
+> backend usado no APK, defina `API_BASE_URL` no build ou edite `lib/core/api/endpoints.dart`.
+
 ### Via ADB wireless
 
 ```bash
@@ -161,7 +177,8 @@ Play Protect bloqueia APKs assinados com chaves de debug. Opções:
 
 1. **Desativar Play Protect** temporariamente (Configurações > Play Protect > Configurações)
 2. **Instalar via ADB** (ignora Play Protect)
-3. **Assinar com keystore próprio** (produção)
+3. **Assinar com keystore próprio** (produção) — o app já está configurado para assinar
+   releases com `android/key.properties` (não versionado) quando presente.
 
 ## Testes
 

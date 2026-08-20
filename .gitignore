@@ -45,5 +45,11 @@ app.*.map.json
 /android/app/release
 /android/build/
 
+# Android local machine config & release keystore (never commit)
+/android/local.properties
+/android/key.properties
+**/*.jks
+**/*.keystore
+
 # Widget Preview related
 .widget_preview/

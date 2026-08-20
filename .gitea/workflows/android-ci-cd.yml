@@ -1,0 +1,134 @@
+name: Android CI/CD
+run-name: '${{ gitea.event.head_commit.message }}'
+
+on:
+  push:
+
+concurrency:
+  group: android-ci-${{ gitea.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: '3.47.0'
+  ANDROID_HOME: /opt/android-sdk
+  ANDROID_PLATFORM: 'android-36'
+  ANDROID_BUILD_TOOLS: '36.0.0'
+  APK_NAME: app-arm64-v8a-release.apk
+  RELEASE_TAG: latest
+  GITEA_API: https://gitea.pjamil.dev/api/v1
+
+jobs:
+  build-publish:
+    name: Build APK and publish latest release
+    runs-on: ubuntu-latest
+    container: eclipse-temurin:17-jdk
+    steps:
+      - name: Checkout
+        run: |
+          if ! command -v git >/dev/null 2>&1; then
+            apt-get update -qq
+            apt-get install -y -qq --no-install-recommends git
+          fi
+          git init
+          git remote add origin https://git:${{ gitea.token }}@gitea.pjamil.dev/${{ gitea.repository }}.git
+          git fetch --depth 1 origin ${{ gitea.sha }}
+          git checkout FETCH_HEAD
+          git config advice.detachedHead false
+
+      - name: Install base tools
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq --no-install-recommends \
+            curl unzip xz-utils ca-certificates
+
+      - name: Install Android SDK
+        run: |
+          mkdir -p "$ANDROID_HOME"
+          curl -fsSL -o /tmp/cmdt.zip \
+            https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q /tmp/cmdt.zip -d /tmp/cmdt
+          mkdir -p "$ANDROID_HOME/cmdline-tools"
+          mv /tmp/cmdt/cmdline-tools "$ANDROID_HOME/cmdline-tools/latest"
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses --sdk_root="$ANDROID_HOME"
+          "$SDKMANAGER" --sdk_root="$ANDROID_HOME" \
+            "platform-tools" \
+            "platforms;$ANDROID_PLATFORM" \
+            "build-tools;$ANDROID_BUILD_TOOLS"
+
+      - name: Install Flutter SDK
+        run: |
+          curl -fsSL -o /tmp/flutter.tar.xz \
+            "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_$FLUTTER_VERSION-stable.tar.xz"
+          tar xf /tmp/flutter.tar.xz -C /opt
+          echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
+          echo "/opt/flutter/bin" >> "$GITHUB_PATH"
+
+      - name: Configure local.properties
+        run: |
+          echo "flutter.sdk=/opt/flutter" > android/local.properties
+          echo "sdk.dir=$ANDROID_HOME" >> android/local.properties
+
+      - name: Configure release keystore
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "ANDROID_KEYSTORE_BASE64 not set" >&2
+            exit 1
+          fi
+          mkdir -p android/app
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/app/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storeFile=upload-keystore.jks
+          storePassword=$ANDROID_KEYSTORE_PASSWORD
+          keyAlias=$ANDROID_KEY_ALIAS
+          keyPassword=$ANDROID_KEY_PASSWORD
+          EOF
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Unit tests
+        run: flutter test
+
+      - name: Build release APK (split per ABI)
+        run: flutter build apk --release --split-per-abi
+
+      - name: Publish latest release to Gitea
+        run: |
+          APK="build/app/outputs/flutter-apk/$APK_NAME"
+          if [ ! -f "$APK" ]; then
+            echo "APK not found: $APK" >&2
+            exit 1
+          fi
+
+          OWNER="$(echo "${{ gitea.repository }}" | cut -d'/' -f1)"
+          REPO="$(echo "${{ gitea.repository }}" | cut -d'/' -f2)"
+          AUTH="Authorization: token ${{ secrets.GITEA_TOKEN }}"
+          SHORT_SHA=$(echo "${{ gitea.sha }}" | cut -c1-7)
+
+          # Remove existing release with the same tag (if any)
+          curl -s -o /dev/null -X DELETE -H "$AUTH" \
+            "$GITEA_API/repos/$OWNER/$REPO/releases/tags/$RELEASE_TAG"
+
+          # Create the release
+          RELEASE_JSON=$(curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" \
+            -d "{\"tag_name\":\"$RELEASE_TAG\",\"name\":\"Latest build ($SHORT_SHA)\",\"body\":\"Build automatico de ${{ gitea.ref_name }} ($SHORT_SHA).\\n\\nDownload APK arm64-v8a: \`$APK_NAME\`\",\"prerelease\":false}" \
+            "$GITEA_API/repos/$OWNER/$REPO/releases")
+          RELEASE_ID=$(echo "$RELEASE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
+
+          # Upload the APK as a release asset
+          curl -s -X POST -H "$AUTH" \
+            -F "attachment=@$APK" \
+            "$GITEA_API/repos/$OWNER/$REPO/releases/$RELEASE_ID/assets?name=$APK_NAME"
+
+          echo "Published: https://gitea.pjamil.dev/$OWNER/$REPO/releases/latest"
+        env:
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
