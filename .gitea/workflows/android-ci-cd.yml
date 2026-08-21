@@ -54,7 +54,11 @@ jobs:
           "$SDKMANAGER" --sdk_root="$ANDROID_HOME" \
             "platform-tools" \
             "platforms;$ANDROID_PLATFORM" \
-            "build-tools;$ANDROID_BUILD_TOOLS"
+            "platforms;android-34" \
+            "platforms;android-35" \
+            "build-tools;$ANDROID_BUILD_TOOLS" \
+            "cmake;3.22.1" \
+            "ndk;28.2.13676358"
 
       - name: Install Flutter SDK
         run: |
@@ -123,9 +127,15 @@ jobs:
         run: |
           if command -v swapon >/dev/null 2>&1; then
             fallocate -l 2G /swapfile && chmod 600 /swapfile \
-              && mkswap /swapfile && swapon /swapfile || true
+              && mkswap /swapfile && swapon /swapfile
+            if [ $? -eq 0 ]; then
+              echo "Swap activated"
+            else
+              echo "WARNING: could not enable swap (container likely not privileged)"
+            fi
           fi
           free -m
+          echo "CPU cores: $(nproc)"
 
       - name: Check Maven repository connectivity
         run: |
