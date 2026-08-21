@@ -111,7 +111,7 @@ jobs:
           # runner container. Use SerialGC + a single worker + in-process
           # Kotlin to keep peak memory low.
           cat > android/gradle.properties <<EOF
-          org.gradle.jvmargs=-Xmx1024M -XX:MaxMetaspaceSize=384M -XX:ReservedCodeCacheSize=96m -XX:+UseSerialGC
+          org.gradle.jvmargs=-Xmx1536M -XX:MaxMetaspaceSize=768M -XX:ReservedCodeCacheSize=96m -XX:+UseSerialGC
           org.gradle.daemon=false
           org.gradle.workers.max=1
           org.gradle.parallel=false
