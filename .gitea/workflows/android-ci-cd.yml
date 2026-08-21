@@ -164,7 +164,7 @@ jobs:
           RELEASE_JSON=$(curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" \
             -d "{\"tag_name\":\"$RELEASE_TAG\",\"name\":\"Latest build ($SHORT_SHA)\",\"body\":\"Build automatico de ${{ gitea.ref_name }} ($SHORT_SHA).\\n\\nDownload APK arm64-v8a: \`$APK_NAME\`\",\"prerelease\":false}" \
             "$GITEA_API/repos/$OWNER/$REPO/releases")
-          RELEASE_ID=$(echo "$RELEASE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
+          RELEASE_ID=$(echo "$RELEASE_JSON" | sed -n 's/.*"id":\([0-9]*\).*/\1/p')
 
           # Upload the APK as a release asset
           curl -s -X POST -H "$AUTH" \
