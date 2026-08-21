@@ -127,12 +127,7 @@ jobs:
         run: |
           if command -v swapon >/dev/null 2>&1; then
             fallocate -l 2G /swapfile && chmod 600 /swapfile \
-              && mkswap /swapfile && swapon /swapfile
-            if [ $? -eq 0 ]; then
-              echo "Swap activated"
-            else
-              echo "WARNING: could not enable swap (container likely not privileged)"
-            fi
+              && mkswap /swapfile && swapon /swapfile || true
           fi
           free -m
           echo "CPU cores: $(nproc)"
