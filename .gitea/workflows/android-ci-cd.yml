@@ -141,16 +141,7 @@ jobs:
           done
 
       - name: Build release APK (arm64)
-        run: |
-          for attempt in 1 2 3; do
-            echo "=== Build attempt $attempt ==="
-            if flutter build apk --release --target-platform android-arm64; then
-              exit 0
-            fi
-            echo "Build attempt $attempt failed; retrying..."
-            sleep 15
-          done
-          exit 1
+        run: flutter build apk --release --target-platform android-arm64
 
       - name: Publish latest release to Gitea
         run: |
