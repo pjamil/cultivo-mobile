@@ -164,10 +164,15 @@ jobs:
           RELEASE_JSON=$(curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" \
             -d "{\"tag_name\":\"$RELEASE_TAG\",\"name\":\"Latest build ($SHORT_SHA)\",\"body\":\"Build automatico de ${{ gitea.ref_name }} ($SHORT_SHA).\\n\\nDownload APK arm64-v8a: \`$APK_NAME\`\",\"prerelease\":false}" \
             "$GITEA_API/repos/$OWNER/$REPO/releases")
-          RELEASE_ID=$(echo "$RELEASE_JSON" | sed -n 's/.*"id":\([0-9]*\).*/\1/p')
+          RELEASE_ID=$(echo "$RELEASE_JSON" | grep -o '"id":[0-9]*' | head -n1 | cut -d: -f2)
+          if [ -z "$RELEASE_ID" ]; then
+            echo "Failed to parse release id from: $RELEASE_JSON" >&2
+            exit 1
+          fi
 
           # Upload the APK as a release asset
-          curl -s -X POST -H "$AUTH" \
+          echo "Uploading to release $RELEASE_ID"
+          curl -fsS -X POST -H "$AUTH" \
             -F "attachment=@$APK" \
             "$GITEA_API/repos/$OWNER/$REPO/releases/$RELEASE_ID/assets?name=$APK_NAME"
 
