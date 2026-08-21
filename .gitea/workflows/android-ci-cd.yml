@@ -20,7 +20,7 @@ env:
 jobs:
   build-publish:
     name: Build APK and publish latest release
-    runs-on: ubuntu-latest
+    runs-on: flutter
     container: eclipse-temurin:17-jdk
     steps:
       - name: Checkout
