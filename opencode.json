@@ -3,8 +3,8 @@
 
   "username": "paulo",
 
-  "model": "opencode-go/deepseek-v4-flash",
-  "small_model": "opencode-go/deepseek-v4-flash",
+  "model": "opencode-go/mimo-v2.5",
+  "small_model": "opencode-go/mimo-v2.5",
   "default_agent": "plan",
 
   "logLevel": "INFO",

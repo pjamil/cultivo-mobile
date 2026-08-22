@@ -90,3 +90,9 @@ flutter test integration_test/
   `DioExceptionType.connectionError` ("Sem conexão com a internet") mesmo com
   rede e backend funcionais. O browser do celular funciona porque usa seu próprio
   trust store.
+
+## Variáveis com Access Tokens e URLs
+
+- Os access tokens para portainer, gitea, sonar e github e suas urls estão definidas em ~/.env
+- Importante, não exponha seus valores no chat, use as variáveis
+
