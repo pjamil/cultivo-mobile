@@ -79,3 +79,14 @@ flutter test integration_test/
 
 - Mock API local na porta `3001` (iniciada via `pm2` em `cultivo-web`)
 - `baseUrl` configurado em `lib/core/api/endpoints.dart`
+
+## Android Network Security
+
+- `android/app/src/main/res/xml/network_security_config.xml` declara confiança nos
+  CAs do sistema (`<certificates src="system" />`).
+- Referenciado no `AndroidManifest.xml` via `android:networkSecurityConfig`.
+- **Sem esse config**, o Dart HTTP client (Dio) em release builds não consegue
+  verificar certificados SSL em alguns dispositivos Android — resulta em
+  `DioExceptionType.connectionError` ("Sem conexão com a internet") mesmo com
+  rede e backend funcionais. O browser do celular funciona porque usa seu próprio
+  trust store.
