@@ -39,7 +39,9 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
   void _carregarFotos() async {
     setState(() => _isLoadingFotos = true);
     try {
-      final fotos = await ref.read(fotoServiceProvider).listarPorEntidade('CULTIVO', widget.id);
+      final fotos = await ref
+          .read(fotoServiceProvider)
+          .listarPorEntidade('CULTIVO', widget.id);
       setState(() => _fotos = fotos);
     } catch (e) {
       // Silently fail - fotos are optional
@@ -81,6 +83,13 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          context.push('/registros-acao/novo?cultivoId=${widget.id}');
+        },
+        icon: const Icon(Icons.add),
+        label: const Text('Registrar Ação'),
+      ),
       body: cultivosState.selectedCultivo == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
@@ -98,10 +107,12 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
                             Expanded(
                               child: Text(
                                 cultivosState.selectedCultivo!.nome,
-                                style: Theme.of(context).textTheme.headlineSmall,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                               ),
                             ),
-                            StateBadge(status: cultivosState.selectedCultivo!.status),
+                            StateBadge(
+                                status: cultivosState.selectedCultivo!.status),
                           ],
                         ),
                         const SizedBox(height: 16),
@@ -110,23 +121,23 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
                           _buildInfoRow(
                             context,
                             'Data de Início',
-                            DateFormat('dd/MM/yyyy')
-                                .format(cultivosState.selectedCultivo!.dataInicio!),
+                            DateFormat('dd/MM/yyyy').format(
+                                cultivosState.selectedCultivo!.dataInicio!),
                           ),
                           const Divider(),
                         ],
-                        if (cultivosState.selectedCultivo!.dataFim !=
-                            null) ...[
+                        if (cultivosState.selectedCultivo!.dataFim != null) ...[
                           _buildInfoRow(
                             context,
                             'Data de Fim',
-                            DateFormat('dd/MM/yyyy')
-                                .format(cultivosState.selectedCultivo!.dataFim!),
+                            DateFormat('dd/MM/yyyy').format(
+                                cultivosState.selectedCultivo!.dataFim!),
                           ),
                           const Divider(),
                         ],
                         if (cultivosState.selectedCultivo!.notas != null &&
-                            cultivosState.selectedCultivo!.notas!.isNotEmpty) ...[
+                            cultivosState
+                                .selectedCultivo!.notas!.isNotEmpty) ...[
                           _buildInfoRow(
                             context,
                             'Notas',
@@ -223,7 +234,8 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
   void _uploadPhoto(BuildContext context, WidgetRef ref, File file) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Upload de foto será implementado quando o backend estiver pronto'),
+        content: Text(
+            'Upload de foto será implementado quando o backend estiver pronto'),
       ),
     );
   }
@@ -280,7 +292,9 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
     );
 
     if (confirmed == true && context.mounted) {
-      await ref.read(cultivosProvider.notifier).cancelar(widget.id, motivoController.text);
+      await ref
+          .read(cultivosProvider.notifier)
+          .cancelar(widget.id, motivoController.text);
     }
   }
 

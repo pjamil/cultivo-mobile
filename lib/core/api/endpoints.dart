@@ -56,6 +56,9 @@ class Endpoints {
   // Push Tokens
   static const String pushTokens = '/v1/push-tokens';
 
+  // Registros de Ação
+  static const String registrosAcao = '/v1/registros-acao';
+
   // Helper methods
   static String plantaById(int id) => '$plantas/$id';
   static String cultivoById(int id) => '$cultivos/$id';
@@ -71,4 +74,5 @@ class Endpoints {
   static String fotoById(int id) => '$fotos/$id';
   static String fotosByEntity(String entityType, int entityId) =>
       '$fotos?entityType=$entityType&entityId=$entityId';
+  static String registroAcaoById(int id) => '$registrosAcao/$id';
 }

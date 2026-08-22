@@ -53,6 +53,20 @@ flutter test integration_test/
 - Não adicionar comentários ao código salvo quando solicitado
 - Manter `flutter analyze` em 0 issues
 
+## Padrões de Idioma e Unidades
+
+- **Idioma padrão**: Português do Brasil (PT-BR) para toda documentação, comentários e interface
+- **Unidades de medida**: Sistema métrico PT-BR
+  - Volume: mL (mililitros), L (litros)
+  - Massa: g (gramas), kg (quilogramas)
+  - Comprimento: mm, cm, m (metros)
+  - Área: cm², m², ha (hectares)
+  - Temperatura: °C (Celsius)
+  - pH: sem unidade (escala 0-14)
+- **Formatação de números**: Separador decimal vírgula (ex: 1,5 kg), separador de milhar ponto (ex: 1.000 mL)
+- **Datas**: Formato DD/MM/AAAA (ex: 22/08/2026)
+- **Horário**: Formato 24h (ex: 14:30)
+
 ## Testes
 
 - Testes unitários dos modelos em `test/unit/`

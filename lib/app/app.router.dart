@@ -34,6 +34,9 @@ import '../features/usuario/presentation/meus_dados_page.dart';
 import '../features/usuario/presentation/usuario_form_page.dart';
 import '../features/settings/presentation/settings_page.dart';
 import '../features/settings/presentation/notification_settings_page.dart';
+import '../features/registros_acao/presentation/registros_acao_list_page.dart';
+import '../features/registros_acao/presentation/registro_acao_form_page.dart';
+import '../features/registros_acao/presentation/registro_acao_detail_page.dart';
 import '../shared/widgets/main_scaffold.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -243,6 +246,53 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => InsumoFormPage(
           id: int.parse(state.pathParameters['id']!),
         ),
+      ),
+
+      // Registros de Ação routes
+      GoRoute(
+        path: '/registros-acao',
+        builder: (context, state) {
+          final cultivoId = int.tryParse(
+                state.uri.queryParameters['cultivoId'] ?? '',
+              ) ??
+              0;
+          return RegistrosAcaoListPage(cultivoId: cultivoId);
+        },
+      ),
+      GoRoute(
+        path: '/registros-acao/novo',
+        builder: (context, state) {
+          final cultivoId = int.tryParse(
+                state.uri.queryParameters['cultivoId'] ?? '',
+              ) ??
+              0;
+          final plantaId = int.tryParse(
+            state.uri.queryParameters['plantaId'] ?? '',
+          );
+          return RegistroAcaoFormPage(
+            cultivoId: cultivoId,
+            plantaId: plantaId,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/registros-acao/:id',
+        builder: (context, state) => RegistroAcaoDetailPage(
+          id: int.parse(state.pathParameters['id']!),
+        ),
+      ),
+      GoRoute(
+        path: '/registros-acao/:id/editar',
+        builder: (context, state) {
+          final cultivoId = int.tryParse(
+                state.uri.queryParameters['cultivoId'] ?? '',
+              ) ??
+              0;
+          return RegistroAcaoFormPage(
+            id: int.parse(state.pathParameters['id']!),
+            cultivoId: cultivoId,
+          );
+        },
       ),
 
       GoRoute(
