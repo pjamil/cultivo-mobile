@@ -62,7 +62,7 @@ flutter test integration_test/
 ## CI/CD Android (Gitea Actions)
 
 - Workflow: `.gitea/workflows/android-ci-cd.yml` — roda a cada push: builda o APK
-  release (`--split-per-abi`) e publica na release `latest` do Gitea.
+  release arm64 (`--target-platform android-arm64`) e publica na release `latest` do Gitea.
 - Download no celular (arm64): `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/latest/download/app-arm64-v8a-release.apk`
 - O job roda em `container: eclipse-temurin:17-jdk`, instala Flutter SDK 3.47.0 e
   Android SDK sob demanda (sem imagem Flutter de terceiros).
