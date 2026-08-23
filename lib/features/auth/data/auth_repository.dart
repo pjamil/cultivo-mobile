@@ -82,8 +82,6 @@ class AuthRepository {
       if (data['id'] != null) {
         return Usuario.fromJson(data);
       }
-
-      // Se não retornar usuário, retorna um básico
       return Usuario(
         id: 0,
         nome: nome,
@@ -100,13 +98,11 @@ class AuthRepository {
       final refreshToken = await _storage.getRefreshToken();
       if (refreshToken != null && refreshToken.isNotEmpty) {
         await _api.post(
-          Endpoints.refreshToken.replaceAll('/refresh', '/logout'),
+          Endpoints.logout,
           data: {'refreshToken': refreshToken},
         );
       }
-    } catch (_) {
-      // Ignora falha no logout remoto
-    }
+    } catch (_) {}
     await _storage.removeTokens();
     await _storage.removeUserInfo();
   }

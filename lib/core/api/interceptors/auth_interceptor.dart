@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../storage/secure_storage.dart';
 import '../api_client.dart';
+import '../auth_events.dart';
 import '../endpoints.dart';
 
 class AuthInterceptor extends Interceptor {
@@ -34,20 +35,18 @@ class AuthInterceptor extends Interceptor {
     }
 
     try {
-      final refreshed = await _tryRefresh();
-      if (refreshed) {
+      final newAccessToken = await _tryRefresh();
+      if (newAccessToken != null) {
         final options = err.requestOptions;
-        final token = _ref.read(secureStorageProvider).getToken();
-        options.headers['Authorization'] = 'Bearer $token';
+        options.headers['Authorization'] = 'Bearer $newAccessToken';
         final clone = await _ref.read(apiClientProvider).dio.fetch(options);
         handler.resolve(clone);
         return;
       }
-    } catch (_) {
-      // fallback abaixo
-    }
+    } catch (_) {}
 
     _ref.read(secureStorageProvider).removeTokens();
+    _ref.read(authEventsProvider).notifySessionExpired();
     handler.next(err);
   }
 
@@ -55,10 +54,10 @@ class AuthInterceptor extends Interceptor {
     return err.requestOptions.path.contains('/auth/');
   }
 
-  Future<bool> _tryRefresh() async {
+  Future<String?> _tryRefresh() async {
     final storage = _ref.read(secureStorageProvider);
     final refreshToken = await storage.getRefreshToken();
-    if (refreshToken == null || refreshToken.isEmpty) return false;
+    if (refreshToken == null || refreshToken.isEmpty) return null;
 
     try {
       final response = await _ref
@@ -67,11 +66,11 @@ class AuthInterceptor extends Interceptor {
       final data = response.data;
       final accessToken = data['accessToken'];
       final newRefreshToken = data['refreshToken'];
-      if (accessToken == null) return false;
+      if (accessToken == null) return null;
       await storage.setTokens(accessToken, newRefreshToken ?? '');
-      return true;
+      return accessToken;
     } catch (_) {
-      return false;
+      return null;
     }
   }
 }

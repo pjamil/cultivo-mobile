@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/api/auth_events.dart';
 import '../../../core/models/usuario.dart';
 import '../data/auth_repository.dart';
 
@@ -34,8 +35,16 @@ class AuthState {
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _repository;
+  final Ref _ref;
 
-  AuthNotifier(this._repository) : super(AuthState()) {
+  AuthNotifier(this._repository, this._ref) : super(AuthState()) {
+    _ref.listen<AuthEvents>(authEventsProvider, (_, events) {
+      events.sessionExpired.listen((_) {
+        if (state.isAuthenticated) {
+          state = AuthState(status: AuthStatus.unauthenticated);
+        }
+      });
+    });
     _checkAuthStatus();
   }
 
@@ -85,12 +94,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }) async {
     state = state.copyWith(status: AuthStatus.loading);
     try {
-      await _repository.register(
+      final usuario = await _repository.register(
         nome: nome,
         email: email,
         senha: senha,
       );
-      state = state.copyWith(status: AuthStatus.unauthenticated);
+      state = state.copyWith(
+        status: AuthStatus.authenticated,
+        usuario: usuario,
+      );
     } catch (e) {
       state = state.copyWith(
         status: AuthStatus.error,
@@ -111,5 +123,5 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final repository = ref.watch(authRepositoryProvider);
-  return AuthNotifier(repository);
+  return AuthNotifier(repository, ref);
 });

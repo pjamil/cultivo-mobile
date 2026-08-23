@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/auth/presentation/login_page.dart';
 import '../features/auth/presentation/register_page.dart';
+import '../features/auth/providers/auth_provider.dart';
 import '../features/plantas/presentation/plantas_list_page.dart';
 import '../features/plantas/presentation/planta_form_page.dart';
 import '../features/plantas/presentation/planta_detail_page.dart';
@@ -40,8 +42,32 @@ import '../features/registros_acao/presentation/registro_acao_detail_page.dart';
 import '../shared/widgets/main_scaffold.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
+  final refreshListenable = ValueNotifier<int>(0);
+  ref.onDispose(refreshListenable.dispose);
+
+  ref.listen<AuthState>(authProvider, (_, __) {
+    refreshListenable.value++;
+  });
+
   return GoRouter(
     initialLocation: '/login',
+    refreshListenable: refreshListenable,
+    redirect: (context, state) {
+      final authState = ref.read(authProvider);
+      final isAuthRoute = state.matchedLocation == '/login' ||
+          state.matchedLocation == '/register';
+
+      if (authState.status == AuthStatus.initial ||
+          authState.status == AuthStatus.loading) {
+        return null;
+      }
+
+      if (authState.isAuthenticated) {
+        return isAuthRoute ? '/' : null;
+      }
+
+      return isAuthRoute ? null : '/login';
+    },
     routes: [
       // Auth routes
       GoRoute(

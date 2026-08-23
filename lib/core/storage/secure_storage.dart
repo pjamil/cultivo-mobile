@@ -23,10 +23,6 @@ class SecureStorage {
     await _storage.write(key: _refreshTokenKey, value: refreshToken);
   }
 
-  String? getToken() {
-    return null;
-  }
-
   Future<String?> getTokenAsync() async {
     return _storage.read(key: _accessTokenKey);
   }

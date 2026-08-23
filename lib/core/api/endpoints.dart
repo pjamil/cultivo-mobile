@@ -10,6 +10,7 @@ class Endpoints {
   static const String login = '/v1/auth/login';
   static const String register = '/v1/auth/register';
   static const String refreshToken = '/v1/auth/refresh';
+  static const String logout = '/v1/auth/logout';
 
   // Usuarios
   static const String usuarios = '/v1/usuarios';
