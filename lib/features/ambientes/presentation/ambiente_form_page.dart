@@ -49,14 +49,16 @@ class _AmbienteFormPageState extends ConsumerState<AmbienteFormPage> {
     if (_fieldsPopulated) return;
     _fieldsPopulated = true;
 
-    _nomeController.text = ambiente.nome;
-    _descricaoController.text = ambiente.descricao ?? '';
-    _comprimentoController.text = ambiente.comprimento?.toString() ?? '';
-    _alturaController.text = ambiente.altura?.toString() ?? '';
-    _larguraController.text = ambiente.largura?.toString() ?? '';
-    _tempoExposicaoController.text = ambiente.tempoExposicao ?? '';
-    _orientacaoController.text = ambiente.orientacao ?? '';
-    _tipo = ambiente.tipo;
+    setState(() {
+      _nomeController.text = ambiente.nome;
+      _descricaoController.text = ambiente.descricao ?? '';
+      _comprimentoController.text = ambiente.comprimento?.toString() ?? '';
+      _alturaController.text = ambiente.altura?.toString() ?? '';
+      _larguraController.text = ambiente.largura?.toString() ?? '';
+      _tempoExposicaoController.text = ambiente.tempoExposicao ?? '';
+      _orientacaoController.text = ambiente.orientacao ?? '';
+      _tipo = ambiente.tipo;
+    });
   }
 
   @override
@@ -106,8 +108,6 @@ class _AmbienteFormPageState extends ConsumerState<AmbienteFormPage> {
   @override
   Widget build(BuildContext context) {
     final ambientesState = ref.watch(ambientesProvider);
-
-    // Populate fields when editing
     if (widget.id != null && ambientesState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _populateFields(ambientesState.selected!);
@@ -139,6 +139,7 @@ class _AmbienteFormPageState extends ConsumerState<AmbienteFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
+                key: ValueKey(_tipo),
                 initialValue: _tipo,
                 decoration: const InputDecoration(
                   labelText: 'Tipo *',

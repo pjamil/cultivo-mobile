@@ -45,12 +45,14 @@ class _InsumoFormPageState extends ConsumerState<InsumoFormPage> {
     if (_fieldsPopulated) return;
     _fieldsPopulated = true;
 
-    _codigoController.text = insumo.codigo;
-    _nomeController.text = insumo.nome;
-    _quantidadeController.text = insumo.quantidade.toString();
-    _unidadeMedidaController.text = insumo.unidadeMedida;
-    _estoqueMinimoController.text = insumo.estoqueMinimo.toString();
-    _tipo = insumo.tipo;
+    setState(() {
+      _codigoController.text = insumo.codigo;
+      _nomeController.text = insumo.nome;
+      _quantidadeController.text = insumo.quantidade.toString();
+      _unidadeMedidaController.text = insumo.unidadeMedida;
+      _estoqueMinimoController.text = insumo.estoqueMinimo.toString();
+      _tipo = insumo.tipo;
+    });
   }
 
   @override
@@ -90,8 +92,6 @@ class _InsumoFormPageState extends ConsumerState<InsumoFormPage> {
   @override
   Widget build(BuildContext context) {
     final insumosState = ref.watch(insumosProvider);
-
-    // Populate fields when editing
     if (widget.id != null && insumosState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _populateFields(insumosState.selected!);
@@ -137,6 +137,7 @@ class _InsumoFormPageState extends ConsumerState<InsumoFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
+                key: ValueKey(_tipo),
                 initialValue: _tipo,
                 decoration: const InputDecoration(
                   labelText: 'Tipo *',

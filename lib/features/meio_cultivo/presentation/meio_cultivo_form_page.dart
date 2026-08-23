@@ -38,8 +38,10 @@ class _MeioCultivoFormPageState extends ConsumerState<MeioCultivoFormPage> {
     if (_fieldsPopulated) return;
     _fieldsPopulated = true;
 
-    _descricaoController.text = meio.descricao ?? '';
-    _tipo = meio.tipo;
+    setState(() {
+      _descricaoController.text = meio.descricao ?? '';
+      _tipo = meio.tipo;
+    });
   }
 
   @override
@@ -73,8 +75,6 @@ class _MeioCultivoFormPageState extends ConsumerState<MeioCultivoFormPage> {
   @override
   Widget build(BuildContext context) {
     final meioCultivoState = ref.watch(meioCultivoProvider);
-
-    // Populate fields when editing
     if (widget.id != null && meioCultivoState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _populateFields(meioCultivoState.selected!);
@@ -92,6 +92,7 @@ class _MeioCultivoFormPageState extends ConsumerState<MeioCultivoFormPage> {
           child: ListView(
             children: [
               DropdownButtonFormField<String>(
+                key: ValueKey(_tipo),
                 initialValue: _tipo,
                 decoration: const InputDecoration(
                   labelText: 'Tipo *',

@@ -46,13 +46,15 @@ class _VariedadeFormPageState extends ConsumerState<VariedadeFormPage> {
     if (_fieldsPopulated) return;
     _fieldsPopulated = true;
 
-    _nomeController.text = variedade.nome;
-    _descricaoController.text = variedade.descricao ?? '';
-    _tempoFloracaoController.text = variedade.tempoFloracao ?? '';
-    _origemController.text = variedade.origem ?? '';
-    _caracteristicasController.text = variedade.caracteristicas ?? '';
-    _tipoVariedade = variedade.tipoVariedade;
-    _tipoEspecie = variedade.tipoEspecie;
+    setState(() {
+      _nomeController.text = variedade.nome;
+      _descricaoController.text = variedade.descricao ?? '';
+      _tempoFloracaoController.text = variedade.tempoFloracao ?? '';
+      _origemController.text = variedade.origem ?? '';
+      _caracteristicasController.text = variedade.caracteristicas ?? '';
+      _tipoVariedade = variedade.tipoVariedade;
+      _tipoEspecie = variedade.tipoEspecie;
+    });
   }
 
   @override
@@ -101,8 +103,6 @@ class _VariedadeFormPageState extends ConsumerState<VariedadeFormPage> {
   @override
   Widget build(BuildContext context) {
     final variedadeState = ref.watch(variedadeProvider);
-
-    // Populate fields when editing
     if (widget.id != null && variedadeState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _populateFields(variedadeState.selected!);
@@ -143,6 +143,7 @@ class _VariedadeFormPageState extends ConsumerState<VariedadeFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
+                key: ValueKey(_tipoVariedade),
                 initialValue: ['INDICA', 'SATIVA', 'HIBRIDA', 'RUDERALIS']
                         .contains(_tipoVariedade)
                     ? _tipoVariedade
@@ -166,6 +167,7 @@ class _VariedadeFormPageState extends ConsumerState<VariedadeFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
+                key: ValueKey(_tipoEspecie),
                 initialValue:
                     ['REGULAR', 'FEMININA', 'AUTOMATICA'].contains(_tipoEspecie)
                         ? _tipoEspecie

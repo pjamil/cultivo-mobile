@@ -46,13 +46,15 @@ class _PlantaFormPageState extends ConsumerState<PlantaFormPage> {
     if (_fieldsPopulated) return;
     _fieldsPopulated = true;
 
-    _nomeController.text = planta.nome;
-    _especieController.text = planta.especie;
-    _notasController.text = planta.notas ?? '';
-    _dataPlantio = planta.dataPlantio;
-    _variedadeId = planta.variedadeId;
-    _ambienteId = planta.ambienteId;
-    _meioCultivoId = planta.meioCultivoId;
+    setState(() {
+      _nomeController.text = planta.nome;
+      _especieController.text = planta.especie;
+      _notasController.text = planta.notas ?? '';
+      _dataPlantio = planta.dataPlantio;
+      _variedadeId = planta.variedadeId;
+      _ambienteId = planta.ambienteId;
+      _meioCultivoId = planta.meioCultivoId;
+    });
   }
 
   @override
@@ -95,8 +97,6 @@ class _PlantaFormPageState extends ConsumerState<PlantaFormPage> {
   Widget build(BuildContext context) {
     final plantasState = ref.watch(plantasProvider);
     final variedadeState = ref.watch(variedadeProvider);
-
-    // Populate fields when editing
     if (widget.id != null && plantasState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _populateFields(plantasState.selected!);
@@ -166,6 +166,7 @@ class _PlantaFormPageState extends ConsumerState<PlantaFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<int>(
+                key: ValueKey(_variedadeId),
                 initialValue:
                     variedadeState.items.any((v) => v.id == _variedadeId)
                         ? _variedadeId
