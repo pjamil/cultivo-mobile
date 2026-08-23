@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/models/foto.dart';
@@ -35,15 +36,19 @@ class PhotoGallery extends StatelessWidget {
           onTap: onFotoTap != null ? () => onFotoTap!(foto) : null,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              foto.thumbnailUrl ?? foto.url,
+            child: CachedNetworkImage(
+              imageUrl: foto.thumbnailUrl ?? foto.url,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.image),
-                );
-              },
+              placeholder: (context, url) => Container(
+                color: Colors.grey[300],
+                child: const Center(
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
+              errorWidget: (context, url, error) => Container(
+                color: Colors.grey[300],
+                child: const Icon(Icons.image),
+              ),
             ),
           ),
         );

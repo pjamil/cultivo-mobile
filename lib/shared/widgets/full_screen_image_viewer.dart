@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/models/foto.dart';
@@ -42,12 +43,16 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
         child: InteractiveViewer(
           minScale: 0.5,
           maxScale: 4.0,
-          child: Image.network(
-            widget.foto.url,
+          child: CachedNetworkImage(
+            imageUrl: widget.foto.url,
             fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) {
-              return const Icon(Icons.error, size: 48);
-            },
+            placeholder: (context, url) => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            errorWidget: (context, url, error) => const Icon(
+              Icons.error,
+              size: 48,
+            ),
           ),
         ),
       ),
