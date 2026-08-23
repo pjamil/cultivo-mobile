@@ -1,29 +1,80 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "username": "paulo",
-  "model": "opencode-go/mimo-v2.5",
-  "small_model": "opencode-go/mimo-v2.5",
+  
+  "model": "opencode-go/deepseek-v4-flash",
+  "small_model": "opencode-go/deepseek-v4-flash",
+  
   "default_agent": "plan",
-  "logLevel": "INFO",
-  "share": "manual",
+  
   "autoupdate": "notify",
-  "snapshot": true,
-  "instructions": [
-    "AGENTS.md"
-  ],
+
   "permission": {
     "edit": "allow",
+    
     "bash": {
-      "*": "allow",
-      "rm *": "ask"
+      "*": "allow",           // Tudo permitido
+      "rm *": "ask",          // Perguntar antes de deletar
+      "sudo *": "ask"         // Perguntar antes
+    },
+    
+    "external_directory": {
+      "~/.env": "allow",       // Permitir acesso ao .env
+      "/home/paulo/gitea.pjamil.dev/paulojamil/cultivo-api-springboot": "allow",
+      "/home/paulo/gitea.pjamil.dev/paulojamil/cultivo-web": "allow",      
     }
   },
+  
+  "mcp": {
+    "filesystem": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "."],
+      "enabled": true
+    },
+    "dart-mcp-server": {
+      "type": "local",
+      "command": ["dart", "mcp-server"],
+      "enabled": true
+    }
+  },
+
   "formatter": true,
+  
   "lsp": true,
-  "experimental": {
-    "primary_tools": [
-      "edit",
-      "bash"
+
+  "agent": {
+    "code-reviewer": {
+      "description": "Especialista em revisar implementações de código, apontando bugs, boas práticas, segurança e performance.",
+      "mode": "subagent",
+      "prompt": "Você é um Code Reviewer Sênior e especialista em garantia de qualidade de código. Sua principal função é analisar as alterações feitas no projeto e fornecer feedback técnico detalhado.\n\nSua análise deve focar em:\n1. **Corretude e Bugs**: Verifique se a lógica implementada funciona como esperado e se há casos de borda não tratados.\n2. **Boas Práticas e Clean Code**: Avalie a clareza, manutenibilidade, legibilidade e padrões de projeto adotados.\n3. **Segurança**: Identifique potenciais vulnerabilidades, sanitização de dados e má gestão de credenciais/chaves.\n4. **Performance**: Aponta gargalos de execução, consultas ineficientes ou uso excessivo de memória.\n\nFormato de resposta desejado:\n- Se encontrar problemas, descreva o ponto exato, o motivo do impacto e forneça uma sugestão pontual de correção.\n- Caso a implementação esteja adequada, confirme e mencione os pontos fortes da solução.",
+      "tools": {
+        "read": true,
+        "write": false,
+        "bash": true
+      }
+    }
+  },
+
+  "instructions": [
+    "AGENTS.md",                    // Arquivo principal
+    ".specify/memory/constitution.md", // Constituição do projeto
+    "docs/**/*.md",                 // Todos os .md em docs/
+  ],
+
+  "share": "manual",
+
+  "snapshot": true,
+  
+  "compaction": {
+    "auto": true,
+    "prune": false
+  },
+
+  "watcher": {
+    "ignore": [
+      "node_modules/**",
+      "dist/**",
+      ".git/**",
     ]
   }
 }
+
