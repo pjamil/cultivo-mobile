@@ -29,13 +29,14 @@ class PlantaAdapter extends TypeAdapter<Planta> {
       meioCultivoId: fields[9] as int?,
       ambienteId: fields[10] as int?,
       usuarioId: fields[11] as int?,
+      comecandoDe: fields[12] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Planta obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -59,7 +60,9 @@ class PlantaAdapter extends TypeAdapter<Planta> {
       ..writeByte(10)
       ..write(obj.ambienteId)
       ..writeByte(11)
-      ..write(obj.usuarioId);
+      ..write(obj.usuarioId)
+      ..writeByte(12)
+      ..write(obj.comecandoDe);
   }
 
   @override
