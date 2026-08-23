@@ -16,12 +16,12 @@ class CalendarPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Calendário'),
       ),
-      body: tarefasState.tarefas.isEmpty
+      body: tarefasState.items.isEmpty
           ? const Center(
               child: Text('Nenhuma tarefa para exibir no calendário'),
             )
           : CalendarView(
-              tarefas: tarefasState.tarefas,
+              tarefas: tarefasState.items,
               onTarefaTap: (tarefa) => context.push('/tarefas/${tarefa.id}'),
             ),
     );

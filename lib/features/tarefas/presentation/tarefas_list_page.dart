@@ -58,7 +58,7 @@ class TarefasListPage extends ConsumerWidget {
       );
     }
 
-    if (state.tarefas.isEmpty) {
+    if (state.items.isEmpty) {
       return EmptyState(
         icon: Icons.task_alt,
         title: 'Nenhuma tarefa',
@@ -70,9 +70,9 @@ class TarefasListPage extends ConsumerWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: state.tarefas.length,
+      itemCount: state.items.length,
       itemBuilder: (context, index) {
-        final tarefa = state.tarefas[index];
+        final tarefa = state.items[index];
         return TarefaCard(
           tarefa: tarefa,
           onTap: () => context.push('/tarefas/${tarefa.id}'),

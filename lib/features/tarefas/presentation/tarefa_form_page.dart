@@ -43,13 +43,15 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
     if (_fieldsPopulated) return;
     _fieldsPopulated = true;
 
-    _tituloController.text = tarefa.titulo;
-    _descricaoController.text = tarefa.descricao ?? '';
-    _dataVencimento = tarefa.dataVencimento;
-    _status = tarefa.status;
-    _prioridade = tarefa.prioridade;
-    _recorrencia = tarefa.recorrencia ?? 'NENHUMA';
-    _dataFimRecorrencia = tarefa.dataFimRecorrencia;
+    setState(() {
+      _tituloController.text = tarefa.titulo;
+      _descricaoController.text = tarefa.descricao ?? '';
+      _dataVencimento = tarefa.dataVencimento;
+      _status = tarefa.status;
+      _prioridade = tarefa.prioridade;
+      _recorrencia = tarefa.recorrencia ?? 'NENHUMA';
+      _dataFimRecorrencia = tarefa.dataFimRecorrencia;
+    });
   }
 
   @override
@@ -89,11 +91,9 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
   @override
   Widget build(BuildContext context) {
     final tarefasState = ref.watch(tarefasProvider);
-
-    // Populate fields when editing
-    if (widget.id != null && tarefasState.selectedTarefa != null) {
+    if (widget.id != null && tarefasState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _populateFields(tarefasState.selectedTarefa!);
+        _populateFields(tarefasState.selected!);
       });
     }
 
@@ -154,6 +154,7 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
+                key: ValueKey(_status),
                 initialValue: _status,
                 decoration: const InputDecoration(
                   labelText: 'Status',
@@ -174,6 +175,7 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
+                key: ValueKey(_prioridade),
                 initialValue: _prioridade,
                 decoration: const InputDecoration(
                   labelText: 'Prioridade',
@@ -192,6 +194,7 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
+                key: ValueKey(_recorrencia),
                 initialValue: _recorrencia,
                 decoration: const InputDecoration(
                   labelText: 'Recorrência',

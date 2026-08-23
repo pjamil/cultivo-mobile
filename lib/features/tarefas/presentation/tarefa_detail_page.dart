@@ -54,7 +54,7 @@ class _TarefaDetailPageState extends ConsumerState<TarefaDetailPage> {
           ),
         ],
       ),
-      body: tarefasState.selectedTarefa == null
+      body: tarefasState.selected == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(16),
@@ -66,38 +66,37 @@ class _TarefaDetailPageState extends ConsumerState<TarefaDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          tarefasState.selectedTarefa!.titulo,
+                          tarefasState.selected!.titulo,
                           style: Theme.of(context).textTheme.headlineSmall,
                         ),
                         const SizedBox(height: 16),
                         _buildInfoRow(
                           context,
                           'Status',
-                          _getStatusText(tarefasState.selectedTarefa!.status),
+                          _getStatusText(tarefasState.selected!.status),
                         ),
                         const Divider(),
                         _buildInfoRow(
                           context,
                           'Prioridade',
-                          _getPrioridadeText(tarefasState.selectedTarefa!.prioridade),
+                          _getPrioridadeText(tarefasState.selected!.prioridade),
                         ),
-                        if (tarefasState.selectedTarefa!.dataVencimento !=
-                            null) ...[
+                        if (tarefasState.selected!.dataVencimento != null) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Vencimento',
                             DateFormat('dd/MM/yyyy')
-                                .format(tarefasState.selectedTarefa!.dataVencimento!),
+                                .format(tarefasState.selected!.dataVencimento!),
                           ),
                         ],
-                        if (tarefasState.selectedTarefa!.descricao != null &&
-                            tarefasState.selectedTarefa!.descricao!.isNotEmpty) ...[
+                        if (tarefasState.selected!.descricao != null &&
+                            tarefasState.selected!.descricao!.isNotEmpty) ...[
                           const Divider(),
                           _buildInfoRow(
                             context,
                             'Descrição',
-                            tarefasState.selectedTarefa!.descricao!,
+                            tarefasState.selected!.descricao!,
                           ),
                         ],
                       ],
