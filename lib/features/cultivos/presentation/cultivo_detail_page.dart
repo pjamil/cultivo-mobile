@@ -43,8 +43,7 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
           .read(fotoServiceProvider)
           .listarPorEntidade('CULTIVO', widget.id);
       setState(() => _fotos = fotos);
-    } catch (e) {
-      // Silently fail - fotos are optional
+    } catch (_) {
     } finally {
       setState(() => _isLoadingFotos = false);
     }
@@ -90,7 +89,7 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
         icon: const Icon(Icons.add),
         label: const Text('Registrar Ação'),
       ),
-      body: cultivosState.selectedCultivo == null
+      body: cultivosState.selected == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(16),
@@ -106,42 +105,39 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
                           children: [
                             Expanded(
                               child: Text(
-                                cultivosState.selectedCultivo!.nome,
+                                cultivosState.selected!.nome,
                                 style:
                                     Theme.of(context).textTheme.headlineSmall,
                               ),
                             ),
-                            StateBadge(
-                                status: cultivosState.selectedCultivo!.status),
+                            StateBadge(status: cultivosState.selected!.status),
                           ],
                         ),
                         const SizedBox(height: 16),
-                        if (cultivosState.selectedCultivo!.dataInicio !=
-                            null) ...[
+                        if (cultivosState.selected!.dataInicio != null) ...[
                           _buildInfoRow(
                             context,
                             'Data de Início',
-                            DateFormat('dd/MM/yyyy').format(
-                                cultivosState.selectedCultivo!.dataInicio!),
+                            DateFormat('dd/MM/yyyy')
+                                .format(cultivosState.selected!.dataInicio!),
                           ),
                           const Divider(),
                         ],
-                        if (cultivosState.selectedCultivo!.dataFim != null) ...[
+                        if (cultivosState.selected!.dataFim != null) ...[
                           _buildInfoRow(
                             context,
                             'Data de Fim',
-                            DateFormat('dd/MM/yyyy').format(
-                                cultivosState.selectedCultivo!.dataFim!),
+                            DateFormat('dd/MM/yyyy')
+                                .format(cultivosState.selected!.dataFim!),
                           ),
                           const Divider(),
                         ],
-                        if (cultivosState.selectedCultivo!.notas != null &&
-                            cultivosState
-                                .selectedCultivo!.notas!.isNotEmpty) ...[
+                        if (cultivosState.selected!.notas != null &&
+                            cultivosState.selected!.notas!.isNotEmpty) ...[
                           _buildInfoRow(
                             context,
                             'Notas',
-                            cultivosState.selectedCultivo!.notas!,
+                            cultivosState.selected!.notas!,
                           ),
                         ],
                       ],
@@ -149,7 +145,7 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                if (cultivosState.selectedCultivo!.isActive) ...[
+                if (cultivosState.selected!.isActive) ...[
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(

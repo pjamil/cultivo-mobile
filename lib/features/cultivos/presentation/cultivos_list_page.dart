@@ -44,7 +44,8 @@ class CultivosListPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar cultivos'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => ref.read(cultivosProvider.notifier).loadCultivos(),
+              onPressed: () =>
+                  ref.read(cultivosProvider.notifier).loadCultivos(),
               child: const Text('Tentar novamente'),
             ),
           ],
@@ -52,7 +53,7 @@ class CultivosListPage extends ConsumerWidget {
       );
     }
 
-    if (state.cultivos.isEmpty) {
+    if (state.items.isEmpty) {
       return EmptyState(
         icon: Icons.spa,
         title: 'Nenhum cultivo',
@@ -64,9 +65,9 @@ class CultivosListPage extends ConsumerWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: state.cultivos.length,
+      itemCount: state.items.length,
       itemBuilder: (context, index) {
-        final cultivo = state.cultivos[index];
+        final cultivo = state.items[index];
         return CultivoCard(
           cultivo: cultivo,
           onTap: () => context.push('/cultivos/${cultivo.id}'),

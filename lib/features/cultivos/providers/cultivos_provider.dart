@@ -1,165 +1,43 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/crud/crud_provider.dart';
 import '../../../core/models/cultivo.dart';
 import '../data/cultivos_repository.dart';
 
-enum CultivosStatus { initial, loading, loaded, error }
+typedef CultivosState = CrudState<Cultivo>;
+typedef CultivosStatus = CrudStatus;
 
-class CultivosState {
-  final CultivosStatus status;
-  final List<Cultivo> cultivos;
-  final Cultivo? selectedCultivo;
-  final String? error;
+class CultivosNotifier extends CrudNotifier<Cultivo> {
+  CultivosNotifier(super.repository);
 
-  CultivosState({
-    this.status = CultivosStatus.initial,
-    this.cultivos = const [],
-    this.selectedCultivo,
-    this.error,
-  });
+  Future<void> loadCultivos() => load();
 
-  CultivosState copyWith({
-    CultivosStatus? status,
-    List<Cultivo>? cultivos,
-    Cultivo? selectedCultivo,
-    String? error,
-  }) {
-    return CultivosState(
-      status: status ?? this.status,
-      cultivos: cultivos ?? this.cultivos,
-      selectedCultivo: selectedCultivo,
-      error: error,
-    );
-  }
-}
+  Future<void> loadCultivo(int id) => loadById(id);
 
-class CultivosNotifier extends StateNotifier<CultivosState> {
-  final CultivosRepository _repository;
+  Future<void> createCultivo(Cultivo cultivo) => create(cultivo);
 
-  CultivosNotifier(this._repository) : super(CultivosState()) {
-    loadCultivos();
-  }
+  Future<void> updateCultivo(Cultivo cultivo) => update(cultivo);
 
-  Future<void> loadCultivos() async {
-    state = state.copyWith(status: CultivosStatus.loading);
-    try {
-      final cultivos = await _repository.getAll();
-      state = state.copyWith(
-        status: CultivosStatus.loaded,
-        cultivos: cultivos,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: CultivosStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
-  Future<void> loadCultivo(int id) async {
-    state = state.copyWith(status: CultivosStatus.loading);
-    try {
-      final cultivo = await _repository.getById(id);
-      state = state.copyWith(
-        status: CultivosStatus.loaded,
-        selectedCultivo: cultivo,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: CultivosStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
-  Future<void> createCultivo(Cultivo cultivo) async {
-    state = state.copyWith(status: CultivosStatus.loading);
-    try {
-      final newCultivo = await _repository.create(cultivo);
-      state = state.copyWith(
-        status: CultivosStatus.loaded,
-        cultivos: [...state.cultivos, newCultivo],
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: CultivosStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
-  Future<void> updateCultivo(Cultivo cultivo) async {
-    state = state.copyWith(status: CultivosStatus.loading);
-    try {
-      final updatedCultivo = await _repository.update(cultivo);
-      state = state.copyWith(
-        status: CultivosStatus.loaded,
-        cultivos: state.cultivos.map((c) =>
-            c.id == updatedCultivo.id ? updatedCultivo : c).toList(),
-        selectedCultivo: updatedCultivo,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: CultivosStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
-  Future<void> deleteCultivo(int id) async {
-    state = state.copyWith(status: CultivosStatus.loading);
-    try {
-      await _repository.delete(id);
-      state = state.copyWith(
-        status: CultivosStatus.loaded,
-        cultivos: state.cultivos.where((c) => c.id != id).toList(),
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: CultivosStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
+  Future<void> deleteCultivo(int id) => delete(id);
 
   Future<void> avancarEstado(int id) async {
-    state = state.copyWith(status: CultivosStatus.loading);
-    try {
-      final updatedCultivo = await _repository.avancarEstado(id);
-      state = state.copyWith(
-        status: CultivosStatus.loaded,
-        cultivos: state.cultivos.map((c) =>
-            c.id == updatedCultivo.id ? updatedCultivo : c).toList(),
-        selectedCultivo: updatedCultivo,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: CultivosStatus.error,
-        error: e.toString(),
-      );
-    }
+    final updated = await (repository as CultivosRepository).avancarEstado(id);
+    _replaceInState(updated);
   }
 
   Future<void> cancelar(int id, String motivo) async {
-    state = state.copyWith(status: CultivosStatus.loading);
-    try {
-      final updatedCultivo = await _repository.cancelar(id, motivo);
-      state = state.copyWith(
-        status: CultivosStatus.loaded,
-        cultivos: state.cultivos.map((c) =>
-            c.id == updatedCultivo.id ? updatedCultivo : c).toList(),
-        selectedCultivo: updatedCultivo,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: CultivosStatus.error,
-        error: e.toString(),
-      );
-    }
+    final updated =
+        await (repository as CultivosRepository).cancelar(id, motivo);
+    _replaceInState(updated);
   }
 
-  void clearError() {
-    state = state.copyWith(error: null);
+  void _replaceInState(Cultivo updated) {
+    final id = updated.id;
+    state = state.copyWith(
+      status: CrudStatus.loaded,
+      items: state.items.map((c) => c.id == id ? updated : c).toList(),
+      selected: updated,
+    );
   }
 }
 

@@ -42,11 +42,13 @@ class _CultivoFormPageState extends ConsumerState<CultivoFormPage> {
     if (_fieldsPopulated) return;
     _fieldsPopulated = true;
 
-    _nomeController.text = cultivo.nome;
-    _notasController.text = cultivo.notas ?? '';
-    _dataInicio = cultivo.dataInicio;
-    _plantaId = cultivo.plantaId;
-    _ambienteId = cultivo.ambienteId;
+    setState(() {
+      _nomeController.text = cultivo.nome;
+      _notasController.text = cultivo.notas ?? '';
+      _dataInicio = cultivo.dataInicio;
+      _plantaId = cultivo.plantaId;
+      _ambienteId = cultivo.ambienteId;
+    });
   }
 
   @override
@@ -86,11 +88,9 @@ class _CultivoFormPageState extends ConsumerState<CultivoFormPage> {
   Widget build(BuildContext context) {
     final cultivosState = ref.watch(cultivosProvider);
     final plantasState = ref.watch(plantasProvider);
-
-    // Populate fields when editing
-    if (widget.id != null && cultivosState.selectedCultivo != null) {
+    if (widget.id != null && cultivosState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _populateFields(cultivosState.selectedCultivo!);
+        _populateFields(cultivosState.selected!);
       });
     }
 
@@ -142,6 +142,7 @@ class _CultivoFormPageState extends ConsumerState<CultivoFormPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<int>(
+                key: ValueKey(_plantaId),
                 initialValue: _plantaId,
                 decoration: const InputDecoration(
                   labelText: 'Planta',
