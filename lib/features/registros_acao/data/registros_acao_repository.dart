@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/endpoints.dart';
@@ -36,4 +37,25 @@ class RegistrosAcaoRepository extends CrudRepository<RegistroAcao> {
   @override
   RegistroAcao fromJson(Map<String, dynamic> json) =>
       RegistroAcao.fromJson(json);
+
+  Future<List<RegistroAcao>> listarPorCultivo(int cultivoId) async {
+    try {
+      final response = await api.get(
+        basePath,
+        queryParameters: {'cultivoId': cultivoId},
+      );
+      final data = response.data;
+      List<dynamic> rawList;
+      if (data is List) {
+        rawList = data;
+      } else if (data is Map<String, dynamic> && data['content'] is List) {
+        rawList = data['content'] as List;
+      } else {
+        rawList = [];
+      }
+      return rawList.map((json) => fromJson(json)).toList();
+    } on DioException catch (e) {
+      throw Exception(e.error ?? getAllError);
+    }
+  }
 }

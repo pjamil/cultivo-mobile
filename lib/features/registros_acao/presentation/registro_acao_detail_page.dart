@@ -7,13 +7,28 @@ import '../../../core/crud/crud_provider.dart';
 import '../../../core/models/registro_acao.dart';
 import '../providers/registros_acao_provider.dart';
 
-class RegistroAcaoDetailPage extends ConsumerWidget {
+class RegistroAcaoDetailPage extends ConsumerStatefulWidget {
   final int id;
 
   const RegistroAcaoDetailPage({super.key, required this.id});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RegistroAcaoDetailPage> createState() =>
+      _RegistroAcaoDetailPageState();
+}
+
+class _RegistroAcaoDetailPageState
+    extends ConsumerState<RegistroAcaoDetailPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(registrosAcaoProvider.notifier).loadRegistro(widget.id);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final registrosState = ref.watch(registrosAcaoProvider);
 
     if (registrosState.status == CrudStatus.loading) {
@@ -23,15 +38,16 @@ class RegistroAcaoDetailPage extends ConsumerWidget {
       );
     }
 
-    final registro = registrosState.items.firstWhere(
-      (r) => r.id == id,
-      orElse: () => RegistroAcao(
-        id: 0,
-        tipo: 'OUTRO',
-        data: DateTime.now(),
-        cultivoId: 0,
-      ),
-    );
+    final registro = registrosState.selected ??
+        registrosState.items.firstWhere(
+          (r) => r.id == widget.id,
+          orElse: () => RegistroAcao(
+            id: 0,
+            tipo: 'OUTRO',
+            data: DateTime.now(),
+            cultivoId: 0,
+          ),
+        );
 
     if (registro.id == 0) {
       return Scaffold(
@@ -47,7 +63,9 @@ class RegistroAcaoDetailPage extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () {
-              context.push('/registros-acao/${registro.id}/editar');
+              context.push(
+                '/registros-acao/${registro.id}/editar?cultivoId=${registro.cultivoId}',
+              );
             },
           ),
           IconButton(

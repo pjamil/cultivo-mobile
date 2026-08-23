@@ -21,3 +21,14 @@ String? formatDateOnly(DateTime? value) {
   final d = value.day.toString().padLeft(2, '0');
   return '${value.year}-$m-$d';
 }
+
+/// Format datetime as ISO-8601 without milliseconds (Spring LocalDateTime
+/// accepted format, ex: 2026-08-22T14:30:00)
+String? formatDateTime(DateTime? value) {
+  if (value == null) return null;
+  final date = formatDateOnly(value);
+  final h = value.hour.toString().padLeft(2, '0');
+  final min = value.minute.toString().padLeft(2, '0');
+  final s = value.second.toString().padLeft(2, '0');
+  return '${date}T$h:$min:$s';
+}

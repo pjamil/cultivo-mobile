@@ -51,7 +51,9 @@ class _RegistrosAcaoListPageState extends ConsumerState<RegistrosAcaoListPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(registrosAcaoProvider.notifier).loadRegistros();
+      ref
+          .read(registrosAcaoProvider.notifier)
+          .loadRegistrosPorCultivo(widget.cultivoId);
     });
     _scrollController.addListener(_onScroll);
   }
@@ -152,7 +154,9 @@ class _RegistrosAcaoListPageState extends ConsumerState<RegistrosAcaoListPage> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                ref.read(registrosAcaoProvider.notifier).loadRegistros();
+                ref
+                    .read(registrosAcaoProvider.notifier)
+                    .loadRegistrosPorCultivo(widget.cultivoId);
               },
               child: const Text('Tentar novamente'),
             ),

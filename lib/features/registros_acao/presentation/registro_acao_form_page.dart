@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -52,13 +54,7 @@ class _RegistroAcaoFormPageState extends ConsumerState<RegistroAcaoFormPage> {
       _tipo = registro.tipoAcao;
       _data = registro.data;
       _notasController.text = registro.notas ?? '';
-      if (registro.detalhes != null) {
-        _detalhes = Map<String, dynamic>.from(
-          Map<String, dynamic>.from(
-            {'raw': registro.detalhes},
-          ),
-        );
-      }
+      _detalhes = registro.detalhesMap() ?? {};
     });
   }
 
@@ -76,7 +72,7 @@ class _RegistroAcaoFormPageState extends ConsumerState<RegistroAcaoFormPage> {
         data: _data,
         cultivoId: widget.cultivoId,
         plantaId: widget.plantaId,
-        detalhes: _detalhes.isNotEmpty ? _detalhes.toString() : null,
+        detalhes: _detalhes.isNotEmpty ? jsonEncode(_detalhes) : null,
         notas: _notasController.text.trim().isNotEmpty
             ? _notasController.text.trim()
             : null,
@@ -157,6 +153,7 @@ class _RegistroAcaoFormPageState extends ConsumerState<RegistroAcaoFormPage> {
               const SizedBox(height: 16),
               RegistroAcaoDetalhesForm(
                 tipo: _tipo,
+                initialDetalhes: _detalhes,
                 onChanged: (detalhes) => _detalhes = detalhes,
               ),
               const SizedBox(height: 16),

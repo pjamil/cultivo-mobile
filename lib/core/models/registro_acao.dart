@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../utils/date_utils.dart';
 import 'package:hive/hive.dart';
 
@@ -104,8 +106,8 @@ class RegistroAcao extends HiveObject {
 
   Map<String, dynamic> toCreateJson() {
     return {
-      'tipo': tipo.toLowerCase(),
-      'data': formatDateOnly(data),
+      'tipo': _tipoToApi(),
+      'data': formatDateTime(data),
       'cultivo_id': cultivoId,
       'planta_id': plantaId,
       'detalhes': detalhes,
@@ -115,11 +117,23 @@ class RegistroAcao extends HiveObject {
 
   Map<String, dynamic> toUpdateJson() {
     return {
-      'tipo': tipo.toLowerCase(),
-      'data': formatDateOnly(data),
+      'tipo': _tipoToApi(),
+      'data': formatDateTime(data),
       'detalhes': detalhes,
       'notas': notas,
     };
+  }
+
+  String _tipoToApi() => tipo.toUpperCase();
+
+  Map<String, dynamic>? detalhesMap() {
+    if (detalhes == null || detalhes!.isEmpty) return null;
+    try {
+      final decoded = jsonDecode(detalhes!);
+      return decoded is Map<String, dynamic> ? decoded : null;
+    } on FormatException {
+      return null;
+    }
   }
 
   RegistroAcao copyWith({

@@ -4,11 +4,13 @@ import '../../../../core/models/registro_acao.dart';
 
 class RegistroAcaoDetalhesForm extends StatefulWidget {
   final TipoAcao tipo;
+  final Map<String, dynamic>? initialDetalhes;
   final ValueChanged<Map<String, dynamic>> onChanged;
 
   const RegistroAcaoDetalhesForm({
     super.key,
     required this.tipo,
+    this.initialDetalhes,
     required this.onChanged,
   });
 
@@ -29,16 +31,70 @@ class _RegistroAcaoDetalhesFormState extends State<RegistroAcaoDetalhesForm> {
   final _motivoController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _populateControllers();
+  }
+
+  @override
+  void didUpdateWidget(RegistroAcaoDetalhesForm oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.tipo != widget.tipo) {
+      _clearControllers();
+      _populateControllers();
+      _updateDetalhes();
+    }
+  }
+
+  void _clearControllers() {
+    for (final controller in _allControllers()) {
+      controller.clear();
+    }
+  }
+
+  void _populateControllers() {
+    final detalhes = widget.initialDetalhes;
+    if (detalhes == null || detalhes.isEmpty) return;
+    _quantidadeController.text = _num(detalhes['quantidade']);
+    _unidadeController.text = _str(detalhes['unidadeMedida']);
+    _metodoController.text = _str(detalhes['metodo']);
+    _produtoController.text = _str(detalhes['produto']);
+    _concentracaoController.text = _str(detalhes['concentracao']);
+    _vasoAnteriorController.text = _num(detalhes['vasoAnterior']);
+    _vasoNovoController.text = _num(detalhes['vasoNovo']);
+    _substratoController.text = _str(detalhes['substrato']);
+    _motivoController.text = _str(detalhes['motivo']);
+  }
+
+  List<TextEditingController> _allControllers() {
+    return [
+      _quantidadeController,
+      _unidadeController,
+      _metodoController,
+      _produtoController,
+      _concentracaoController,
+      _vasoAnteriorController,
+      _vasoNovoController,
+      _substratoController,
+      _motivoController,
+    ];
+  }
+
+  String _str(dynamic value) => value?.toString() ?? '';
+
+  String _num(dynamic value) {
+    final v = value;
+    if (v is num) {
+      return v == v.truncateToDouble() ? v.toInt().toString() : v.toString();
+    }
+    return _str(v);
+  }
+
+  @override
   void dispose() {
-    _quantidadeController.dispose();
-    _unidadeController.dispose();
-    _metodoController.dispose();
-    _produtoController.dispose();
-    _concentracaoController.dispose();
-    _vasoAnteriorController.dispose();
-    _vasoNovoController.dispose();
-    _substratoController.dispose();
-    _motivoController.dispose();
+    for (final controller in _allControllers()) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
