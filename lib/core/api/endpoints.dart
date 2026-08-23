@@ -71,6 +71,7 @@ class Endpoints {
   static String variedadeById(int id) => '$variedades/$id';
   static String meioCultivoById(int id) => '$meiosCultivo/$id';
   static String tarefaById(int id) => '$tarefas/$id';
+  static String tarefaRecorrencia(int id) => '$tarefas/$id/recorrencia';
   static String insumoById(int id) => '$insumos/$id';
   static String fotoById(int id) => '$fotos/$id';
   static String fotosByEntity(String entityType, int entityId) =>

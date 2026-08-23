@@ -1,111 +1,68 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/crud/crud_provider.dart';
 import '../../../core/models/tarefa.dart';
 import '../data/tarefas_repository.dart';
 
-enum TarefasStatus { initial, loading, loaded, error }
+typedef TarefasState = CrudState<Tarefa>;
+typedef TarefasStatus = CrudStatus;
 
-class TarefasState {
-  final TarefasStatus status;
-  final List<Tarefa> tarefas;
-  final Tarefa? selectedTarefa;
-  final String? error;
+class TarefasNotifier extends CrudNotifier<Tarefa> {
+  TarefasNotifier(super.repository);
 
-  TarefasState({
-    this.status = TarefasStatus.initial,
-    this.tarefas = const [],
-    this.selectedTarefa,
-    this.error,
-  });
+  Future<void> loadTarefas() => load();
 
-  TarefasState copyWith({
-    TarefasStatus? status,
-    List<Tarefa>? tarefas,
-    Tarefa? selectedTarefa,
-    String? error,
-  }) {
-    return TarefasState(
-      status: status ?? this.status,
-      tarefas: tarefas ?? this.tarefas,
-      selectedTarefa: selectedTarefa,
-      error: error,
-    );
-  }
-}
-
-class TarefasNotifier extends StateNotifier<TarefasState> {
-  final TarefasRepository _repository;
-
-  TarefasNotifier(this._repository) : super(TarefasState()) {
-    loadTarefas();
-  }
-
-  Future<void> loadTarefas() async {
-    state = state.copyWith(status: TarefasStatus.loading);
-    try {
-      final tarefas = await _repository.getAll();
-      state = state.copyWith(
-        status: TarefasStatus.loaded,
-        tarefas: tarefas,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: TarefasStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
-  Future<void> loadTarefa(int id) async {
-    state = state.copyWith(status: TarefasStatus.loading);
-    try {
-      final tarefa = await _repository.getById(id);
-      state = state.copyWith(
-        status: TarefasStatus.loaded,
-        selectedTarefa: tarefa,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: TarefasStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
+  Future<void> loadTarefa(int id) => loadById(id);
 
   Future<void> createTarefa(Tarefa tarefa) async {
-    state = state.copyWith(status: TarefasStatus.loading);
+    state = state.copyWith(status: CrudStatus.loading);
     try {
-      final newTarefa = await _repository.create(tarefa);
+      final newTarefa = await repository.create(tarefa);
+      var finalTarefa = newTarefa;
+      if (newTarefa.temRecorrencia) {
+        finalTarefa =
+            await (repository as TarefasRepository).atualizarRecorrencia(
+          newTarefa.id,
+          newTarefa.recorrencia!,
+          newTarefa.dataFimRecorrencia,
+        );
+      }
       state = state.copyWith(
-        status: TarefasStatus.loaded,
-        tarefas: [...state.tarefas, newTarefa],
+        status: CrudStatus.loaded,
+        items: [...state.items, finalTarefa],
       );
     } catch (e) {
       state = state.copyWith(
-        status: TarefasStatus.error,
+        status: CrudStatus.error,
         error: e.toString(),
       );
     }
   }
 
   Future<void> updateTarefa(Tarefa tarefa) async {
-    state = state.copyWith(status: TarefasStatus.loading);
+    state = state.copyWith(status: CrudStatus.loading);
     try {
-      final updatedTarefa = await _repository.update(tarefa);
+      var updatedTarefa = await repository.update(tarefa);
+      updatedTarefa =
+          await (repository as TarefasRepository).atualizarRecorrencia(
+        updatedTarefa.id,
+        updatedTarefa.recorrencia ?? 'NENHUMA',
+        updatedTarefa.dataFimRecorrencia,
+      );
       state = state.copyWith(
-        status: TarefasStatus.loaded,
-        tarefas: state.tarefas.map((t) =>
-            t.id == updatedTarefa.id ? updatedTarefa : t).toList(),
-        selectedTarefa: updatedTarefa,
+        status: CrudStatus.loaded,
+        items: state.items
+            .map((t) => t.id == updatedTarefa.id ? updatedTarefa : t)
+            .toList(),
+        selected: updatedTarefa,
       );
 
-      // Auto-create next occurrence for recurring tasks
       if (updatedTarefa.isConcluida && updatedTarefa.temRecorrencia) {
         await _createNextOccurrence(updatedTarefa);
       }
     } catch (e) {
       state = state.copyWith(
-        status: TarefasStatus.error,
+        status: CrudStatus.error,
         error: e.toString(),
       );
     }
@@ -119,7 +76,6 @@ class TarefasNotifier extends StateNotifier<TarefasState> {
 
     if (nextDate == null) return;
 
-    // Check if recurrence end date is reached
     if (completedTarefa.dataFimRecorrencia != null &&
         nextDate.isAfter(completedTarefa.dataFimRecorrencia!)) {
       return;
@@ -139,9 +95,16 @@ class TarefasNotifier extends StateNotifier<TarefasState> {
     );
 
     try {
-      final created = await _repository.create(nextTarefa);
+      var created = await repository.create(nextTarefa);
+      if (created.temRecorrencia) {
+        created = await (repository as TarefasRepository).atualizarRecorrencia(
+          created.id,
+          created.recorrencia!,
+          created.dataFimRecorrencia,
+        );
+      }
       state = state.copyWith(
-        tarefas: [...state.tarefas, created],
+        items: [...state.items, created],
       );
     } catch (e) {
       state = state.copyWith(error: e.toString());
@@ -166,25 +129,7 @@ class TarefasNotifier extends StateNotifier<TarefasState> {
     }
   }
 
-  Future<void> deleteTarefa(int id) async {
-    state = state.copyWith(status: TarefasStatus.loading);
-    try {
-      await _repository.delete(id);
-      state = state.copyWith(
-        status: TarefasStatus.loaded,
-        tarefas: state.tarefas.where((t) => t.id != id).toList(),
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: TarefasStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
-  void clearError() {
-    state = state.copyWith(error: null);
-  }
+  Future<void> deleteTarefa(int id) => delete(id);
 }
 
 final tarefasProvider =

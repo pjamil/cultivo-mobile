@@ -1,77 +1,54 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/api/api_client.dart';
 import '../../../core/api/endpoints.dart';
+import '../../../core/crud/crud_repository.dart';
 import '../../../core/models/tarefa.dart';
+import '../../../core/utils/date_utils.dart';
 
 final tarefasRepositoryProvider = Provider<TarefasRepository>((ref) {
   return TarefasRepository(ref);
 });
 
-class TarefasRepository {
-  final Ref _ref;
+class TarefasRepository extends CrudRepository<Tarefa> {
+  TarefasRepository(super.ref);
 
-  TarefasRepository(this._ref);
+  @override
+  String get basePath => Endpoints.tarefas;
 
-  ApiClient get _api => _ref.read(apiClientProvider);
+  @override
+  String get resourceName => 'tarefas';
 
-  Future<List<Tarefa>> getAll() async {
-    try {
-      final response = await _api.get(Endpoints.tarefas);
-      final data = response.data;
-      List<dynamic> rawList;
-      if (data is List) {
-        rawList = data;
-      } else if (data is Map<String, dynamic> && data['content'] is List) {
-        rawList = data['content'] as List;
-      } else {
-        rawList = [];
-      }
-      return rawList.map((json) => Tarefa.fromJson(json)).toList();
-    } on DioException catch (e) {
-      throw Exception(e.error ?? 'Erro ao carregar tarefas');
-    }
-  }
+  @override
+  String get getAllError => 'Erro ao carregar tarefas';
 
-  Future<Tarefa> getById(int id) async {
-    try {
-      final response = await _api.get(Endpoints.tarefaById(id));
-      return Tarefa.fromJson(response.data);
-    } on DioException catch (e) {
-      throw Exception(e.error ?? 'Erro ao carregar tarefa');
-    }
-  }
+  @override
+  String get getByIdError => 'Erro ao carregar tarefa';
 
-  Future<Tarefa> create(Tarefa tarefa) async {
-    try {
-      final response = await _api.post(
-        Endpoints.tarefas,
-        data: tarefa.toCreateJson(),
-      );
-      return Tarefa.fromJson(response.data);
-    } on DioException catch (e) {
-      throw Exception(e.error ?? 'Erro ao criar tarefa');
-    }
-  }
+  @override
+  String get createError => 'Erro ao criar tarefa';
 
-  Future<Tarefa> update(Tarefa tarefa) async {
-    try {
-      final response = await _api.put(
-        Endpoints.tarefaById(tarefa.id),
-        data: tarefa.toUpdateJson(),
-      );
-      return Tarefa.fromJson(response.data);
-    } on DioException catch (e) {
-      throw Exception(e.error ?? 'Erro ao atualizar tarefa');
-    }
-  }
+  @override
+  String get updateError => 'Erro ao atualizar tarefa';
 
-  Future<void> delete(int id) async {
-    try {
-      await _api.delete(Endpoints.tarefaById(id));
-    } on DioException catch (e) {
-      throw Exception(e.error ?? 'Erro ao excluir tarefa');
-    }
+  @override
+  String get deleteError => 'Erro ao excluir tarefa';
+
+  @override
+  Tarefa fromJson(Map<String, dynamic> json) => Tarefa.fromJson(json);
+
+  Future<Tarefa> atualizarRecorrencia(
+    int id,
+    String recorrencia,
+    DateTime? dataFimRecorrencia,
+  ) async {
+    final response = await api.put(
+      Endpoints.tarefaRecorrencia(id),
+      queryParameters: {
+        'recorrencia': recorrencia,
+        if (dataFimRecorrencia != null)
+          'dataFimRecorrencia': formatDateOnly(dataFimRecorrencia),
+      },
+    );
+    return Tarefa.fromJson(response.data as Map<String, dynamic>);
   }
 }

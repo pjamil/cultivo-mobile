@@ -70,7 +70,7 @@ class Tarefa extends HiveObject {
               ? parseDate(json['data_vencimento'])
               : null),
       usuarioId: json['usuarioId'] ?? json['usuario_id'],
-      cultivoId: json['cultivoId'],
+      cultivoId: json['cultivoId'] ?? json['cultivo_id'],
       recorrencia: _normalizeRecorrencia(json['recorrencia']),
       dataFimRecorrencia: json['dataFimRecorrencia'] != null
           ? parseDate(json['dataFimRecorrencia'])
