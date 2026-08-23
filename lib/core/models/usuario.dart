@@ -39,9 +39,8 @@ class Usuario extends HiveObject {
       email: json['email'] ?? '',
       papel: json['papel'] ?? 'USUARIO',
       ativo: json['ativo'] ?? true,
-      dataCadastro: json['dataCadastro'] != null
-          ? parseDate(json['dataCadastro'])
-          : null,
+      dataCadastro:
+          json['dataCadastro'] != null ? parseDate(json['dataCadastro']) : null,
     );
   }
 

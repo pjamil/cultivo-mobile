@@ -57,7 +57,8 @@ class OfflineOperation extends HiveObject {
       url: json['url'] ?? '',
       timestamp: json['timestamp'] ?? 0,
       synced: json['synced'] ?? false,
-      syncedAt: json['syncedAt'] != null ? DateTime.parse(json['syncedAt']) : null,
+      syncedAt:
+          json['syncedAt'] != null ? DateTime.parse(json['syncedAt']) : null,
       error: json['error'],
     );
   }

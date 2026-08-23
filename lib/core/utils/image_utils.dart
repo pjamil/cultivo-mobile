@@ -15,10 +15,9 @@ class ImageUtils {
     if (result == null) {
       return file;
     }
-
-    // Write compressed bytes to a new file
     final directory = await getTemporaryDirectory();
-    final String fileName = 'compressed_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final String fileName =
+        'compressed_${DateTime.now().millisecondsSinceEpoch}.jpg';
     final File compressedFile = File('${directory.path}/$fileName');
     await compressedFile.writeAsBytes(result);
 

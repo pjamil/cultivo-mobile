@@ -48,8 +48,6 @@ class _PlantaDetailPageState extends ConsumerState<PlantaDetailPage> {
         ref.read(plantasProvider.notifier).clearError();
       }
     });
-
-    // Get variety name from ID
     String getVariedadeName(int? variedadeId) {
       if (variedadeId == null) return 'Nenhuma';
       if (variedadeState.status != CrudStatus.loaded) {
@@ -162,7 +160,6 @@ class _PlantaDetailPageState extends ConsumerState<PlantaDetailPage> {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 8),
-                // TODO: Load photos from API
                 PhotoTimeline(
                   fotos: const [],
                   onFotoTap: (foto) => _showFotoFullScreen(context, foto),
@@ -195,7 +192,6 @@ class _PlantaDetailPageState extends ConsumerState<PlantaDetailPage> {
   }
 
   void _uploadPhoto(BuildContext context, WidgetRef ref, File file) {
-    // TODO: Implement photo upload via API
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(

@@ -32,21 +32,22 @@ class GroupedPhotoTimeline extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
               children: [
-                Icon(_getPhaseIcon(phase), size: 20, color: _getPhaseColor(phase)),
+                Icon(_getPhaseIcon(phase),
+                    size: 20, color: _getPhaseColor(phase)),
                 const SizedBox(width: 8),
                 Text(
                   _getPhaseLabel(phase),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: _getPhaseColor(phase),
-                    fontWeight: FontWeight.bold,
-                  ),
+                        color: _getPhaseColor(phase),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 const SizedBox(width: 8),
                 Text(
                   '(${grouped[phase]!.length})',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey[600],
-                  ),
+                        color: Colors.grey[600],
+                      ),
                 ),
               ],
             ),

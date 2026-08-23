@@ -85,7 +85,6 @@ class Planta extends HiveObject {
     if (value == null || value.toString().isEmpty) return null;
     try {
       final str = value.toString();
-      // Handle both ISO format (2025-01-15T00:00:00) and simple format (2025-01-15)
       if (str.contains('T')) {
         return DateTime.parse(str);
       } else {

@@ -54,7 +54,8 @@ class AnalyticsPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar analytics'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => ref.read(analyticsProvider.notifier).loadAnalytics(),
+              onPressed: () =>
+                  ref.read(analyticsProvider.notifier).loadAnalytics(),
               child: const Text('Tentar novamente'),
             ),
           ],
@@ -108,7 +109,8 @@ class AnalyticsPage extends ConsumerWidget {
     await file.writeAsString(buffer.toString());
 
     if (context.mounted) {
-      await Share.shareXFiles([XFile(file.path)], text: 'Relatório de Analytics');
+      await Share.shareXFiles([XFile(file.path)],
+          text: 'Relatório de Analytics');
     }
   }
 }

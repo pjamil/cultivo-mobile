@@ -77,8 +77,6 @@ class _DiarioFormPageState extends ConsumerState<DiarioFormPage> {
   @override
   Widget build(BuildContext context) {
     final diarioState = ref.watch(diarioProvider);
-
-    // Populate fields when editing
     if (widget.id != null && diarioState.selected != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _populateFields(diarioState.selected!);

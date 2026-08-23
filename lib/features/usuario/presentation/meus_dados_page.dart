@@ -133,7 +133,8 @@ class MeusDadosPage extends ConsumerWidget {
     final confirmed = await ConfirmationDialog.show(
       context: context,
       title: 'Excluir Conta',
-      message: 'Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.',
+      message:
+          'Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.',
       confirmText: 'Excluir',
       isDestructive: true,
     );

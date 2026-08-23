@@ -77,9 +77,6 @@ class CostData {
 
 class AnalyticsRepository {
   Future<AnalyticsData> getAnalytics() async {
-    // O backend ainda não expõe um endpoint dedicado de analytics.
-    // Enquanto isso, retorna dados vazios (mock local) em vez de chamar
-    // uma rota inexistente, mantendo a página funcional para exportação CSV.
     return AnalyticsData(
       rendimentoPorVariedade: const [],
       duracaoCiclo: const [],

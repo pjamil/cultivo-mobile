@@ -30,8 +30,9 @@ class YieldChart extends StatelessWidget {
               child: BarChart(
                 BarChartData(
                   alignment: BarChartAlignment.spaceAround,
-                  maxY: data.map((d) => d.rendimentoMedio).reduce(
-                          (a, b) => a > b ? a : b) *
+                  maxY: data
+                          .map((d) => d.rendimentoMedio)
+                          .reduce((a, b) => a > b ? a : b) *
                       1.2,
                   barGroups: data.asMap().entries.map((entry) {
                     final index = entry.key;

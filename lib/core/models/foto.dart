@@ -48,9 +48,8 @@ class Foto extends HiveObject {
       entityType: json['entityType'] ?? '',
       entityId: json['entityId'] ?? 0,
       cultivoEstado: json['cultivoEstado'],
-      createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'])
-          : null,
+      createdAt:
+          json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
     );
   }
 

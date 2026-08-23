@@ -20,15 +20,12 @@ class LocalStorage {
     _offlineQueue = await Hive.openBox<OfflineOperation>(_offlineQueueBox);
   }
 
-  // Offline Queue
   Future<void> addToOfflineQueue(OfflineOperation operation) async {
     await _offlineQueue.add(operation);
   }
 
   List<OfflineOperation> getPendingOperations() {
-    return _offlineQueue.values
-        .where((op) => !op.synced)
-        .toList()
+    return _offlineQueue.values.where((op) => !op.synced).toList()
       ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
   }
 
@@ -53,7 +50,6 @@ class LocalStorage {
     await _offlineQueue.deleteAll(keysToDelete);
   }
 
-  // Generic CRUD operations
   Future<void> put<T>(String boxName, dynamic key, T value) async {
     final box = await Hive.openBox(boxName);
     await box.put(key, value);
@@ -79,7 +75,6 @@ class LocalStorage {
     await box.clear();
   }
 
-  // Box getters
   Box get plantasBox => _box;
   Box get cultivosBox => _box;
   Box get diariosBox => _box;

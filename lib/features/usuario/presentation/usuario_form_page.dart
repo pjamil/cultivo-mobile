@@ -39,7 +39,9 @@ class _UsuarioFormPageState extends ConsumerState<UsuarioFormPage> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      ref.read(usuarioProvider.notifier).updateNome(_nomeController.text.trim());
+      ref
+          .read(usuarioProvider.notifier)
+          .updateNome(_nomeController.text.trim());
       if (mounted) {
         context.pop();
       }
@@ -49,8 +51,6 @@ class _UsuarioFormPageState extends ConsumerState<UsuarioFormPage> {
   @override
   Widget build(BuildContext context) {
     final usuarioState = ref.watch(usuarioProvider);
-
-    // Populate fields when editing
     if (usuarioState.usuario != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _populateFields();

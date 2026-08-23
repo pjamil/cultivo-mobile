@@ -5,10 +5,12 @@ class NotificationSettingsPage extends ConsumerStatefulWidget {
   const NotificationSettingsPage({super.key});
 
   @override
-  ConsumerState<NotificationSettingsPage> createState() => _NotificationSettingsPageState();
+  ConsumerState<NotificationSettingsPage> createState() =>
+      _NotificationSettingsPageState();
 }
 
-class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsPage> {
+class _NotificationSettingsPageState
+    extends ConsumerState<NotificationSettingsPage> {
   bool _tarefaReminder = true;
   bool _estoqueAlert = true;
 
@@ -33,7 +35,8 @@ class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsP
           const Divider(),
           SwitchListTile(
             title: const Text('Alertas de Estoque'),
-            subtitle: const Text('Receber notificações quando estoque estiver baixo'),
+            subtitle:
+                const Text('Receber notificações quando estoque estiver baixo'),
             value: _estoqueAlert,
             onChanged: (value) {
               setState(() {

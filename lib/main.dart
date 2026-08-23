@@ -9,8 +9,6 @@ void main() async {
   final stopwatch = Stopwatch()..start();
 
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize local storage
   await LocalStorage().init();
 
   stopwatch.stop();

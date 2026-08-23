@@ -39,7 +39,8 @@ class DashboardPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar dashboard'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => ref.read(dashboardProvider.notifier).loadDashboard(),
+              onPressed: () =>
+                  ref.read(dashboardProvider.notifier).loadDashboard(),
               child: const Text('Tentar novamente'),
             ),
           ],
