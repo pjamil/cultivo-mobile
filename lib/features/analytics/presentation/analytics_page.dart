@@ -109,8 +109,9 @@ class AnalyticsPage extends ConsumerWidget {
     await file.writeAsString(buffer.toString());
 
     if (context.mounted) {
-      await Share.shareXFiles([XFile(file.path)],
-          text: 'Relatório de Analytics');
+      await SharePlus.instance.share(
+        ShareParams(files: [XFile(file.path)], text: 'Relatório de Analytics'),
+      );
     }
   }
 }
