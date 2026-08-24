@@ -119,7 +119,7 @@ jobs:
           systemProp.org.gradle.internal.http.socketTimeout=120000
           android.useAndroidX=true
           android.newDsl=false
-          android.builtInKotlin=false
+          android.builtInKotlin=true
           kotlin.compiler.execution.strategy=in-process
           EOF
 
