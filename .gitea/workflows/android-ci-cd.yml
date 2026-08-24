@@ -109,15 +109,14 @@ jobs:
         run: |
           # The repo's gradle.properties requests -Xmx8G, which can OOM the
           # runner container. Use SerialGC + a single worker + in-process
-          # Kotlin to keep peak memory low. Configuration cache reduces
-          # peak memory further and speeds up the build.
+          # Kotlin to keep peak memory low. (Do NOT enable configuration-cache:
+          # it causes "cannot choose between variants" errors with AGP 9.1.)
+          # The 4G swap added on the host absorbs the memory peak.
           cat > android/gradle.properties <<EOF
           org.gradle.jvmargs=-Xmx768M -XX:MaxMetaspaceSize=512M -XX:ReservedCodeCacheSize=64m -XX:+UseSerialGC -XX:+HeapDumpOnOutOfMemoryError
           org.gradle.daemon=false
           org.gradle.workers.max=1
           org.gradle.parallel=false
-          org.gradle.configuration-cache=true
-          org.gradle.configuration-cache.problems=warn
           systemProp.org.gradle.internal.http.connectionTimeout=120000
           systemProp.org.gradle.internal.http.socketTimeout=120000
           android.useAndroidX=true
