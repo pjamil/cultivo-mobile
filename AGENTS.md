@@ -110,3 +110,18 @@ flutter test integration_test/
 - Os access tokens para portainer, gitea, sonar e github e suas urls estão definidas em ~/.env
 - Importante, não exponha seus valores no chat, use as variáveis
 
+## Built-in Kotlin e Warning de KGP
+
+- O projeto usa **built-in Kotlin** (`android.builtInKotlin=true` no `gradle.properties`
+  e no override do CI). Requer AGP 9+, Gradle 8.13+ e plugins compatíveis.
+- O CI pode exibir `WARNING: Your app uses the following plugins that apply Kotlin
+  Gradle Plugin (KGP): flutter_image_compress_common`. É um **falso positivo benigno**:
+  o Flutter faz scan textual por `apply plugin: 'kotlin-android'` no build.gradle do
+  plugin, mas no `flutter_image_compress_common` essa linha é guardada por
+  `if (!useBuiltInKotlin)` e não é aplicada em runtime. Não é corrigível pelo app
+  (sem versão mais nova do plugin). Não bloquear o build por causa dele.
+- `share_plus` deve permanecer em 13.x (migrado para built-in Kotlin). Se um upgrade
+  exigir `win32 ^6`, o `flutter_secure_storage` precisa estar em 10.x+ (o 9.x exige
+  `win32 ^5`). Não usar `flutter_secure_storage` 11.x sem migrar dados antigos
+  (remove `encryptedSharedPreferences`).
+
