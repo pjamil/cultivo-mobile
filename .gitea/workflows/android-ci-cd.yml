@@ -109,12 +109,15 @@ jobs:
         run: |
           # The repo's gradle.properties requests -Xmx8G, which can OOM the
           # runner container. Use SerialGC + a single worker + in-process
-          # Kotlin to keep peak memory low.
+          # Kotlin to keep peak memory low. Configuration cache reduces
+          # peak memory further and speeds up the build.
           cat > android/gradle.properties <<EOF
-          org.gradle.jvmargs=-Xmx1024M -XX:MaxMetaspaceSize=768M -XX:ReservedCodeCacheSize=64m -XX:+UseSerialGC -XX:+HeapDumpOnOutOfMemoryError
+          org.gradle.jvmargs=-Xmx768M -XX:MaxMetaspaceSize=512M -XX:ReservedCodeCacheSize=64m -XX:+UseSerialGC -XX:+HeapDumpOnOutOfMemoryError
           org.gradle.daemon=false
           org.gradle.workers.max=1
           org.gradle.parallel=false
+          org.gradle.configuration-cache=true
+          org.gradle.configuration-cache.problems=warn
           systemProp.org.gradle.internal.http.connectionTimeout=120000
           systemProp.org.gradle.internal.http.socketTimeout=120000
           android.useAndroidX=true
@@ -123,14 +126,22 @@ jobs:
           kotlin.compiler.execution.strategy=in-process
           EOF
 
-      - name: Add swap buffer
+      - name: Check host memory headroom
         run: |
-          if command -v swapon >/dev/null 2>&1; then
-            fallocate -l 2G /swapfile && chmod 600 /swapfile \
-              && mkswap /swapfile && swapon /swapfile || true
-          fi
-          free -m
+          # The build OOMs when the host runs out of memory (no swap in the
+          # unprivileged container). Fail fast with a clear message instead of
+          # silently dying during assembleRelease.
+          AVAIL=$(awk '/MemAvailable/{print $2}' /proc/meminfo)
+          TOTAL=$(awk '/MemTotal/{print $2}' /proc/meminfo)
+          SWAP=$(awk '/SwapTotal/{print $2}' /proc/meminfo)
+          echo "MemAvailable: $((AVAIL/1024)) MiB"
+          echo "MemTotal: $((TOTAL/1024)) MiB"
+          echo "SwapTotal: $((SWAP/1024)) MiB"
           echo "CPU cores: $(nproc)"
+          if [ "$SWAP" -eq 0 ] && [ "$AVAIL" -lt 1572864 ]; then
+            echo "ERROR: < 1.5 GiB of memory available and no swap. The build would OOM." >&2
+            exit 1
+          fi
 
       - name: Check Maven repository connectivity
         run: |
