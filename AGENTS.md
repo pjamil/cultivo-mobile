@@ -92,6 +92,12 @@ flutter test integration_test/
   `DELETE /repos/{owner}/{repo}/push_mirrors/{name}` + `POST` com
   `{"remote_address":"https://github.com/pjamil/cultivo-mobile.git","username":"pjamil","password":"<PAT>","sync_on_commit":true,"interval":"24h"}`.
 - Download no celular (arm64): `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/download/latest/app-release.apk`
+- **Gitea Actions desabilitado para o repo** (`has_actions=false` via API, Ago/2026):
+  o Gitea lia o workflow `.github/workflows/android-ci-cd.yml` e criava um job por push
+  que ficava `queued` para sempre (sem runner com label `ubuntu-latest`, contador na
+  aba Actions acumulando). Como o Gitea Actions é descomissionado e o build roda só
+  no GitHub, o Actions do repositório foi desligado. Reativar se necessário:
+  `PATCH /repos/paulojamil/cultivo-mobile` com `{"has_actions": true}`.
 
 ## Troubleshooting (histórico): Build APK OOM no runner-jvm (Gitea Actions)
 
