@@ -87,4 +87,20 @@ class CultivosRepository extends CrudRepository<Cultivo> {
       throw Exception(e.error ?? 'Erro ao carregar histórico do cultivo');
     }
   }
+
+  Future<HistoricoTransicao> atualizarDataTransicao(
+    int cultivoId,
+    int historicoId,
+    DateTime novaData,
+  ) async {
+    try {
+      final response = await api.put(
+        Endpoints.cultivoHistoricoUpdate(cultivoId, historicoId),
+        data: {'dataTransicao': formatDateTime(novaData)},
+      );
+      return HistoricoTransicao.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw Exception(e.error ?? 'Erro ao atualizar data da transição');
+    }
+  }
 }

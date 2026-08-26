@@ -5,8 +5,13 @@ import '../../../../core/models/historico_transicao.dart';
 
 class HistoricoEstadoTimeline extends StatelessWidget {
   final List<HistoricoTransicao> transicoes;
+  final ValueChanged<HistoricoTransicao>? onEditar;
 
-  const HistoricoEstadoTimeline({super.key, required this.transicoes});
+  const HistoricoEstadoTimeline({
+    super.key,
+    required this.transicoes,
+    this.onEditar,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +91,13 @@ class HistoricoEstadoTimeline extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (onEditar != null)
+                    IconButton(
+                      icon: const Icon(Icons.edit_calendar, size: 20),
+                      tooltip: 'Alterar data',
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () => onEditar!(transicao),
+                    ),
                 ],
               ),
             ),

@@ -32,6 +32,15 @@ class CultivosNotifier extends CrudNotifier<Cultivo> {
     _replaceInState(updated);
   }
 
+  Future<void> atualizarDataTransicao(
+    int cultivoId,
+    int historicoId,
+    DateTime novaData,
+  ) async {
+    await (repository as CultivosRepository)
+        .atualizarDataTransicao(cultivoId, historicoId, novaData);
+  }
+
   void _replaceInState(Cultivo updated) {
     final id = updated.id;
     state = state.copyWith(

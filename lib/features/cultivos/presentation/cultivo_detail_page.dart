@@ -209,7 +209,11 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
                         style: TextStyle(color: Colors.grey[600]),
                       );
                     }
-                    return HistoricoEstadoTimeline(transicoes: comDias);
+                    return HistoricoEstadoTimeline(
+                      transicoes: comDias,
+                      onEditar: (transicao) =>
+                          _editarDataTransicao(transicao, comDias),
+                    );
                   },
                 ),
                 const SizedBox(height: 16),
@@ -297,6 +301,77 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
       registros: doCultivo,
       onRegistroTap: (registro) =>
           context.push('/registros-acao/${registro.id}'),
+    );
+  }
+
+  Future<void> _editarDataTransicao(
+    HistoricoTransicao transicao,
+    List<HistoricoTransicao> ordenadas,
+  ) async {
+    final novaData = await _pickDateTime(transicao.dataTransicao);
+    if (novaData == null || !mounted) return;
+
+    final index = ordenadas.indexWhere((t) => t.id == transicao.id);
+    final anterior = index > 0 ? ordenadas[index - 1].dataTransicao : null;
+    final proxima = index >= 0 && index < ordenadas.length - 1
+        ? ordenadas[index + 1].dataTransicao
+        : null;
+
+    if (!dataTransicaoValida(
+      novaData,
+      anterior: anterior,
+      proxima: proxima,
+    )) {
+      _mostrarSnack(
+        'Data fora da ordem cronológica. Escolha entre as transições vizinhas.',
+        isError: true,
+      );
+      return;
+    }
+
+    try {
+      await ref
+          .read(cultivosProvider.notifier)
+          .atualizarDataTransicao(widget.id, transicao.id, novaData);
+      ref.invalidate(cultivoHistoricoProvider(widget.id));
+      if (mounted) {
+        _mostrarSnack('Data da transição atualizada.');
+      }
+    } catch (e) {
+      if (mounted) {
+        _mostrarSnack(e.toString(), isError: true);
+      }
+    }
+  }
+
+  Future<DateTime?> _pickDateTime(DateTime initial) async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+    );
+    if (!mounted || date == null) return null;
+    final time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(initial),
+    );
+    if (!mounted) return null;
+    return DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time?.hour ?? initial.hour,
+      time?.minute ?? initial.minute,
+    );
+  }
+
+  void _mostrarSnack(String mensagem, {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensagem),
+        backgroundColor: isError ? Colors.red : null,
+      ),
     );
   }
 

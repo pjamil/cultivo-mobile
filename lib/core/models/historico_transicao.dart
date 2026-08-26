@@ -69,3 +69,15 @@ List<HistoricoTransicao> calcularDiasNoEstado(
 
   return sorted;
 }
+
+/// Verifica se [novaData] respeita a ordem cronológica das transições,
+/// ficando entre a transição [anterior] (inclusive) e a [proxima] (inclusive).
+bool dataTransicaoValida(
+  DateTime novaData, {
+  DateTime? anterior,
+  DateTime? proxima,
+}) {
+  if (anterior != null && novaData.isBefore(anterior)) return false;
+  if (proxima != null && novaData.isAfter(proxima)) return false;
+  return true;
+}

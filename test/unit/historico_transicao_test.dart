@@ -193,4 +193,78 @@ void main() {
       expect(resultado[0].diasNoEstado, 0);
     });
   });
+
+  group('dataTransicaoValida', () {
+    final anterior = DateTime(2026, 5, 1, 8);
+    final proxima = DateTime(2026, 5, 21, 9);
+
+    test('should accept a date between neighbors', () {
+      expect(
+        dataTransicaoValida(
+          DateTime(2026, 5, 10, 12),
+          anterior: anterior,
+          proxima: proxima,
+        ),
+        isTrue,
+      );
+    });
+
+    test('should reject a date before the previous transition', () {
+      expect(
+        dataTransicaoValida(
+          DateTime(2026, 4, 30, 12),
+          anterior: anterior,
+          proxima: proxima,
+        ),
+        isFalse,
+      );
+    });
+
+    test('should reject a date after the next transition', () {
+      expect(
+        dataTransicaoValida(
+          DateTime(2026, 5, 22, 12),
+          anterior: anterior,
+          proxima: proxima,
+        ),
+        isFalse,
+      );
+    });
+
+    test('should accept a date equal to the previous transition', () {
+      expect(
+        dataTransicaoValida(
+          anterior,
+          anterior: anterior,
+          proxima: proxima,
+        ),
+        isTrue,
+      );
+    });
+
+    test('should accept a date equal to the next transition', () {
+      expect(
+        dataTransicaoValida(
+          proxima,
+          anterior: anterior,
+          proxima: proxima,
+        ),
+        isTrue,
+      );
+    });
+
+    test('should accept any date when there are no neighbors', () {
+      expect(dataTransicaoValida(DateTime(2026, 1, 1)), isTrue);
+    });
+
+    test('should only check the upper bound for the first transition', () {
+      expect(
+        dataTransicaoValida(
+          DateTime(2026, 5, 22, 12),
+          proxima: proxima,
+        ),
+        isFalse,
+      );
+    });
+  });
 }
