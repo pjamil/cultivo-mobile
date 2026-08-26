@@ -15,7 +15,7 @@ if curl -s http://localhost:3001/meus-dados > /dev/null 2>&1; then
     echo "✅ Mock API is running"
 else
     echo "❌ Mock API is not running. Starting..."
-    cd /home/paulo/gitea.pjamil.dev/paulojamil/cultivo-web
+    cd <caminho-do-cultivo-web>
     pm2 start mock-api/simple-server.js --name cultivo-api
     sleep 2
     if curl -s http://localhost:3001/meus-dados > /dev/null 2>&1; then
@@ -50,12 +50,10 @@ echo "=========================================="
 if [ -n "$1" ]; then
     # Run specific test file
     echo "Running: $1"
-    cd /home/paulo/gitea.pjamil.dev/paulojamil/cultivo-web/cultivo-mobile
     flutter test integration_test/$1
 else
     # Run all tests
     echo "Running all integration tests..."
-    cd /home/paulo/gitea.pjamil.dev/paulojamil/cultivo-web/cultivo-mobile
     flutter test integration_test/
 fi
 

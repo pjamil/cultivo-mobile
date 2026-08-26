@@ -83,11 +83,10 @@ Fluxo padrão para desenvolver e testar sem celular. Requer a mock API do
 
 ```bash
 # 1. Subir a mock API (se o pm2 `cultivo-api` já estiver online, pule este passo)
-cd /home/paulo/gitea.pjamil.dev/paulojamil/cultivo-web
+cd <caminho-do-cultivo-web>
 pm2 start mock-api/server.js --name cultivo-api
 
 # 2. Rodar o app no Chrome apontando para a mock
-cd /home/paulo/gitea.pjamil.dev/paulojamil/cultivo-mobile
 flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:3001/api
 ```
 
@@ -153,7 +152,7 @@ static const String baseUrl = 'https://<url-do-tunnel>.trycloudflare.com';
 Para testes mais longos, deploy o backend na VPS:
 
 ```dart
-static const String baseUrl = 'https://api.cultivo.pjamil.dev';
+static const String baseUrl = 'https://<BACKEND_URL>';
 ```
 
 ### Emulador Android — inviável no notebook de dev

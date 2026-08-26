@@ -56,3 +56,7 @@ app.*.map.json
 
 # iOS ephemeral build artifacts
 ios/Flutter/ephemeral/
+
+# iOS generated files (contain local machine paths)
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Generated.xcconfig

@@ -111,8 +111,7 @@ passam — só o `assembleRelease` morre.
 
 **Causas confirmadas (Ago/2026) e correções aplicadas:**
 
-1. **Host sem swap + memória escassa.** O host da VPS (`ssdnodes-639e56e4cabc8`)
-   tem só 2 vCPUs / ~7,8 GiB RAM, compartilhados com ~27 containers. Durante o
+1. **Host sem swap + memória escassa.** O host da VPS tem só 2 vCPUs / ~7,8 GiB RAM, compartilhados com ~27 containers. Durante o
    build, a memória disponível do host caía para <0,5 GiB e o kernel OOM killer
    matava o Gradle (log do job termina sem erro).
    - **Correção:** swap de 8 GiB no host (2 arquivos de 4G), persistido no
@@ -135,8 +134,8 @@ passam — só o `assembleRelease` morre.
    --memory-swap=5g"`. Quando o daemon + Kotlin + R8 ultrapassavam 4 GiB, o OOM
    do cgroup matava o daemon silenciosamente (sem dmesg no host).
    - **Correção:** `--memory=6g --memory-swap=8g` no `config-jvm.yaml` (arquivo
-     na VPS em `/home/paulo/repos/gitea-server/runner/config-jvm.yaml`) + restart
-     do container `runner-jvm`.
+      na VPS em `<caminho-do-repo>/gitea-server/runner/config-jvm.yaml`) + restart
+      do container `runner-jvm`.
 
 5. **Heap do Gradle muito alto** (`org.gradle.jvmargs=-Xmx8G` no
    `android/gradle.properties` do repo). O workflow sobrescreve com
@@ -148,20 +147,20 @@ passam — só o `assembleRelease` morre.
   `MemAvailable < 1,5 GiB`, com mensagem clara (em vez de morrer no meio do build).
 - Tuning de memória do Gradle (heap baixo, SerialGC, worker único).
 
-**Comandos úteis para diagnóstico (VPS, host `ssdnodes-639e56e4cabc8`):**
+**Comandos úteis para diagnóstico (VPS, host do provedor):**
 
 ```bash
 # Memória / swap do host
-ssh paulo@172.93.54.123 'free -h'
+ssh <usuario>@<IP_DA_VPS> 'free -h'
 
 # Memória disponível do host durante o build (Prometheus na porta 32770)
-curl -s "http://localhost:32770/api/v1/query?query=node_memory_MemAvailable_bytes"
+curl -s "http://localhost:<PORTA_PROMETHEUS>/api/v1/query?query=node_memory_MemAvailable_bytes"
 
 # OOM no kernel (requer root — usar container privileged se não houver sudo)
 docker run --rm --privileged --pid=host alpine sh -c "dmesg | grep -iE 'oom|killed process' | tail"
 
 # Config do runner (limite de memória do container de build)
-cat /home/paulo/repos/gitea-server/runner/config-jvm.yaml
+cat <caminho-do-repo>/gitea-server/runner/config-jvm.yaml
 
 # Status do build no Gitea (API)
 curl -sL -H "Authorization: token $GITEA_TOKEN" \
