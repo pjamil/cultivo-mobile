@@ -73,15 +73,30 @@ flutter test integration_test/
 - Testes de integração em `integration_test/`
 - Scripts shell de teste na raiz: `test_*.sh` (mock API) e `test_ui.sh` (ADB)
 
-## CI/CD Android (Gitea Actions)
+## CI/CD Android (GitHub Actions)
 
-- Workflow: `.gitea/workflows/android-ci-cd.yml` — roda a cada push: builda o APK
-  release arm64 (`--target-platform android-arm64`) e publica na release `latest` do Gitea.
-- Download no celular (arm64): `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/latest/download/app-arm64-v8a-release.apk`
-- O job roda em `container: eclipse-temurin:17-jdk`, instala Flutter SDK 3.47.0 e
-  Android SDK sob demanda (sem imagem Flutter de terceiros).
+- O build do APK roda no **GitHub Actions** (`.github/workflows/android-ci-cd.yml`),
+  não mais no Gitea Actions (descomissionado em Ago/2026 — o host da VPS com 2 vCPU
+  causava builds lentos/instáveis e morte do daemon do Gradle).
+- **Fluxo:** push no Gitea (`main`) → push mirror do Gitea espelha pro GitHub
+  (`pjamil/cultivo-mobile`, público) → o workflow roda → publica o APK na release
+  `latest` do **Gitea** via API (secret `RELEASE_TOKEN`). O host da VPS não builda nada.
+- **Runner:** `ubuntu-latest` (4 vCPU / 16 GiB), JDK 17 temurin, Flutter SDK 3.47.0
+  instalado via tarball (sem imagem/action Flutter de terceiros), Android SDK via
+  sdkmanager (platforms;android-36, build-tools;36.0.0, cmake;3.22.1, ndk;28.2.13676358).
+- **Secrets no GitHub** (Settings → Secrets and variables → Actions): `RELEASE_TOKEN`
+  (token da API do Gitea), `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`,
+  `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`.
+- **Push mirror:** configurado em Gitea → Settings → Repository → Push Mirror
+  (`remote_mirror_*`), credenciais `pjamil` + PAT do GitHub. Corrigir via API:
+  `DELETE /repos/{owner}/{repo}/push_mirrors/{name}` + `POST` com
+  `{"remote_address":"https://github.com/pjamil/cultivo-mobile.git","username":"pjamil","password":"<PAT>","sync_on_commit":true,"interval":"24h"}`.
+- Download no celular (arm64): `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/latest/download/app-release.apk`
 
-## Troubleshooting: Build APK OOM no runner-jvm (Gitea Actions)
+## Troubleshooting (histórico): Build APK OOM no runner-jvm (Gitea Actions)
+
+> **Descomissionado Ago/2026.** Este troubleshooting se aplica à pipeline antiga do
+> Gitea Actions no host da VPS. Mantido apenas como referência histórica.
 
 **Sintomas:** `flutter build apk` falha no step "Build release APK (arm64)" com
 log terminando abruptamente (sem mensagem de erro) ou com
@@ -121,7 +136,7 @@ passam — só o `assembleRelease` morre.
    `android/gradle.properties` do repo). O workflow sobrescreve com
    `-Xmx768M -XX:MaxMetaspaceSize=512M` + `UseSerialGC` + workers.max=1.
 
-**Guards ativos no workflow** (`.gitea/workflows/android-ci-cd.yml`):
+**Guards ativos no workflow antigo** (`.gitea/workflows/android-ci-cd.yml`, removido):
 
 - Step **"Check host memory headroom"** falha cedo se `SwapTotal == 0` e
   `MemAvailable < 1,5 GiB`, com mensagem clara (em vez de morrer no meio do build).
@@ -156,7 +171,7 @@ disponível do host durante o build, (3) limite de memória do container no
 
 - O `build.gradle.kts` assina releases lendo `android/key.properties` (não versionado).
   Se ausente, usa a keystore de debug (fallback para dev local).
-- Secrets do Gitea usados no CI: `RELEASE_TOKEN`, `ANDROID_KEYSTORE_BASE64`,
+- Secrets do GitHub usados no CI: `RELEASE_TOKEN`, `ANDROID_KEYSTORE_BASE64`,
   `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`.
 - `android/key.properties` e `**/*.jks` estão no `.gitignore` — nunca commitar.
 

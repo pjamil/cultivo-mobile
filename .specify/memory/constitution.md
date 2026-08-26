@@ -42,10 +42,10 @@ multi-cultura. Equipe: Paulo + Agente AI.
 
 ### V. CI/CD Contínuo
 
-- Gitea Actions roda a cada push: build + testes
+- GitHub Actions roda a cada push (mirror Gitea → GitHub): build + testes
 - APK release arm64 automático via `--target-platform android-arm64`
 - Publicação na release `latest` do Gitea
-- Download: `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/latest/download/app-arm64-v8a-release.apk`
+- Download: `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/latest/download/app-release.apk`
 
 ### VI. Documentação
 
@@ -154,4 +154,4 @@ Esta constituição é o documento supremo de governança do projeto cultivo-mob
 - **Revisão**: Revisão periódica para garantir relevância
 - **Spec Kit**: Constitution é o ponto de entrada para `/speckit.constitution`
 
-**Version**: 1.1.1 | **Ratified**: 2026-08-22 | **Last Amended**: 2026-08-22
+**Version**: 1.1.2 | **Ratified**: 2026-08-22 | **Last Amended**: 2026-08-26

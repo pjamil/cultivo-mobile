@@ -175,18 +175,20 @@ Builds release continuam bloqueando cleartext (produção segura).
 
 ### Via release automática do CI (recomendado)
 
-A cada push, a pipeline **Gitea Actions** (`.gitea/workflows/android-ci-cd.yml`) builda o
-APK Android e publica na release `latest` do repositório.
+A cada push, o push mirror do Gitea espelha o repositório pro GitHub e a pipeline
+**GitHub Actions** (`.github/workflows/android-ci-cd.yml`) builda o APK Android e
+publica na release `latest` do repositório.
 
 - **URL de download (Moto G73 / arm64):**
-  `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/latest/download/app-arm64-v8a-release.apk`
+  `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/latest/download/app-release.apk`
 
 1. No celular, habilite "instalar de fontes desconhecidas" para o navegador.
 2. Acesse a URL acima e baixe o APK.
 3. Instale. Nas próximas versões, a mesma URL aponta para o build mais recente — instale
    por cima (mesma assinatura, sem desinstalar).
 
-> O CI publica a release `latest` a cada push usando o `RELEASE_TOKEN` (admin). Para mudar o
+> O CI publica a release `latest` a cada push usando o `RELEASE_TOKEN` (token da API do
+> Gitea, armazenado como secret no GitHub). Para mudar o
 > backend usado no APK, defina `API_BASE_URL` no build ou edite `lib/core/api/endpoints.dart`.
 
 ### Via ADB wireless

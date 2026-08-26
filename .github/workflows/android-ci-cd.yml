@@ -1,0 +1,116 @@
+name: Android CI/CD (GitHub Actions)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  FLUTTER_VERSION: '3.47.0'
+  FLUTTER_ROOT: /home/runner/flutter
+  ANDROID_HOME: /usr/local/lib/android/sdk
+  APK_NAME: app-release.apk
+  RELEASE_TAG: latest
+  GITEA_API: https://gitea.pjamil.dev/api/v1
+
+jobs:
+  build-publish:
+    name: Build APK and publish latest release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Flutter SDK
+        run: |
+          curl -fsSL -o /tmp/flutter.tar.xz \
+            "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_$FLUTTER_VERSION-stable.tar.xz"
+          tar xf /tmp/flutter.tar.xz -C /home/runner
+          git config --global --add safe.directory "$FLUTTER_ROOT"
+          git config --global --add safe.directory "$FLUTTER_ROOT/packages/flutter_tools"
+          echo "$FLUTTER_ROOT/bin" >> "$GITHUB_PATH"
+          echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
+
+      - name: Install Android SDK packages
+        run: |
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses >/dev/null
+          "$SDKMANAGER" \
+            "platform-tools" \
+            "platforms;android-36" \
+            "build-tools;36.0.0" \
+            "cmake;3.22.1" \
+            "ndk;28.2.13676358"
+
+      - name: Configure local.properties
+        run: |
+          echo "flutter.sdk=$FLUTTER_ROOT" > android/local.properties
+          echo "sdk.dir=$ANDROID_HOME" >> android/local.properties
+
+      - name: Configure release keystore
+        run: |
+          mkdir -p android/app
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/app/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storeFile=upload-keystore.jks
+          storePassword=$ANDROID_KEYSTORE_PASSWORD
+          keyAlias=$ANDROID_KEY_ALIAS
+          keyPassword=$ANDROID_KEY_PASSWORD
+          EOF
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Unit tests
+        run: flutter test
+
+      - name: Build release APK (arm64)
+        run: flutter build apk --release --target-platform android-arm64
+
+      - name: Publish latest release to Gitea
+        run: |
+          APK="$(find build/app/outputs/flutter-apk -maxdepth 1 -name '*.apk' | head -n1)"
+          if [ ! -f "$APK" ]; then
+            echo "APK not found in build/app/outputs/flutter-apk" >&2
+            exit 1
+          fi
+          OWNER="paulojamil"
+          REPO="cultivo-mobile"
+          AUTH="Authorization: token ${{ secrets.RELEASE_TOKEN }}"
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+
+          # Remove existing release with the same tag (if any)
+          curl -s -o /dev/null -X DELETE -H "$AUTH" \
+            "$GITEA_API/repos/$OWNER/$REPO/releases/tags/$RELEASE_TAG"
+
+          # Create the release
+          RELEASE_JSON=$(curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" \
+            -d "{\"tag_name\":\"$RELEASE_TAG\",\"name\":\"Latest build ($SHORT_SHA)\",\"body\":\"Build automatico do GitHub Actions ($SHORT_SHA).\\n\\nDownload APK: \`$APK_NAME\`\",\"prerelease\":false}" \
+            "$GITEA_API/repos/$OWNER/$REPO/releases")
+          RELEASE_ID=$(echo "$RELEASE_JSON" | grep -o '"id":[0-9]*' | head -n1 | cut -d: -f2)
+          if [ -z "$RELEASE_ID" ]; then
+            echo "Failed to parse release id from: $RELEASE_JSON" >&2
+            exit 1
+          fi
+
+          # Upload the APK as a release asset
+          echo "Uploading to release $RELEASE_ID"
+          curl -fsS -X POST -H "$AUTH" \
+            -F "attachment=@$APK" \
+            "$GITEA_API/repos/$OWNER/$REPO/releases/$RELEASE_ID/assets?name=$APK_NAME"
+
+          echo "Published: https://gitea.pjamil.dev/$OWNER/$REPO/releases/latest"
