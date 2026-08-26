@@ -6,12 +6,18 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/models/foto.dart';
+import '../../../core/models/historico_transicao.dart';
+import '../../../core/models/registro_acao.dart';
+import '../../../core/crud/crud_provider.dart';
 import '../../../core/api/foto_service.dart';
 import '../../../shared/widgets/confirmation_dialog.dart';
 import '../../../shared/widgets/full_screen_image_viewer.dart';
 import '../../../shared/widgets/grouped_photo_timeline.dart';
 import '../../../shared/widgets/photo_upload_button.dart';
+import '../../registros_acao/presentation/widgets/registros_acao_timeline.dart';
+import '../../registros_acao/providers/registros_acao_provider.dart';
 import '../providers/cultivos_provider.dart';
+import 'widgets/historico_estado_timeline.dart';
 import 'widgets/state_badge.dart';
 
 class CultivoDetailPage extends ConsumerStatefulWidget {
@@ -32,6 +38,9 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(cultivosProvider.notifier).loadCultivo(widget.id);
+      ref
+          .read(registrosAcaoProvider.notifier)
+          .loadRegistrosPorCultivo(widget.id);
       _carregarFotos();
     });
   }
@@ -52,6 +61,8 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
   @override
   Widget build(BuildContext context) {
     final cultivosState = ref.watch(cultivosProvider);
+    final historicoAsync = ref.watch(cultivoHistoricoProvider(widget.id));
+    final registrosState = ref.watch(registrosAcaoProvider);
 
     ref.listen<CultivosState>(cultivosProvider, (previous, next) {
       if (next.error != null) {
@@ -172,6 +183,67 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
                 ],
                 const SizedBox(height: 16),
                 Text(
+                  'Histórico de Estado',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 8),
+                historicoAsync.when(
+                  loading: () => const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                  error: (_, __) => Text(
+                    'Não foi possível carregar o histórico de estado.',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                  data: (historico) {
+                    final comDias = calcularDiasNoEstado(
+                      historico,
+                      dataFim: cultivosState.selected!.dataFim,
+                    );
+                    if (comDias.isEmpty) {
+                      return Text(
+                        'Nenhuma transição registrada.',
+                        style: TextStyle(color: Colors.grey[600]),
+                      );
+                    }
+                    return HistoricoEstadoTimeline(transicoes: comDias);
+                  },
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Registros de Ação',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    TextButton(
+                      onPressed: () => context
+                          .push('/registros-acao?cultivoId=${widget.id}'),
+                      child: const Text('Ver todos'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                if (registrosState.status == CrudStatus.loading)
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                else if (registrosState.status == CrudStatus.error)
+                  Text(
+                    'Não foi possível carregar os registros de ação.',
+                    style: TextStyle(color: Colors.grey[600]),
+                  )
+                else
+                  _buildRegistrosSection(context, registrosState.items),
+                const SizedBox(height: 16),
+                Text(
                   'Fotos',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
@@ -207,6 +279,24 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildRegistrosSection(
+    BuildContext context,
+    List<RegistroAcao> registros,
+  ) {
+    final doCultivo = registros.where((r) => r.cultivoId == widget.id).toList();
+    if (doCultivo.isEmpty) {
+      return Text(
+        'Nenhuma ação registrada. Toque no botão + para registrar.',
+        style: TextStyle(color: Colors.grey[600]),
+      );
+    }
+    return RegistrosAcaoTimeline(
+      registros: doCultivo,
+      onRegistroTap: (registro) =>
+          context.push('/registros-acao/${registro.id}'),
     );
   }
 
