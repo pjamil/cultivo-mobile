@@ -1,5 +1,7 @@
 # Cultivo Mobile
 
+[![Build](https://github.com/pjamil/cultivo-mobile/actions/workflows/android-ci-cd.yml/badge.svg)](https://github.com/pjamil/cultivo-mobile/actions/workflows/android-ci-cd.yml)
+
 App mobile para gestão de cultivos multi-cultura.
 
 ## Funcionalidades
