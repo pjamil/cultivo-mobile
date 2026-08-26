@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/crud/crud_provider.dart';
 import '../../../core/models/cultivo.dart';
+import '../../../core/models/historico_transicao.dart';
 import '../data/cultivos_repository.dart';
 
 typedef CultivosState = CrudState<Cultivo>;
@@ -45,4 +46,10 @@ final cultivosProvider =
     StateNotifierProvider<CultivosNotifier, CultivosState>((ref) {
   final repository = ref.watch(cultivosRepositoryProvider);
   return CultivosNotifier(repository);
+});
+
+final cultivoHistoricoProvider = FutureProvider.autoDispose
+    .family<List<HistoricoTransicao>, int>((ref, id) async {
+  final repository = ref.watch(cultivosRepositoryProvider);
+  return repository.listarHistorico(id);
 });

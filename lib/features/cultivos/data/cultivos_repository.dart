@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/endpoints.dart';
 import '../../../core/crud/crud_repository.dart';
 import '../../../core/models/cultivo.dart';
+import '../../../core/models/historico_transicao.dart';
 import '../../../core/utils/date_utils.dart';
 
 final cultivosRepositoryProvider = Provider<CultivosRepository>((ref) {
@@ -71,6 +72,19 @@ class CultivosRepository extends CrudRepository<Cultivo> {
       return Cultivo.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       throw Exception(e.error ?? 'Erro ao colher cultivo');
+    }
+  }
+
+  Future<List<HistoricoTransicao>> listarHistorico(int id) async {
+    try {
+      final response = await api.get(Endpoints.cultivoHistorico(id));
+      final data = response.data;
+      if (data is List) {
+        return data.map((json) => HistoricoTransicao.fromJson(json)).toList();
+      }
+      return [];
+    } on DioException catch (e) {
+      throw Exception(e.error ?? 'Erro ao carregar histórico do cultivo');
     }
   }
 }

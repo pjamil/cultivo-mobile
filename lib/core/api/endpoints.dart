@@ -66,6 +66,7 @@ class Endpoints {
   static String cultivoAvancarEstado(int id) => '$cultivos/$id/avancar-estado';
   static String cultivoCancelar(int id) => '$cultivos/$id/cancelar';
   static String cultivoColher(int id) => '$cultivos/$id/colher';
+  static String cultivoHistorico(int id) => '$cultivos/$id/historico';
   static String diarioById(int id) => '$diario/$id';
   static String ambienteById(int id) => '$ambientes/$id';
   static String variedadeById(int id) => '$variedades/$id';
