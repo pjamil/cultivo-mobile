@@ -79,8 +79,7 @@ jobs:
         run: flutter test
 
       - name: Build release APK (arm64)
-        run: flutter build apk --release --target-platform android-arm64 \
-          --dart-define=BUILD_COMMIT=${{ github.sha }}
+        run: flutter build apk --release --target-platform android-arm64 --dart-define=BUILD_COMMIT=${{ github.sha }}
 
       - name: Publish latest release to Gitea
         run: |
