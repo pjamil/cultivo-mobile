@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/utils/build_info.dart';
+
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
@@ -29,13 +31,28 @@ class SettingsPage extends ConsumerWidget {
             onTap: () => context.push('/meus-dados'),
           ),
           const Divider(),
-          const ListTile(
-            leading: Icon(Icons.info),
-            title: Text('Sobre'),
-            subtitle: Text('Cultivo v1.0.0'),
-          ),
+          const _SobreTile(),
         ],
       ),
+    );
+  }
+}
+
+class _SobreTile extends StatelessWidget {
+  const _SobreTile();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+      future: BuildInfo.versaoInstalada(),
+      builder: (context, snapshot) {
+        final versao = snapshot.data ?? '...';
+        return ListTile(
+          leading: const Icon(Icons.info),
+          title: const Text('Sobre'),
+          subtitle: Text('Cultivo $versao'),
+        );
+      },
     );
   }
 }
