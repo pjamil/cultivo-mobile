@@ -243,3 +243,19 @@ disponível do host durante o build, (3) limite de memória do container no
   `win32 ^5`). Não usar `flutter_secure_storage` 11.x sem migrar dados antigos
   (remove `encryptedSharedPreferences`).
 
+## Wiki e Política Público vs Privado
+
+O repositório `cultivo-mobile` é **privado** no Gitea e **espelhado publicamente**
+no GitHub (`pjamil/cultivo-mobile`) para o CI buildar o APK. A **wiki** do
+repositório é privada e hospeda os documentos internos:
+
+- **Wiki (privada):** https://gitea.pjamil.dev/paulojamil/cultivo-mobile/wiki
+  - Especificação de Requisitos
+  - Comparação com Grow with Jane
+  - Política Público vs Privado
+- **Público (GitHub):** código-fonte, README.md sanitizado, AGENTS.md sanitizado,
+  configs de ferramentas (`.opencode/`, `.specify/`, `specs/`)
+- **Regra:** nunca colocar IPs, hostnames de provedor, portas internas, caminhos
+  locais (`/home/...`) ou arquivos gerados com paths locais em arquivos versionados.
+  Documentos internos sensíveis vão para a wiki privada.
+
