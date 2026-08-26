@@ -45,7 +45,7 @@ multi-cultura. Equipe: Paulo + Agente AI.
 - GitHub Actions roda a cada push (mirror Gitea → GitHub): build + testes
 - APK release arm64 automático via `--target-platform android-arm64`
 - Publicação na release `latest` do Gitea
-- Download: `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/latest/download/app-release.apk`
+- Download: `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/download/latest/app-release.apk`
 
 ### VI. Documentação
 

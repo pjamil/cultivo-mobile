@@ -91,7 +91,7 @@ flutter test integration_test/
   (`remote_mirror_*`), credenciais `pjamil` + PAT do GitHub. Corrigir via API:
   `DELETE /repos/{owner}/{repo}/push_mirrors/{name}` + `POST` com
   `{"remote_address":"https://github.com/pjamil/cultivo-mobile.git","username":"pjamil","password":"<PAT>","sync_on_commit":true,"interval":"24h"}`.
-- Download no celular (arm64): `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/latest/download/app-release.apk`
+- Download no celular (arm64): `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/download/latest/app-release.apk`
 
 ## Troubleshooting (histórico): Build APK OOM no runner-jvm (Gitea Actions)
 

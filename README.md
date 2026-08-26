@@ -182,7 +182,7 @@ A cada push, o push mirror do Gitea espelha o repositório pro GitHub e a pipeli
 publica na release `latest` do repositório.
 
 - **URL de download (Moto G73 / arm64):**
-  `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/latest/download/app-release.apk`
+  `https://gitea.pjamil.dev/paulojamil/cultivo-mobile/releases/download/latest/app-release.apk`
 
 1. No celular, habilite "instalar de fontes desconhecidas" para o navegador.
 2. Acesse a URL acima e baixe o APK.
