@@ -49,10 +49,11 @@ multi-cultura. Equipe: Paulo + Agente AI.
 
 ### VI. Documentação
 
-- README.md sempre atualizado com setup, uso e troubleshooting
-- AGENTS.md fornece contexto para agentes AI
+- README.md sempre atualizado com setup, uso e troubleshooting (versão pública)
+- AGENTS.md fornece contexto para agentes AI (versão sanitizada)
 - Código deve ser auto-documentado via naming claro
 - Convenções documentadas em AGENTS.md
+- **Documentos internos sensíveis vão para a wiki privada** (ver princípio IX)
 
 ### VII. Acessibilidade
 
@@ -60,6 +61,48 @@ multi-cultura. Equipe: Paulo + Agente AI.
 - Contraste adequado de cores (WCAG 2.1 AA)
 - Tamanhos de toque mínimos de 48x48dp
 - Labels em todos os campos de formulário
+
+### VIII. Política Público vs Privado (e Wiki)
+
+O repositório `cultivo-mobile` é **privado** no Gitea e **espelhado publicamente**
+no GitHub (`pjamil/cultivo-mobile`) para o CI buildar o APK. A **wiki do
+repositório** é privada e é o local oficial para documentos internos sensíveis.
+
+**Regra de ouro:** novos documentos devem seguir esta política — o que é interno
+e sensível vai para a **wiki privada**, o que é público e não-sensível pode ir
+para o repo (e espelhar para o GitHub).
+
+**PÚBLICO (pode ir para o repo → GitHub):**
+
+- Código-fonte do app
+- README.md sanitizado (setup, uso, instalação do APK)
+- AGENTS.md sanitizado (sem infraestrutura interna)
+- Configs de ferramentas: `.opencode/`, `.specify/`, `specs/` (opencode/speckit)
+- Endpoints públicos da API (presentes no código)
+
+**PRIVADO (somente wiki do Gitea):**
+
+- Especificação de requisitos interna
+- Comparação estratégica com concorrentes (Grow with Jane)
+- Infraestrutura: IPs, hostnames de provedor, portas internas, tokens em `~/.env`
+- Arquitetura interna do backend, troubleshooting de CI/infra
+- Política completo de separação (wiki)
+
+**Proibições (valem para qualquer arquivo versionado):**
+
+- Nunca colocar IPs, hostnames de provedor, portas internas ou caminhos locais
+  (`/home/...`) em arquivos versionados
+- Nunca versionar arquivos gerados com paths locais
+  (`ios/Flutter/flutter_export_environment.sh`, `Generated.xcconfig`)
+- Segredos (tokens, senhas, keystore) → `~/.env` e secrets do CI, nunca no código
+
+**Fluxo ao criar/atualizar documentação:**
+
+1. O conteúdo é interno/sensível (especificação, estratégia, infra, arquitetura)?
+   → Escrever na **wiki privada** (via API ou clone do repo `.wiki.git`).
+2. O conteúdo é público (setup, uso, convenções sanitizadas)?
+   → Pode ir para o repo versionado.
+3. Nunca duplicar conteúdo sensível no repo "para garantir" — a wiki é a fonte.
 
 ## Stack Tecnológica
 
@@ -154,4 +197,4 @@ Esta constituição é o documento supremo de governança do projeto cultivo-mob
 - **Revisão**: Revisão periódica para garantir relevância
 - **Spec Kit**: Constitution é o ponto de entrada para `/speckit.constitution`
 
-**Version**: 1.1.2 | **Ratified**: 2026-08-22 | **Last Amended**: 2026-08-26
+**Version**: 1.2.0 | **Ratified**: 2026-08-22 | **Last Amended**: 2026-08-26

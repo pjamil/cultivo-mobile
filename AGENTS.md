@@ -259,3 +259,11 @@ repositório é privada e hospeda os documentos internos:
   locais (`/home/...`) ou arquivos gerados com paths locais em arquivos versionados.
   Documentos internos sensíveis vão para a wiki privada.
 
+**Fluxo ao criar/atualizar documentação:**
+
+1. O conteúdo é interno/sensível (especificação, estratégia, infra, arquitetura)?
+   → Escrever na **wiki privada** (via API ou clone do repo `.wiki.git`).
+2. O conteúdo é público (setup, uso, convenções sanitizadas)?
+   → Pode ir para o repo versionado.
+3. Nunca duplicar conteúdo sensível no repo "para garantir" — a wiki é a fonte.
+
