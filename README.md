@@ -74,13 +74,35 @@ flutter build ios
 
 ## Ambiente de Desenvolvimento e Teste
 
+### Fluxo recomendado: Mock API local + Chrome
+
+Fluxo padrão para desenvolver e testar sem celular. Requer a mock API do
+`cultivo-web` na porta 3001 e o app apontando para ela via `--dart-define`.
+
+```bash
+# 1. Subir a mock API (se o pm2 `cultivo-api` já estiver online, pule este passo)
+cd /home/paulo/gitea.pjamil.dev/paulojamil/cultivo-web
+pm2 start mock-api/server.js --name cultivo-api
+
+# 2. Rodar o app no Chrome apontando para a mock
+cd /home/paulo/gitea.pjamil.dev/paulojamil/cultivo-mobile
+flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:3001/api
+```
+
+- O `server.js` da mock reescreve a URL removendo o prefixo `/api/v1` — por isso o
+  `baseUrl` é `http://localhost:3001/api` (e não `http://localhost:3001`).
+- Credenciais seed: `maria@teste.com` / `admin123` (usuários em `db.json` do cultivo-web).
+- **Sem o `--dart-define`**, o app usa `https://cultivo-dev.pjamil.dev/api` (remoto).
+- CORS: a mock responde `Access-Control-Allow-Origin: *` (json-server defaults), ok para o Chrome.
+
 ### Opção 1: Flutter Web (sem celular)
 
 ```bash
 flutter run -d chrome
 ```
 
-Roda direto no navegador. `localhost` funciona normalmente.
+Roda direto no navegador, usando o backend remoto (default `cultivo-dev.pjamil.dev`).
+Para usar a mock local, veja o fluxo recomendado acima.
 
 ### Opção 2: Emulador Android
 
@@ -131,6 +153,23 @@ Para testes mais longos, deploy o backend na VPS:
 ```dart
 static const String baseUrl = 'https://api.cultivo.pjamil.dev';
 ```
+
+### Emulador Android — inviável no notebook de dev
+
+O emulador Android está instalado (AVDs `cultivo` e `cultivo-aosp`), mas o notebook
+(Toshiba Satellite A505, Intel Core i3 M 330 de 2010) **não tem AVX/AES**. O emulador
+detecta a ausência dessas features e **força o AVD a 1 vCPU** (mesmo com `-cores 4`).
+Com 1 vCPU, qualquer `pm install` de um APK real bloqueia o `system_server` por mais
+de 60s e o **watchdog do Android mata o sistema** (crashes em loop). Não há
+configuração que contorne — é limitação de hardware. Prefira o fluxo web recomendado
+acima ou o APK do CI em um celular real.
+
+Para testar num Android de verdade contra a mock local (HTTP), o bloqueio de
+cleartext já é liberado por overlays **só de debug/profile**:
+- `android/app/src/debug/res/xml/network_security_config.xml`
+- `android/app/src/profile/res/xml/network_security_config.xml`
+
+Builds release continuam bloqueando cleartext (produção segura).
 
 ## Instalação no Celular (sem USB)
 

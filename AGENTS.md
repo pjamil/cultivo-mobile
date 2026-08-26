@@ -164,6 +164,10 @@ disponível do host durante o build, (3) limite de memória do container no
 
 - Mock API local na porta `3001` (iniciada via `pm2` em `cultivo-web`)
 - `baseUrl` configurado em `lib/core/api/endpoints.dart`
+- Para testar local: `flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:3001/api`
+  (o `server.js` da mock reescreve a URL removendo `/api/v1`; sem o `--dart-define`,
+  o default é `https://cultivo-dev.pjamil.dev/api`)
+- Credenciais seed da mock: `maria@teste.com` / `admin123` (em `db.json` do cultivo-web)
 
 ## Android Network Security
 
@@ -175,6 +179,29 @@ disponível do host durante o build, (3) limite de memória do container no
   `DioExceptionType.connectionError` ("Sem conexão com a internet") mesmo com
   rede e backend funcionais. O browser do celular funciona porque usa seu próprio
   trust store.
+- **Teste local com HTTP (cleartext):** builds debug/profile liberam cleartext via
+  overlays em `android/app/src/debug/res/xml/network_security_config.xml` e
+  `android/app/src/profile/res/xml/network_security_config.xml`
+  (`cleartextTrafficPermitted="true"`), referenciados nos manifests de debug/profile.
+  Builds release seguem bloqueando cleartext (produção segura).
+
+## Emulador Android no notebook de dev
+
+- Instalado: `emulator` + imagens `system-images;android-36;google_apis;x86_64` e
+  `system-images;android-36;default;x86_64`; AVDs `cultivo` e `cultivo-aosp` em `~/.android/avd/`.
+- **Inviável nesta máquina**: o notebook (Toshiba Satellite A505, Intel Core i3 M 330,
+  2010) não tem AVX/AES. O emulador força o AVD a 1 vCPU
+  (`WARNING: ... Setting AVD to run with 1 vCPU core only` — mesmo com `-cores 4`).
+  Com 1 vCPU, `pm install` de um APK real bloqueia o `system_server` >60s e o watchdog
+  do Android mata o sistema (`*** WATCHDOG KILLING SYSTEM PROCESS`), em loop de crash.
+  Não é contornável por config — usar o fluxo web + mock (seção Backend / Mock API).
+- **adb PATH quebrado (corrigido):** `flutter doctor` acusava "adb not found" porque o
+  adb real está em `~/Android/Sdk/platform-tools-2/adb`, não em `~/Android/Sdk/platform-tools/adb`.
+  Correção aplicada com symlink:
+  `ln -s ~/Android/Sdk/platform-tools-2/adb ~/Android/Sdk/platform-tools/adb`.
+- **Testar num Android real com a mock local:** build debug/profile (cleartext liberado
+  pelos overlays acima) + `adb reverse tcp:3001 tcp:3001` +
+  `flutter run --dart-define=API_BASE_URL=http://localhost:3001/api`.
 
 ## Variáveis com Access Tokens e URLs
 
