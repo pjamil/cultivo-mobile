@@ -110,6 +110,14 @@ class MainScaffold extends StatelessWidget {
               context.go('/meios-cultivo');
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.thermostat),
+            title: const Text('Dados Ambientais'),
+            onTap: () {
+              Navigator.pop(context);
+              context.go('/dados-ambientais');
+            },
+          ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.task_alt),

@@ -39,6 +39,9 @@ import '../features/settings/presentation/notification_settings_page.dart';
 import '../features/registros_acao/presentation/registros_acao_list_page.dart';
 import '../features/registros_acao/presentation/registro_acao_form_page.dart';
 import '../features/registros_acao/presentation/registro_acao_detail_page.dart';
+import '../features/dados_ambientais/presentation/dados_ambientais_list_page.dart';
+import '../features/dados_ambientais/presentation/dado_ambiental_form_page.dart';
+import '../features/dados_ambientais/presentation/dado_ambiental_detail_page.dart';
 import '../shared/widgets/main_scaffold.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -129,6 +132,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/diario',
             builder: (context, state) => const DiarioListPage(),
+          ),
+          GoRoute(
+            path: '/dados-ambientais',
+            builder: (context, state) => const DadosAmbientaisListPage(),
           ),
         ],
       ),
@@ -270,6 +277,24 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/insumos/:id/editar',
         builder: (context, state) => InsumoFormPage(
+          id: int.parse(state.pathParameters['id']!),
+        ),
+      ),
+
+      // Dados Ambientais routes
+      GoRoute(
+        path: '/dados-ambientais/novo',
+        builder: (context, state) => const DadoAmbientalFormPage(),
+      ),
+      GoRoute(
+        path: '/dados-ambientais/:id',
+        builder: (context, state) => DadoAmbientalDetailPage(
+          id: int.parse(state.pathParameters['id']!),
+        ),
+      ),
+      GoRoute(
+        path: '/dados-ambientais/:id/editar',
+        builder: (context, state) => DadoAmbientalFormPage(
           id: int.parse(state.pathParameters['id']!),
         ),
       ),
