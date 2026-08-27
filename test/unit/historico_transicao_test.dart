@@ -175,6 +175,23 @@ void main() {
       expect(calcularDiasNoEstado([]), isEmpty);
     });
 
+    test('should tiebreak by id when transitions share the same date', () {
+      final mesmaData = DateTime(2026, 5, 1, 8);
+      final transicoes = [
+        transicao(20, 'PLANEJADO', 'GERMINANDO', mesmaData),
+        transicao(10, 'PLANEJADO', 'PLANTADO', mesmaData),
+        transicao(30, 'PLANEJADO', 'VEGETATIVO', mesmaData),
+      ];
+
+      final resultado = calcularDiasNoEstado(
+        transicoes,
+        dataFim: DateTime(2026, 5, 11),
+      );
+
+      expect(resultado.map((t) => t.id).toList(), [10, 20, 30]);
+      expect(resultado[0].estadoAtual, 'PLANTADO');
+    });
+
     test('should clamp negative durations to zero', () {
       final transicoes = [
         transicao(
@@ -264,6 +281,68 @@ void main() {
           proxima: proxima,
         ),
         isFalse,
+      );
+    });
+
+    test('should accept a date after the previous transition for the last one',
+        () {
+      expect(
+        dataTransicaoValida(
+          DateTime(2026, 5, 22, 12),
+          anterior: anterior,
+        ),
+        isTrue,
+      );
+    });
+
+    test('should reject a date before the previous transition for the last one',
+        () {
+      expect(
+        dataTransicaoValida(
+          DateTime(2026, 4, 30, 12),
+          anterior: anterior,
+        ),
+        isFalse,
+      );
+    });
+
+    test('should only accept the exact date when the window has zero width',
+        () {
+      final mesmoPonto = DateTime(2026, 5, 10, 12);
+      expect(
+        dataTransicaoValida(
+          mesmoPonto,
+          anterior: mesmoPonto,
+          proxima: mesmoPonto,
+        ),
+        isTrue,
+      );
+      expect(
+        dataTransicaoValida(
+          DateTime(2026, 5, 10, 11),
+          anterior: mesmoPonto,
+          proxima: mesmoPonto,
+        ),
+        isFalse,
+      );
+      expect(
+        dataTransicaoValida(
+          DateTime(2026, 5, 10, 13),
+          anterior: mesmoPonto,
+          proxima: mesmoPonto,
+        ),
+        isFalse,
+      );
+    });
+
+    test('should accept a date before the next transition with only proxima',
+        () {
+      expect(
+        dataTransicaoValida(
+          DateTime(2026, 5, 10, 12),
+          proxima: proxima,
+        ),
+        isTrue,
       );
     });
   });

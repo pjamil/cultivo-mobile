@@ -95,7 +95,6 @@ class HistoricoEstadoTimeline extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.edit_calendar, size: 20),
                       tooltip: 'Alterar data',
-                      visualDensity: VisualDensity.compact,
                       onPressed: () => onEditar!(transicao),
                     ),
                 ],

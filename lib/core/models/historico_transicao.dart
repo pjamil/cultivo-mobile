@@ -48,8 +48,10 @@ List<HistoricoTransicao> calcularDiasNoEstado(
 }) {
   if (transicoes.isEmpty) return [];
 
-  final sorted = [...transicoes]
-    ..sort((a, b) => a.dataTransicao.compareTo(b.dataTransicao));
+  final sorted = [...transicoes]..sort((a, b) {
+      final porData = a.dataTransicao.compareTo(b.dataTransicao);
+      return porData != 0 ? porData : a.id.compareTo(b.id);
+    });
 
   final referencia = agora ?? DateTime.now();
 

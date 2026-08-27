@@ -311,17 +311,12 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
     final novaData = await _pickDateTime(transicao.dataTransicao);
     if (novaData == null || !mounted) return;
 
-    final index = ordenadas.indexWhere((t) => t.id == transicao.id);
-    final anterior = index > 0 ? ordenadas[index - 1].dataTransicao : null;
-    final proxima = index >= 0 && index < ordenadas.length - 1
-        ? ordenadas[index + 1].dataTransicao
-        : null;
+    if (novaData.isAfter(DateTime.now())) {
+      _mostrarSnack('A data não pode estar no futuro.', isError: true);
+      return;
+    }
 
-    if (!dataTransicaoValida(
-      novaData,
-      anterior: anterior,
-      proxima: proxima,
-    )) {
+    if (!_dataDentroDosVizinhos(ordenadas, transicao.id, novaData)) {
       _mostrarSnack(
         'Data fora da ordem cronológica. Escolha entre as transições vizinhas.',
         isError: true,
@@ -339,9 +334,34 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
       }
     } catch (e) {
       if (mounted) {
-        _mostrarSnack(e.toString(), isError: true);
+        _mostrarSnack(_mensagemErro(e), isError: true);
       }
     }
+  }
+
+  bool _dataDentroDosVizinhos(
+    List<HistoricoTransicao> ordenadas,
+    int transicaoId,
+    DateTime novaData,
+  ) {
+    final index = ordenadas.indexWhere((t) => t.id == transicaoId);
+    if (index < 0) return false;
+    final anterior = index > 0 ? ordenadas[index - 1].dataTransicao : null;
+    final proxima = index < ordenadas.length - 1
+        ? ordenadas[index + 1].dataTransicao
+        : null;
+    return dataTransicaoValida(
+      novaData,
+      anterior: anterior,
+      proxima: proxima,
+    );
+  }
+
+  String _mensagemErro(Object e) {
+    final mensagem = e.toString().replaceFirst('Exception: ', '');
+    return mensagem.isEmpty
+        ? 'Erro ao atualizar a data da transição.'
+        : mensagem;
   }
 
   Future<DateTime?> _pickDateTime(DateTime initial) async {
@@ -356,13 +376,13 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
       context: context,
       initialTime: TimeOfDay.fromDateTime(initial),
     );
-    if (!mounted) return null;
+    if (!mounted || time == null) return null;
     return DateTime(
       date.year,
       date.month,
       date.day,
-      time?.hour ?? initial.hour,
-      time?.minute ?? initial.minute,
+      time.hour,
+      time.minute,
     );
   }
 

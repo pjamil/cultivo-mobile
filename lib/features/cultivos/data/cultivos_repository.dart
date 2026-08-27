@@ -98,8 +98,17 @@ class CultivosRepository extends CrudRepository<Cultivo> {
         Endpoints.cultivoHistoricoUpdate(cultivoId, historicoId),
         data: {'dataTransicao': formatDateTime(novaData)},
       );
-      return HistoricoTransicao.fromJson(response.data as Map<String, dynamic>);
+      final data = response.data;
+      if (data is! Map<String, dynamic>) {
+        throw Exception('Erro ao atualizar data da transição');
+      }
+      return HistoricoTransicao.fromJson(data);
     } on DioException catch (e) {
+      final mensagemServidor = e.response?.data;
+      if (mensagemServidor is Map<String, dynamic> &&
+          mensagemServidor['message'] is String) {
+        throw Exception(mensagemServidor['message']);
+      }
       throw Exception(e.error ?? 'Erro ao atualizar data da transição');
     }
   }
