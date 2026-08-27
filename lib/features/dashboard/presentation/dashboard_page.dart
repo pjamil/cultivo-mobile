@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/crud/crud_provider.dart';
 import '../providers/dashboard_provider.dart';
 import 'widgets/summary_card.dart';
 import 'widgets/activity_feed.dart';
@@ -25,11 +26,11 @@ class DashboardPage extends ConsumerWidget {
     WidgetRef ref,
     DashboardState state,
   ) {
-    if (state.status == DashboardStatus.loading) {
+    if (state.status == LoadStatus.loading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (state.status == DashboardStatus.error) {
+    if (state.status == LoadStatus.error) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

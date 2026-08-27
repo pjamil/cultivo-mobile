@@ -1,9 +1,11 @@
 import 'package:hive/hive.dart';
 
+import '../crud/entidade_serializavel.dart';
+
 part 'variedade.g.dart';
 
 @HiveType(typeId: 2)
-class Variedade extends HiveObject {
+class Variedade extends HiveObject with EntidadeSerializavel {
   @HiveField(0)
   final int id;
 
@@ -52,8 +54,10 @@ class Variedade extends HiveObject {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() => toCreateJson();
 
+  @override
   Map<String, dynamic> toCreateJson() {
     return {
       'nome': nome,
@@ -66,6 +70,7 @@ class Variedade extends HiveObject {
     };
   }
 
+  @override
   Map<String, dynamic> toUpdateJson() => toCreateJson();
 
   Variedade copyWith({

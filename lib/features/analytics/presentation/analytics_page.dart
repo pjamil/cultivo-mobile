@@ -6,7 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../data/analytics_repository.dart';
+import '../../../core/crud/crud_provider.dart';
+import '../../../core/models/analytics_data.dart';
 import '../providers/analytics_provider.dart';
 import 'widgets/yield_chart.dart';
 import 'widgets/cycle_chart.dart';
@@ -40,11 +41,11 @@ class AnalyticsPage extends ConsumerWidget {
     WidgetRef ref,
     AnalyticsState state,
   ) {
-    if (state.status == AnalyticsStatus.loading) {
+    if (state.status == LoadStatus.loading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (state.status == AnalyticsStatus.error) {
+    if (state.status == LoadStatus.error) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

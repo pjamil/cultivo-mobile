@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../data/dashboard_repository.dart';
+import '../../../../core/models/dashboard_data.dart';
 
 class ActivityFeed extends StatelessWidget {
   final List<AtividadeRecente> atividades;

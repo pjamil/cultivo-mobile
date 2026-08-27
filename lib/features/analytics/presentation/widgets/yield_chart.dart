@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/analytics_repository.dart';
+import '../../../../core/models/analytics_data.dart';
 
 class YieldChart extends StatelessWidget {
   final List<YieldData> data;

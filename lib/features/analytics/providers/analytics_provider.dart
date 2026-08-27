@@ -1,22 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/crud/crud_provider.dart';
+import '../../../core/models/analytics_data.dart';
 import '../data/analytics_repository.dart';
 
-enum AnalyticsStatus { initial, loading, loaded, error }
-
 class AnalyticsState {
-  final AnalyticsStatus status;
+  final LoadStatus status;
   final AnalyticsData? data;
   final String? error;
 
   AnalyticsState({
-    this.status = AnalyticsStatus.initial,
+    this.status = LoadStatus.initial,
     this.data,
     this.error,
   });
 
   AnalyticsState copyWith({
-    AnalyticsStatus? status,
+    LoadStatus? status,
     AnalyticsData? data,
     String? error,
   }) {
@@ -36,16 +36,16 @@ class AnalyticsNotifier extends StateNotifier<AnalyticsState> {
   }
 
   Future<void> loadAnalytics() async {
-    state = state.copyWith(status: AnalyticsStatus.loading);
+    state = state.copyWith(status: LoadStatus.loading);
     try {
       final data = await _repository.getAnalytics();
       state = state.copyWith(
-        status: AnalyticsStatus.loaded,
+        status: LoadStatus.loaded,
         data: data,
       );
     } catch (e) {
       state = state.copyWith(
-        status: AnalyticsStatus.error,
+        status: LoadStatus.error,
         error: e.toString(),
       );
     }

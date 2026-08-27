@@ -1,10 +1,12 @@
 import '../utils/date_utils.dart';
 import 'package:hive/hive.dart';
 
+import '../crud/entidade_serializavel.dart';
+
 part 'insumo.g.dart';
 
 @HiveType(typeId: 9)
-class Insumo extends HiveObject {
+class Insumo extends HiveObject with EntidadeSerializavel {
   @HiveField(0)
   final int id;
 
@@ -58,8 +60,10 @@ class Insumo extends HiveObject {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() => toCreateJson();
 
+  @override
   Map<String, dynamic> toCreateJson() {
     return {
       'codigo': codigo,
@@ -71,6 +75,7 @@ class Insumo extends HiveObject {
     };
   }
 
+  @override
   Map<String, dynamic> toUpdateJson() {
     return {
       'nome': nome,

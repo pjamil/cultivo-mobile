@@ -1,9 +1,11 @@
 import 'package:hive/hive.dart';
 
+import '../crud/entidade_serializavel.dart';
+
 part 'meio_cultivo.g.dart';
 
 @HiveType(typeId: 7)
-class MeioCultivo extends HiveObject {
+class MeioCultivo extends HiveObject with EntidadeSerializavel {
   @HiveField(0)
   final int id;
 
@@ -27,8 +29,10 @@ class MeioCultivo extends HiveObject {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() => toCreateJson();
 
+  @override
   Map<String, dynamic> toCreateJson() {
     return {
       'tipo': tipo,
@@ -36,6 +40,7 @@ class MeioCultivo extends HiveObject {
     };
   }
 
+  @override
   Map<String, dynamic> toUpdateJson() => toCreateJson();
 
   MeioCultivo copyWith({

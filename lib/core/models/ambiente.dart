@@ -1,9 +1,11 @@
 import 'package:hive/hive.dart';
 
+import '../crud/entidade_serializavel.dart';
+
 part 'ambiente.g.dart';
 
 @HiveType(typeId: 6)
-class Ambiente extends HiveObject {
+class Ambiente extends HiveObject with EntidadeSerializavel {
   @HiveField(0)
   final int id;
 
@@ -57,6 +59,7 @@ class Ambiente extends HiveObject {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'nome': nome,

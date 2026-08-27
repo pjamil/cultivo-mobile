@@ -1,22 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/crud/crud_provider.dart';
+import '../../../core/models/dashboard_data.dart';
 import '../data/dashboard_repository.dart';
 
-enum DashboardStatus { initial, loading, loaded, error }
-
 class DashboardState {
-  final DashboardStatus status;
+  final LoadStatus status;
   final DashboardData? data;
   final String? error;
 
   DashboardState({
-    this.status = DashboardStatus.initial,
+    this.status = LoadStatus.initial,
     this.data,
     this.error,
   });
 
   DashboardState copyWith({
-    DashboardStatus? status,
+    LoadStatus? status,
     DashboardData? data,
     String? error,
   }) {
@@ -36,16 +36,16 @@ class DashboardNotifier extends StateNotifier<DashboardState> {
   }
 
   Future<void> loadDashboard() async {
-    state = state.copyWith(status: DashboardStatus.loading);
+    state = state.copyWith(status: LoadStatus.loading);
     try {
       final data = await _repository.getDashboard();
       state = state.copyWith(
-        status: DashboardStatus.loaded,
+        status: LoadStatus.loaded,
         data: data,
       );
     } catch (e) {
       state = state.copyWith(
-        status: DashboardStatus.error,
+        status: LoadStatus.error,
         error: e.toString(),
       );
     }

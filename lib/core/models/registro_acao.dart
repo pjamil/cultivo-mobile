@@ -3,6 +3,8 @@ import 'dart:convert';
 import '../utils/date_utils.dart';
 import 'package:hive/hive.dart';
 
+import '../crud/entidade_serializavel.dart';
+
 part 'registro_acao.g.dart';
 
 enum TipoAcao {
@@ -33,7 +35,7 @@ enum TipoAcao {
 }
 
 @HiveType(typeId: 12)
-class RegistroAcao extends HiveObject {
+class RegistroAcao extends HiveObject with EntidadeSerializavel {
   @HiveField(0)
   final int id;
 
@@ -102,8 +104,10 @@ class RegistroAcao extends HiveObject {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() => toCreateJson();
 
+  @override
   Map<String, dynamic> toCreateJson() {
     return {
       'tipo': _tipoToApi(),
@@ -115,6 +119,7 @@ class RegistroAcao extends HiveObject {
     };
   }
 
+  @override
   Map<String, dynamic> toUpdateJson() {
     return {
       'tipo': _tipoToApi(),

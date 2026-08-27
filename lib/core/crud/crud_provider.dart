@@ -1,8 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'crud_repository.dart';
+import 'entidade_serializavel.dart';
 
 enum CrudStatus { initial, loading, loaded, error }
+
+enum LoadStatus { initial, loading, loaded, error }
 
 class CrudState<T> {
   final CrudStatus status;
@@ -33,7 +36,8 @@ class CrudState<T> {
   }
 }
 
-class CrudNotifier<T> extends StateNotifier<CrudState<T>> {
+class CrudNotifier<T extends EntidadeSerializavel>
+    extends StateNotifier<CrudState<T>> {
   final CrudRepository<T> _repository;
 
   CrudRepository<T> get repository => _repository;

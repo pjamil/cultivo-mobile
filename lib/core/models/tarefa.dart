@@ -1,10 +1,12 @@
 import '../utils/date_utils.dart';
 import 'package:hive/hive.dart';
 
+import '../crud/entidade_serializavel.dart';
+
 part 'tarefa.g.dart';
 
 @HiveType(typeId: 8)
-class Tarefa extends HiveObject {
+class Tarefa extends HiveObject with EntidadeSerializavel {
   @HiveField(0)
   final int id;
 
@@ -127,8 +129,10 @@ class Tarefa extends HiveObject {
         _ => prioridade.toLowerCase(),
       };
 
+  @override
   Map<String, dynamic> toJson() => toCreateJson();
 
+  @override
   Map<String, dynamic> toCreateJson() {
     return {
       'titulo': titulo,
@@ -138,6 +142,7 @@ class Tarefa extends HiveObject {
     };
   }
 
+  @override
   Map<String, dynamic> toUpdateJson() {
     return {
       'titulo': titulo,

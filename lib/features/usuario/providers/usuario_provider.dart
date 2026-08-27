@@ -1,23 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/crud/crud_provider.dart';
 import '../../../core/models/usuario.dart';
 import '../data/usuario_repository.dart';
 
-enum UsuarioStatus { initial, loading, loaded, error }
-
 class UsuarioState {
-  final UsuarioStatus status;
+  final LoadStatus status;
   final Usuario? usuario;
   final String? error;
 
   UsuarioState({
-    this.status = UsuarioStatus.initial,
+    this.status = LoadStatus.initial,
     this.usuario,
     this.error,
   });
 
   UsuarioState copyWith({
-    UsuarioStatus? status,
+    LoadStatus? status,
     Usuario? usuario,
     String? error,
   }) {
@@ -37,45 +36,45 @@ class UsuarioNotifier extends StateNotifier<UsuarioState> {
   }
 
   Future<void> loadMeusDados() async {
-    state = state.copyWith(status: UsuarioStatus.loading);
+    state = state.copyWith(status: LoadStatus.loading);
     try {
       final usuario = await _repository.getMeusDados();
       state = state.copyWith(
-        status: UsuarioStatus.loaded,
+        status: LoadStatus.loaded,
         usuario: usuario,
       );
     } catch (e) {
       state = state.copyWith(
-        status: UsuarioStatus.error,
+        status: LoadStatus.error,
         error: e.toString(),
       );
     }
   }
 
   Future<void> updateNome(String nome) async {
-    state = state.copyWith(status: UsuarioStatus.loading);
+    state = state.copyWith(status: LoadStatus.loading);
     try {
       final usuario = await _repository.updateNome(nome);
       state = state.copyWith(
-        status: UsuarioStatus.loaded,
+        status: LoadStatus.loaded,
         usuario: usuario,
       );
     } catch (e) {
       state = state.copyWith(
-        status: UsuarioStatus.error,
+        status: LoadStatus.error,
         error: e.toString(),
       );
     }
   }
 
   Future<void> deleteAccount() async {
-    state = state.copyWith(status: UsuarioStatus.loading);
+    state = state.copyWith(status: LoadStatus.loading);
     try {
       await _repository.deleteAccount();
-      state = UsuarioState(status: UsuarioStatus.loaded);
+      state = UsuarioState(status: LoadStatus.loaded);
     } catch (e) {
       state = state.copyWith(
-        status: UsuarioStatus.error,
+        status: LoadStatus.error,
         error: e.toString(),
       );
     }

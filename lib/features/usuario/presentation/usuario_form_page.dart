@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/crud/crud_provider.dart';
 import '../providers/usuario_provider.dart';
 
 class UsuarioFormPage extends ConsumerStatefulWidget {
@@ -83,10 +84,9 @@ class _UsuarioFormPageState extends ConsumerState<UsuarioFormPage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: usuarioState.status == UsuarioStatus.loading
-                    ? null
-                    : _submit,
-                child: usuarioState.status == UsuarioStatus.loading
+                onPressed:
+                    usuarioState.status == LoadStatus.loading ? null : _submit,
+                child: usuarioState.status == LoadStatus.loading
                     ? const SizedBox(
                         width: 24,
                         height: 24,

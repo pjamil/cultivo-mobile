@@ -1,11 +1,12 @@
 import 'package:hive/hive.dart';
 
+import '../crud/entidade_serializavel.dart';
 import '../utils/date_utils.dart';
 
 part 'planta.g.dart';
 
 @HiveType(typeId: 3)
-class Planta extends HiveObject {
+class Planta extends HiveObject with EntidadeSerializavel {
   @HiveField(0)
   final int id;
 
@@ -95,8 +96,10 @@ class Planta extends HiveObject {
     }
   }
 
+  @override
   Map<String, dynamic> toJson() => toCreateJson();
 
+  @override
   Map<String, dynamic> toCreateJson() {
     return {
       'nome': nome,
@@ -112,6 +115,7 @@ class Planta extends HiveObject {
     };
   }
 
+  @override
   Map<String, dynamic> toUpdateJson() => toCreateJson();
 
   Planta copyWith({
