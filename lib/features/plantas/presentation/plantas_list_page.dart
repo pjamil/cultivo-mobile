@@ -45,7 +45,7 @@ class PlantasListPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar plantas'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => ref.read(plantasProvider.notifier).loadPlantas(),
+              onPressed: () => ref.read(plantasProvider.notifier).load(),
               child: const Text('Tentar novamente'),
             ),
           ],

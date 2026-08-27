@@ -9,8 +9,6 @@ typedef RegistrosAcaoState = CrudState<RegistroAcao>;
 class RegistrosAcaoNotifier extends CrudNotifier<RegistroAcao> {
   RegistrosAcaoNotifier(super.repository);
 
-  Future<void> loadRegistros() => load();
-
   Future<void> loadRegistrosPorCultivo(int cultivoId) async {
     state = state.copyWith(status: CrudStatus.loading);
     try {
@@ -23,14 +21,6 @@ class RegistrosAcaoNotifier extends CrudNotifier<RegistroAcao> {
       state = state.copyWith(status: CrudStatus.error, error: e.toString());
     }
   }
-
-  Future<void> loadRegistro(int id) => loadById(id);
-
-  Future<void> createRegistro(RegistroAcao registro) => create(registro);
-
-  Future<void> updateRegistro(RegistroAcao registro) => update(registro);
-
-  Future<void> deleteRegistro(int id) => delete(id);
 }
 
 final registrosAcaoProvider =

@@ -6,22 +6,8 @@ import '../data/insumos_repository.dart';
 
 typedef InsumosState = CrudState<Insumo>;
 
-class InsumosNotifier extends CrudNotifier<Insumo> {
-  InsumosNotifier(super.repository);
-
-  Future<void> loadInsumos() => load();
-
-  Future<void> loadInsumo(int id) => loadById(id);
-
-  Future<void> createInsumo(Insumo insumo) => create(insumo);
-
-  Future<void> updateInsumo(Insumo insumo) => update(insumo);
-
-  Future<void> deleteInsumo(int id) => delete(id);
-}
-
 final insumosProvider =
-    StateNotifierProvider<InsumosNotifier, InsumosState>((ref) {
+    StateNotifierProvider<CrudNotifier<Insumo>, InsumosState>((ref) {
   final repository = ref.watch(insumosRepositoryProvider);
-  return InsumosNotifier(repository);
+  return CrudNotifier<Insumo>(repository);
 });

@@ -20,7 +20,7 @@ class _InsumoDetailPageState extends ConsumerState<InsumoDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(insumosProvider.notifier).loadInsumo(widget.id);
+      ref.read(insumosProvider.notifier).loadById(widget.id);
     });
   }
 
@@ -178,7 +178,7 @@ class _InsumoDetailPageState extends ConsumerState<InsumoDetailPage> {
     );
 
     if (confirmed && context.mounted) {
-      await ref.read(insumosProvider.notifier).deleteInsumo(widget.id);
+      await ref.read(insumosProvider.notifier).delete(widget.id);
       if (context.mounted) {
         context.pop();
       }

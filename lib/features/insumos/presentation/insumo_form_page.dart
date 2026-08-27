@@ -36,7 +36,7 @@ class _InsumoFormPageState extends ConsumerState<InsumoFormPage> {
 
     if (widget.id != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(insumosProvider.notifier).loadInsumo(widget.id!);
+        ref.read(insumosProvider.notifier).loadById(widget.id!);
       });
     }
   }
@@ -78,9 +78,9 @@ class _InsumoFormPageState extends ConsumerState<InsumoFormPage> {
       );
 
       if (widget.id != null) {
-        ref.read(insumosProvider.notifier).updateInsumo(insumo);
+        ref.read(insumosProvider.notifier).update(insumo);
       } else {
-        ref.read(insumosProvider.notifier).createInsumo(insumo);
+        ref.read(insumosProvider.notifier).create(insumo);
       }
 
       if (mounted) {

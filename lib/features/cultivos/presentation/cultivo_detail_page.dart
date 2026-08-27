@@ -37,7 +37,7 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(cultivosProvider.notifier).loadCultivo(widget.id);
+      ref.read(cultivosProvider.notifier).loadById(widget.id);
       ref
           .read(registrosAcaoProvider.notifier)
           .loadRegistrosPorCultivo(widget.id);
@@ -405,7 +405,7 @@ class _CultivoDetailPageState extends ConsumerState<CultivoDetailPage> {
     );
 
     if (confirmed && context.mounted) {
-      await ref.read(cultivosProvider.notifier).deleteCultivo(widget.id);
+      await ref.read(cultivosProvider.notifier).delete(widget.id);
       if (context.mounted) {
         context.pop();
       }

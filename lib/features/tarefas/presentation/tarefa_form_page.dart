@@ -34,7 +34,7 @@ class _TarefaFormPageState extends ConsumerState<TarefaFormPage> {
 
     if (widget.id != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(tarefasProvider.notifier).loadTarefa(widget.id!);
+        ref.read(tarefasProvider.notifier).loadById(widget.id!);
       });
     }
   }

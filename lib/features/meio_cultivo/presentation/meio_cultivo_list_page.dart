@@ -44,8 +44,7 @@ class MeioCultivoListPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar meios de cultivo'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () =>
-                  ref.read(meioCultivoProvider.notifier).loadMeiosCultivo(),
+              onPressed: () => ref.read(meioCultivoProvider.notifier).load(),
               child: const Text('Tentar novamente'),
             ),
           ],

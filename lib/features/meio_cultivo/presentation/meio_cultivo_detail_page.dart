@@ -20,7 +20,7 @@ class _MeioCultivoDetailPageState extends ConsumerState<MeioCultivoDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(meioCultivoProvider.notifier).loadMeio(widget.id);
+      ref.read(meioCultivoProvider.notifier).loadById(widget.id);
     });
   }
 
@@ -119,7 +119,7 @@ class _MeioCultivoDetailPageState extends ConsumerState<MeioCultivoDetailPage> {
     );
 
     if (confirmed && context.mounted) {
-      await ref.read(meioCultivoProvider.notifier).deleteMeio(widget.id);
+      await ref.read(meioCultivoProvider.notifier).delete(widget.id);
       if (context.mounted) {
         context.pop();
       }

@@ -40,7 +40,7 @@ class _AmbienteFormPageState extends ConsumerState<AmbienteFormPage> {
 
     if (widget.id != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(ambientesProvider.notifier).loadAmbiente(widget.id!);
+        ref.read(ambientesProvider.notifier).loadById(widget.id!);
       });
     }
   }
@@ -94,9 +94,9 @@ class _AmbienteFormPageState extends ConsumerState<AmbienteFormPage> {
       );
 
       if (widget.id != null) {
-        ref.read(ambientesProvider.notifier).updateAmbiente(ambiente);
+        ref.read(ambientesProvider.notifier).update(ambiente);
       } else {
-        ref.read(ambientesProvider.notifier).createAmbiente(ambiente);
+        ref.read(ambientesProvider.notifier).create(ambiente);
       }
 
       if (mounted) {

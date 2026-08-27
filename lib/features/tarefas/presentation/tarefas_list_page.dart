@@ -50,7 +50,7 @@ class TarefasListPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar tarefas'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => ref.read(tarefasProvider.notifier).loadTarefas(),
+              onPressed: () => ref.read(tarefasProvider.notifier).load(),
               child: const Text('Tentar novamente'),
             ),
           ],

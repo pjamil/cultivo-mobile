@@ -23,7 +23,7 @@ class _RegistroAcaoDetailPageState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(registrosAcaoProvider.notifier).loadRegistro(widget.id);
+      ref.read(registrosAcaoProvider.notifier).loadById(widget.id);
     });
   }
 
@@ -225,9 +225,7 @@ class _RegistroAcaoDetailPageState
           ),
           TextButton(
             onPressed: () {
-              ref
-                  .read(registrosAcaoProvider.notifier)
-                  .deleteRegistro(registro.id);
+              ref.read(registrosAcaoProvider.notifier).delete(registro.id);
               Navigator.of(context).pop();
               context.pop();
             },

@@ -19,7 +19,7 @@ class _AmbienteDetailPageState extends ConsumerState<AmbienteDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(ambientesProvider.notifier).loadAmbiente(widget.id);
+      ref.read(ambientesProvider.notifier).loadById(widget.id);
     });
   }
 
@@ -165,7 +165,7 @@ class _AmbienteDetailPageState extends ConsumerState<AmbienteDetailPage> {
     );
 
     if (confirmed && context.mounted) {
-      await ref.read(ambientesProvider.notifier).deleteAmbiente(widget.id);
+      await ref.read(ambientesProvider.notifier).delete(widget.id);
       if (context.mounted) {
         context.pop();
       }

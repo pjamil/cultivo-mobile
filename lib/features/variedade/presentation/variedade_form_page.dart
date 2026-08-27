@@ -37,7 +37,7 @@ class _VariedadeFormPageState extends ConsumerState<VariedadeFormPage> {
 
     if (widget.id != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(variedadeProvider.notifier).loadVariedade(widget.id!);
+        ref.read(variedadeProvider.notifier).loadById(widget.id!);
       });
     }
   }
@@ -89,9 +89,9 @@ class _VariedadeFormPageState extends ConsumerState<VariedadeFormPage> {
       );
 
       if (widget.id != null) {
-        ref.read(variedadeProvider.notifier).updateVariedade(variedade);
+        ref.read(variedadeProvider.notifier).update(variedade);
       } else {
-        ref.read(variedadeProvider.notifier).createVariedade(variedade);
+        ref.read(variedadeProvider.notifier).create(variedade);
       }
 
       if (mounted) {

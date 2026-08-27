@@ -10,10 +10,6 @@ typedef TarefasStatus = CrudStatus;
 class TarefasNotifier extends CrudNotifier<Tarefa> {
   TarefasNotifier(super.repository);
 
-  Future<void> loadTarefas() => load();
-
-  Future<void> loadTarefa(int id) => loadById(id);
-
   Future<void> createTarefa(Tarefa tarefa) async {
     state = state.copyWith(status: CrudStatus.loading);
     try {
@@ -128,8 +124,6 @@ class TarefasNotifier extends CrudNotifier<Tarefa> {
         return null;
     }
   }
-
-  Future<void> deleteTarefa(int id) => delete(id);
 }
 
 final tarefasProvider =

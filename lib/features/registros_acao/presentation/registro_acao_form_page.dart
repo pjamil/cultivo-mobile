@@ -41,7 +41,7 @@ class _RegistroAcaoFormPageState extends ConsumerState<RegistroAcaoFormPage> {
     super.initState();
     if (widget.id != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(registrosAcaoProvider.notifier).loadRegistro(widget.id!);
+        ref.read(registrosAcaoProvider.notifier).loadById(widget.id!);
       });
     }
   }
@@ -79,9 +79,9 @@ class _RegistroAcaoFormPageState extends ConsumerState<RegistroAcaoFormPage> {
       );
 
       if (widget.id != null) {
-        ref.read(registrosAcaoProvider.notifier).updateRegistro(registro);
+        ref.read(registrosAcaoProvider.notifier).update(registro);
       } else {
-        ref.read(registrosAcaoProvider.notifier).createRegistro(registro);
+        ref.read(registrosAcaoProvider.notifier).create(registro);
       }
 
       if (mounted) {

@@ -20,7 +20,7 @@ class _TarefaDetailPageState extends ConsumerState<TarefaDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(tarefasProvider.notifier).loadTarefa(widget.id);
+      ref.read(tarefasProvider.notifier).loadById(widget.id);
     });
   }
 
@@ -166,7 +166,7 @@ class _TarefaDetailPageState extends ConsumerState<TarefaDetailPage> {
     );
 
     if (confirmed && context.mounted) {
-      await ref.read(tarefasProvider.notifier).deleteTarefa(widget.id);
+      await ref.read(tarefasProvider.notifier).delete(widget.id);
       if (context.mounted) {
         context.pop();
       }

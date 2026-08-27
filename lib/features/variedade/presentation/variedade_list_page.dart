@@ -44,8 +44,7 @@ class VariedadeListPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar variedades'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () =>
-                  ref.read(variedadeProvider.notifier).loadVariedades(),
+              onPressed: () => ref.read(variedadeProvider.notifier).load(),
               child: const Text('Tentar novamente'),
             ),
           ],

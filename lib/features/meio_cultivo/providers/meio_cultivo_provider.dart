@@ -6,22 +6,8 @@ import '../data/meio_cultivo_repository.dart';
 
 typedef MeioCultivoState = CrudState<MeioCultivo>;
 
-class MeioCultivoNotifier extends CrudNotifier<MeioCultivo> {
-  MeioCultivoNotifier(super.repository);
-
-  Future<void> loadMeiosCultivo() => load();
-
-  Future<void> loadMeio(int id) => loadById(id);
-
-  Future<void> createMeio(MeioCultivo meio) => create(meio);
-
-  Future<void> updateMeio(MeioCultivo meio) => update(meio);
-
-  Future<void> deleteMeio(int id) => delete(id);
-}
-
 final meioCultivoProvider =
-    StateNotifierProvider<MeioCultivoNotifier, MeioCultivoState>((ref) {
+    StateNotifierProvider<CrudNotifier<MeioCultivo>, MeioCultivoState>((ref) {
   final repository = ref.watch(meioCultivoRepositoryProvider);
-  return MeioCultivoNotifier(repository);
+  return CrudNotifier<MeioCultivo>(repository);
 });

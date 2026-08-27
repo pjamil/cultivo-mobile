@@ -32,7 +32,7 @@ class _DiarioFormPageState extends ConsumerState<DiarioFormPage> {
 
     if (widget.id != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(diarioProvider.notifier).loadDiario(widget.id!);
+        ref.read(diarioProvider.notifier).loadById(widget.id!);
       });
     }
   }
@@ -63,9 +63,9 @@ class _DiarioFormPageState extends ConsumerState<DiarioFormPage> {
       );
 
       if (widget.id != null) {
-        ref.read(diarioProvider.notifier).updateDiario(diario);
+        ref.read(diarioProvider.notifier).update(diario);
       } else {
-        ref.read(diarioProvider.notifier).createDiario(diario);
+        ref.read(diarioProvider.notifier).create(diario);
       }
 
       if (mounted) {

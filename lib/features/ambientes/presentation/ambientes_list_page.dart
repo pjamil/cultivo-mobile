@@ -44,8 +44,7 @@ class AmbientesListPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar ambientes'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () =>
-                  ref.read(ambientesProvider.notifier).loadAmbientes(),
+              onPressed: () => ref.read(ambientesProvider.notifier).load(),
               child: const Text('Tentar novamente'),
             ),
           ],

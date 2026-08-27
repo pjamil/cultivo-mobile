@@ -45,7 +45,7 @@ class DiarioListPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar diários'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => ref.read(diarioProvider.notifier).loadDiarios(),
+              onPressed: () => ref.read(diarioProvider.notifier).load(),
               child: const Text('Tentar novamente'),
             ),
           ],

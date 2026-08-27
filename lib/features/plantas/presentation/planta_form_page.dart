@@ -37,7 +37,7 @@ class _PlantaFormPageState extends ConsumerState<PlantaFormPage> {
 
     if (widget.id != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(plantasProvider.notifier).loadPlanta(widget.id!);
+        ref.read(plantasProvider.notifier).loadById(widget.id!);
       });
     }
   }
@@ -82,9 +82,9 @@ class _PlantaFormPageState extends ConsumerState<PlantaFormPage> {
       );
 
       if (widget.id != null) {
-        ref.read(plantasProvider.notifier).updatePlanta(planta);
+        ref.read(plantasProvider.notifier).update(planta);
       } else {
-        ref.read(plantasProvider.notifier).createPlanta(planta);
+        ref.read(plantasProvider.notifier).create(planta);
       }
 
       if (mounted) {

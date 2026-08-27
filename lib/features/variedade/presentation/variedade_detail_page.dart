@@ -20,7 +20,7 @@ class _VariedadeDetailPageState extends ConsumerState<VariedadeDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(variedadeProvider.notifier).loadVariedade(widget.id);
+      ref.read(variedadeProvider.notifier).loadById(widget.id);
     });
   }
 
@@ -156,7 +156,7 @@ class _VariedadeDetailPageState extends ConsumerState<VariedadeDetailPage> {
     );
 
     if (confirmed && context.mounted) {
-      await ref.read(variedadeProvider.notifier).deleteVariedade(widget.id);
+      await ref.read(variedadeProvider.notifier).delete(widget.id);
       if (context.mounted) {
         context.pop();
       }

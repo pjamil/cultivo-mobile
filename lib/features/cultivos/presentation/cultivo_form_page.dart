@@ -33,7 +33,7 @@ class _CultivoFormPageState extends ConsumerState<CultivoFormPage> {
 
     if (widget.id != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(cultivosProvider.notifier).loadCultivo(widget.id!);
+        ref.read(cultivosProvider.notifier).loadById(widget.id!);
       });
     }
   }
@@ -73,9 +73,9 @@ class _CultivoFormPageState extends ConsumerState<CultivoFormPage> {
       );
 
       if (widget.id != null) {
-        ref.read(cultivosProvider.notifier).updateCultivo(cultivo);
+        ref.read(cultivosProvider.notifier).update(cultivo);
       } else {
-        ref.read(cultivosProvider.notifier).createCultivo(cultivo);
+        ref.read(cultivosProvider.notifier).create(cultivo);
       }
 
       if (mounted) {

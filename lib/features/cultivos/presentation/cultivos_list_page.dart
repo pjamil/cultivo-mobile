@@ -44,8 +44,7 @@ class CultivosListPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar cultivos'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () =>
-                  ref.read(cultivosProvider.notifier).loadCultivos(),
+              onPressed: () => ref.read(cultivosProvider.notifier).load(),
               child: const Text('Tentar novamente'),
             ),
           ],

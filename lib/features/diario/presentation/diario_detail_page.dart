@@ -26,7 +26,7 @@ class _DiarioDetailPageState extends ConsumerState<DiarioDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(diarioProvider.notifier).loadDiario(widget.id);
+      ref.read(diarioProvider.notifier).loadById(widget.id);
     });
   }
 
@@ -124,7 +124,7 @@ class _DiarioDetailPageState extends ConsumerState<DiarioDetailPage> {
     );
 
     if (confirmed && context.mounted) {
-      await ref.read(diarioProvider.notifier).deleteDiario(widget.id);
+      await ref.read(diarioProvider.notifier).delete(widget.id);
       if (context.mounted) {
         context.pop();
       }

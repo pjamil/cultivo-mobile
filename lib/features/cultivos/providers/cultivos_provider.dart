@@ -11,16 +11,6 @@ typedef CultivosStatus = CrudStatus;
 class CultivosNotifier extends CrudNotifier<Cultivo> {
   CultivosNotifier(super.repository);
 
-  Future<void> loadCultivos() => load();
-
-  Future<void> loadCultivo(int id) => loadById(id);
-
-  Future<void> createCultivo(Cultivo cultivo) => create(cultivo);
-
-  Future<void> updateCultivo(Cultivo cultivo) => update(cultivo);
-
-  Future<void> deleteCultivo(int id) => delete(id);
-
   Future<void> avancarEstado(int id) async {
     final updated = await (repository as CultivosRepository).avancarEstado(id);
     _replaceInState(updated);

@@ -28,7 +28,7 @@ class _PlantaDetailPageState extends ConsumerState<PlantaDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(plantasProvider.notifier).loadPlanta(widget.id);
+      ref.read(plantasProvider.notifier).loadById(widget.id);
     });
   }
 
@@ -218,7 +218,7 @@ class _PlantaDetailPageState extends ConsumerState<PlantaDetailPage> {
     );
 
     if (confirmed && context.mounted) {
-      await ref.read(plantasProvider.notifier).deletePlanta(widget.id);
+      await ref.read(plantasProvider.notifier).delete(widget.id);
       if (context.mounted) {
         context.pop();
       }

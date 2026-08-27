@@ -44,7 +44,7 @@ class InsumosListPage extends ConsumerWidget {
             Text(state.error ?? 'Erro ao carregar insumos'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => ref.read(insumosProvider.notifier).loadInsumos(),
+              onPressed: () => ref.read(insumosProvider.notifier).load(),
               child: const Text('Tentar novamente'),
             ),
           ],

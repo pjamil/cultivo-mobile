@@ -9,16 +9,6 @@ typedef PlantasState = CrudState<Planta>;
 class PlantasNotifier extends CrudNotifier<Planta> {
   PlantasNotifier(super.repository);
 
-  Future<void> loadPlantas() => load();
-
-  Future<void> loadPlanta(int id) => loadById(id);
-
-  Future<void> createPlanta(Planta planta) => create(planta);
-
-  Future<void> updatePlanta(Planta planta) => update(planta);
-
-  Future<void> deletePlanta(int id) => delete(id);
-
   Future<void> colher(int id, DateTime dataColheita, String? notas) async {
     final updated =
         await (repository as PlantasRepository).colher(id, dataColheita, notas);

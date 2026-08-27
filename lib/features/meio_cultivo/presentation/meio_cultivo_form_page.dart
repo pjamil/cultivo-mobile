@@ -29,7 +29,7 @@ class _MeioCultivoFormPageState extends ConsumerState<MeioCultivoFormPage> {
 
     if (widget.id != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(meioCultivoProvider.notifier).loadMeio(widget.id!);
+        ref.read(meioCultivoProvider.notifier).loadById(widget.id!);
       });
     }
   }
@@ -61,9 +61,9 @@ class _MeioCultivoFormPageState extends ConsumerState<MeioCultivoFormPage> {
       );
 
       if (widget.id != null) {
-        ref.read(meioCultivoProvider.notifier).updateMeio(meio);
+        ref.read(meioCultivoProvider.notifier).update(meio);
       } else {
-        ref.read(meioCultivoProvider.notifier).createMeio(meio);
+        ref.read(meioCultivoProvider.notifier).create(meio);
       }
 
       if (mounted) {
