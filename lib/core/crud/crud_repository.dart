@@ -2,8 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../api/api_client.dart';
+import '../storage/offline_sync.dart';
+import 'entidade_serializavel.dart';
 
-abstract class CrudRepository<T> {
+abstract class CrudRepository<T extends EntidadeSerializavel> {
   final Ref _ref;
 
   CrudRepository(this._ref);
@@ -67,6 +69,9 @@ abstract class CrudRepository<T> {
       );
       return fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
+      if (_isConnectionError(e)) {
+        await _enqueueOffline('POST', basePath, item, null);
+      }
       throw Exception(e.error ?? createError);
     }
   }
@@ -80,6 +85,10 @@ abstract class CrudRepository<T> {
       );
       return fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
+      if (_isConnectionError(e)) {
+        await _enqueueOffline(
+            'PUT', byIdPath(_getId(item)), item, _getId(item));
+      }
       throw Exception(e.error ?? updateError);
     }
   }
@@ -88,29 +97,43 @@ abstract class CrudRepository<T> {
     try {
       await _api.delete(byIdPath(id));
     } on DioException catch (e) {
+      if (_isConnectionError(e)) {
+        await _ref.read(offlineSyncProvider).enqueueOperation(
+              operation: 'DELETE',
+              entity: resourceName,
+              url: byIdPath(id),
+              entityId: id,
+            );
+      }
       throw Exception(e.error ?? deleteError);
     }
   }
 
-  Map<String, dynamic> _toJson(T item) => (item as dynamic).toJson();
-
-  Map<String, dynamic> createBody(T item) {
-    final d = item as dynamic;
-    try {
-      return d.toCreateJson() as Map<String, dynamic>;
-    } on NoSuchMethodError {
-      return _toJson(item)..remove('id');
-    }
+  bool _isConnectionError(DioException e) {
+    return e.type == DioExceptionType.connectionError ||
+        e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.receiveTimeout ||
+        e.type == DioExceptionType.sendTimeout;
   }
 
-  Map<String, dynamic> updateBody(T item) {
-    final d = item as dynamic;
-    try {
-      return d.toUpdateJson() as Map<String, dynamic>;
-    } on NoSuchMethodError {
-      return _toJson(item);
-    }
+  Future<void> _enqueueOffline(
+    String operation,
+    String url,
+    T item,
+    int? entityId,
+  ) async {
+    await _ref.read(offlineSyncProvider).enqueueOperation(
+          operation: operation,
+          entity: resourceName,
+          url: url,
+          entityId: entityId,
+          data: operation == 'POST' ? createBody(item) : updateBody(item),
+        );
   }
+
+  Map<String, dynamic> createBody(T item) => item.toCreateJson();
+
+  Map<String, dynamic> updateBody(T item) => item.toUpdateJson();
 
   int _getId(T item) => (item as dynamic).id as int;
 }

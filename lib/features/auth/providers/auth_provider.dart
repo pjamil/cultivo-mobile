@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/auth_events.dart';
 import '../../../core/models/usuario.dart';
+import '../../../core/storage/offline_sync.dart';
 import '../data/auth_repository.dart';
 
 enum AuthStatus { initial, loading, authenticated, unauthenticated, error }
@@ -57,6 +58,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           status: AuthStatus.authenticated,
           usuario: usuario,
         );
+        _syncPending();
       } else {
         state = state.copyWith(status: AuthStatus.unauthenticated);
       }
@@ -79,6 +81,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         status: AuthStatus.authenticated,
         usuario: usuario,
       );
+      _syncPending();
     } catch (e) {
       state = state.copyWith(
         status: AuthStatus.error,
@@ -103,12 +106,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
         status: AuthStatus.authenticated,
         usuario: usuario,
       );
+      _syncPending();
     } catch (e) {
       state = state.copyWith(
         status: AuthStatus.error,
         error: e.toString(),
       );
     }
+  }
+
+  void _syncPending() {
+    _ref.read(offlineSyncProvider).syncPendingOperations();
   }
 
   Future<void> logout() async {

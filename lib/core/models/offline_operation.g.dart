@@ -25,7 +25,7 @@ class OfflineOperationAdapter extends TypeAdapter<OfflineOperation> {
       url: fields[5] as String,
       timestamp: fields[6] as int,
       synced: fields[7] as bool,
-      syncedAt: fields[8] as DateTime?,
+      syncedAt: fields[8] as String?,
       error: fields[9] as String?,
     );
   }

@@ -9,7 +9,7 @@ void main() async {
   final stopwatch = Stopwatch()..start();
 
   WidgetsFlutterBinding.ensureInitialized();
-  await LocalStorage().init();
+  await LocalStorage.instance.init();
 
   stopwatch.stop();
   if (kDebugMode) {

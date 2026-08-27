@@ -29,7 +29,7 @@ class OfflineOperation extends HiveObject {
   bool synced;
 
   @HiveField(8)
-  DateTime? syncedAt;
+  String? syncedAt;
 
   @HiveField(9)
   String? error;
@@ -57,8 +57,7 @@ class OfflineOperation extends HiveObject {
       url: json['url'] ?? '',
       timestamp: json['timestamp'] ?? 0,
       synced: json['synced'] ?? false,
-      syncedAt:
-          json['syncedAt'] != null ? DateTime.parse(json['syncedAt']) : null,
+      syncedAt: json['syncedAt'],
       error: json['error'],
     );
   }
@@ -73,7 +72,7 @@ class OfflineOperation extends HiveObject {
       'url': url,
       'timestamp': timestamp,
       'synced': synced,
-      'syncedAt': syncedAt?.toIso8601String(),
+      'syncedAt': syncedAt,
       'error': error,
     };
   }

@@ -4,19 +4,24 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/offline_operation.dart';
 
 final localStorageProvider = Provider<LocalStorage>((ref) {
-  return LocalStorage();
+  return LocalStorage.instance;
 });
 
 class LocalStorage {
-  static const String _boxName = 'cultivo_db';
+  LocalStorage._();
+
+  static final LocalStorage instance = LocalStorage._();
+
   static const String _offlineQueueBox = 'offline_queue';
-  late Box _box;
   late Box<OfflineOperation> _offlineQueue;
 
-  Future<void> init() async {
-    await Hive.initFlutter();
+  Future<void> init({String? path}) async {
+    if (path != null) {
+      Hive.init(path);
+    } else {
+      await Hive.initFlutter();
+    }
     Hive.registerAdapter(OfflineOperationAdapter());
-    _box = await Hive.openBox(_boxName);
     _offlineQueue = await Hive.openBox<OfflineOperation>(_offlineQueueBox);
   }
 
@@ -33,7 +38,7 @@ class LocalStorage {
     final operation = _offlineQueue.get(key);
     if (operation != null) {
       operation.synced = true;
-      operation.syncedAt = DateTime.now();
+      operation.syncedAt = DateTime.now().toIso8601String();
       await _offlineQueue.put(key, operation);
     }
   }
@@ -74,13 +79,4 @@ class LocalStorage {
     final box = await Hive.openBox(boxName);
     await box.clear();
   }
-
-  Box get plantasBox => _box;
-  Box get cultivosBox => _box;
-  Box get diariosBox => _box;
-  Box get tarefasBox => _box;
-  Box get ambientesBox => _box;
-  Box get variedadesBox => _box;
-  Box get meiosCultivoBox => _box;
-  Box get insumosBox => _box;
 }
