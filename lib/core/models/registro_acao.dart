@@ -11,6 +11,10 @@ enum TipoAcao {
   rega,
   adubacao,
   transplante,
+  irrigacao,
+  colheita,
+  plantio,
+  poda,
   outro;
 
   String get label {
@@ -21,6 +25,14 @@ enum TipoAcao {
         return 'Adubação';
       case TipoAcao.transplante:
         return 'Transplante';
+      case TipoAcao.irrigacao:
+        return 'Irrigação';
+      case TipoAcao.colheita:
+        return 'Colheita';
+      case TipoAcao.plantio:
+        return 'Plantio';
+      case TipoAcao.poda:
+        return 'Poda';
       case TipoAcao.outro:
         return 'Outro';
     }
@@ -84,13 +96,17 @@ class RegistroAcao extends HiveObject with EntidadeSerializavel {
   factory RegistroAcao.fromJson(Map<String, dynamic> json) {
     return RegistroAcao(
       id: json['id'] ?? 0,
-      tipo: json['tipo'] ?? 'OUTRO',
+      tipo: json['tipo'] ??
+          json['tipo_atividade'] ??
+          json['tipoAtividade'] ??
+          'OUTRO',
       data: parseDate(json['data']) ?? DateTime.now(),
       cultivoId: json['cultivoId'] ?? json['cultivo_id'] ?? 0,
       plantaId: json['plantaId'] ?? json['planta_id'],
       detalhes: json['detalhes'],
-      notas: json['notas'],
-      usuarioId: json['usuarioId'] ?? json['usuario_id'],
+      notas: json['notas'] ?? json['observacoes'],
+      usuarioId:
+          json['usuarioId'] ?? json['usuario_id'] ?? json['responsavel_id'],
       dataCriacao: json['dataCriacao'] != null
           ? parseDate(json['dataCriacao'])
           : (json['data_criacao'] != null

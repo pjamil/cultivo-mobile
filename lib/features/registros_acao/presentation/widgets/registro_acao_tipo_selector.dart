@@ -58,6 +58,14 @@ class RegistroAcaoTipoSelector extends StatelessWidget {
         return Colors.green;
       case TipoAcao.transplante:
         return Colors.orange;
+      case TipoAcao.irrigacao:
+        return Colors.lightBlue;
+      case TipoAcao.colheita:
+        return Colors.amber;
+      case TipoAcao.plantio:
+        return Colors.lightGreen;
+      case TipoAcao.poda:
+        return Colors.purple;
       case TipoAcao.outro:
         return Colors.grey;
     }

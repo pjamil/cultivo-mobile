@@ -82,6 +82,11 @@ class CultivosRepository extends CrudRepository<Cultivo> {
       if (data is List) {
         return data.map((json) => HistoricoTransicao.fromJson(json)).toList();
       }
+      if (data is Map<String, dynamic> && data['content'] is List) {
+        return (data['content'] as List)
+            .map((json) => HistoricoTransicao.fromJson(json))
+            .toList();
+      }
       return [];
     } on DioException catch (e) {
       throw Exception(e.error ?? 'Erro ao carregar histórico do cultivo');

@@ -143,6 +143,10 @@ class _RegistroAcaoDetalhesFormState extends State<RegistroAcaoDetalhesForm> {
         }
         break;
       case TipoAcao.outro:
+      case TipoAcao.irrigacao:
+      case TipoAcao.colheita:
+      case TipoAcao.plantio:
+      case TipoAcao.poda:
         break;
     }
 
@@ -276,6 +280,10 @@ class _RegistroAcaoDetalhesFormState extends State<RegistroAcaoDetalhesForm> {
           ),
         ];
       case TipoAcao.outro:
+      case TipoAcao.irrigacao:
+      case TipoAcao.colheita:
+      case TipoAcao.plantio:
+      case TipoAcao.poda:
         return [
           const Text(
             'Tipo de ação personalizado',

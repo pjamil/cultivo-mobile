@@ -77,6 +77,36 @@ void main() {
       expect(registro.tipoAcao, TipoAcao.outro);
     });
 
+    test('should map real activity types to TipoAcao', () {
+      expect(TipoAcao.fromString('IRRIGACAO'), TipoAcao.irrigacao);
+      expect(TipoAcao.fromString('COLHEITA'), TipoAcao.colheita);
+      expect(TipoAcao.fromString('PLANTIO'), TipoAcao.plantio);
+      expect(TipoAcao.fromString('PODA'), TipoAcao.poda);
+      expect(TipoAcao.irrigacao.label, 'Irrigação');
+      expect(TipoAcao.colheita.label, 'Colheita');
+    });
+
+    test('should parse atividades contract (tipo_atividade/observacoes)', () {
+      final json = {
+        'id': 4,
+        'cultivo_id': 2,
+        'tipo_atividade': 'IRRIGACAO',
+        'data': '2026-07-20',
+        'observacoes': 'Irrigação matinal com 2L por planta',
+        'responsavel_id': 1,
+        'responsavel_nome': 'Maria Silva',
+      };
+
+      final registro = RegistroAcao.fromJson(json);
+
+      expect(registro.tipo, 'IRRIGACAO');
+      expect(registro.tipoAcao, TipoAcao.irrigacao);
+      expect(registro.cultivoId, 2);
+      expect(registro.notas, 'Irrigação matinal com 2L por planta');
+      expect(registro.usuarioId, 1);
+      expect(registro.data, DateTime(2026, 7, 20));
+    });
+
     test('should convert to create JSON with UPPERCASE tipo and ISO datetime',
         () {
       final registro = RegistroAcao(

@@ -244,6 +244,14 @@ class _RegistroAcaoDetailPageState
         return Colors.green;
       case TipoAcao.transplante:
         return Colors.orange;
+      case TipoAcao.irrigacao:
+        return Colors.lightBlue;
+      case TipoAcao.colheita:
+        return Colors.amber;
+      case TipoAcao.plantio:
+        return Colors.lightGreen;
+      case TipoAcao.poda:
+        return Colors.purple;
       case TipoAcao.outro:
         return Colors.grey;
     }
@@ -257,6 +265,14 @@ class _RegistroAcaoDetailPageState
         return Icons.science;
       case TipoAcao.transplante:
         return Icons.swap_horiz;
+      case TipoAcao.irrigacao:
+        return Icons.water_drop;
+      case TipoAcao.colheita:
+        return Icons.agriculture;
+      case TipoAcao.plantio:
+        return Icons.grass;
+      case TipoAcao.poda:
+        return Icons.content_cut;
       case TipoAcao.outro:
         return Icons.more_horiz;
     }
