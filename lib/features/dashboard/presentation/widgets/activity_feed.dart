@@ -22,6 +22,11 @@ class ActivityFeed extends StatelessWidget {
       itemCount: atividades.length,
       itemBuilder: (context, index) {
         final atividade = atividades[index];
+        final tipoLabel = _getTipoLabel(atividade.tipo);
+        final hasDescricao = atividade.descricao.isNotEmpty;
+        final subtitulo = hasDescricao
+            ? '$tipoLabel • ${_formatData(atividade.data)}'
+            : _formatData(atividade.data);
         return ListTile(
           leading: CircleAvatar(
             backgroundColor:
@@ -33,11 +38,11 @@ class ActivityFeed extends StatelessWidget {
             ),
           ),
           title: Text(
-            atividade.titulo,
+            hasDescricao ? atividade.descricao : tipoLabel,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           subtitle: Text(
-            DateFormat('dd/MM/yyyy HH:mm').format(atividade.data),
+            subtitulo,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Colors.grey[600],
                 ),
@@ -47,8 +52,50 @@ class ActivityFeed extends StatelessWidget {
     );
   }
 
+  String _formatData(DateTime data) {
+    if (data.hour == 0 && data.minute == 0 && data.second == 0) {
+      return DateFormat('dd/MM/yyyy').format(data);
+    }
+    return DateFormat('dd/MM/yyyy HH:mm').format(data);
+  }
+
+  String _getTipoLabel(String tipo) {
+    switch (tipo) {
+      case 'IRRIGACAO':
+        return 'Irrigação';
+      case 'ADUBACAO':
+        return 'Adubação';
+      case 'COLHEITA':
+        return 'Colheita';
+      case 'PLANTIO':
+        return 'Plantio';
+      case 'PODA':
+        return 'Poda';
+      case 'PLANTA':
+        return 'Planta';
+      case 'CULTIVO':
+        return 'Cultivo';
+      case 'TAREFA':
+        return 'Tarefa';
+      case 'DIARIO':
+        return 'Diário';
+      default:
+        return tipo;
+    }
+  }
+
   IconData _getIcon(String tipo) {
     switch (tipo) {
+      case 'IRRIGACAO':
+        return Icons.water_drop;
+      case 'ADUBACAO':
+        return Icons.eco;
+      case 'COLHEITA':
+        return Icons.agriculture;
+      case 'PLANTIO':
+        return Icons.grass;
+      case 'PODA':
+        return Icons.content_cut;
       case 'PLANTA':
         return Icons.grass;
       case 'CULTIVO':
@@ -64,6 +111,16 @@ class ActivityFeed extends StatelessWidget {
 
   Color _getIconColor(String tipo) {
     switch (tipo) {
+      case 'IRRIGACAO':
+        return Colors.blue;
+      case 'ADUBACAO':
+        return Colors.green;
+      case 'COLHEITA':
+        return Colors.amber;
+      case 'PLANTIO':
+        return Colors.lightGreen;
+      case 'PODA':
+        return Colors.purple;
       case 'PLANTA':
         return Colors.green;
       case 'CULTIVO':

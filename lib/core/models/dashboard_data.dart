@@ -29,20 +29,21 @@ class DashboardData {
 
 class AtividadeRecente {
   final String tipo;
-  final String titulo;
+  final String descricao;
   final DateTime data;
 
   AtividadeRecente({
     required this.tipo,
-    required this.titulo,
+    required this.descricao,
     required this.data,
   });
 
   factory AtividadeRecente.fromJson(Map<String, dynamic> json) {
     return AtividadeRecente(
-      tipo: json['tipo'] ?? '',
-      titulo: json['titulo'] ?? '',
-      data: DateTime.parse(json['data'] ?? DateTime.now().toIso8601String()),
+      tipo:
+          json['tipo_atividade'] ?? json['tipoAtividade'] ?? json['tipo'] ?? '',
+      descricao: json['observacoes'] ?? json['titulo'] ?? '',
+      data: DateTime.tryParse(json['data'] ?? '') ?? DateTime.now(),
     );
   }
 }
