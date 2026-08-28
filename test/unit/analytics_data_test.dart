@@ -33,12 +33,47 @@ void main() {
       expect(analytics.custoPorCultivo[0].custoTotal, 1450.5);
     });
 
+    test('should parse int values as double', () {
+      final json = {
+        'rendimentoPorVariedade': [
+          {'variedade': 'Northern #1', 'rendimentoMedio': 300},
+        ],
+        'duracaoCiclo': [
+          {'fase': 'FLORACAO', 'diasMedios': 70},
+        ],
+        'custoPorCultivo': [
+          {'cultivo': 'Cultivo Verão 2025', 'custoTotal': 1450},
+        ],
+      };
+
+      final analytics = AnalyticsData.fromJson(json);
+
+      expect(analytics.rendimentoPorVariedade[0].rendimentoMedio, 300.0);
+      expect(analytics.duracaoCiclo[0].diasMedios, 70.0);
+      expect(analytics.custoPorCultivo[0].custoTotal, 1450.0);
+    });
+
     test('should default to empty lists when fields are missing', () {
       final analytics = AnalyticsData.fromJson({});
 
       expect(analytics.rendimentoPorVariedade, isEmpty);
       expect(analytics.duracaoCiclo, isEmpty);
       expect(analytics.custoPorCultivo, isEmpty);
+    });
+
+    test('should use defaults when nested fields are missing', () {
+      final yieldData = YieldData.fromJson({});
+      final cycleData = CycleData.fromJson({});
+      final costData = CostData.fromJson({});
+
+      expect(yieldData.variedade, '');
+      expect(yieldData.rendimentoMedio, 0);
+
+      expect(cycleData.fase, '');
+      expect(cycleData.diasMedios, 0);
+
+      expect(costData.cultivo, '');
+      expect(costData.custoTotal, 0);
     });
   });
 }

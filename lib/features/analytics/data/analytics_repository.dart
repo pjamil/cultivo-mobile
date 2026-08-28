@@ -19,7 +19,11 @@ class AnalyticsRepository {
   Future<AnalyticsData> getAnalytics() async {
     try {
       final response = await _api.get(Endpoints.analytics);
-      return AnalyticsData.fromJson(response.data);
+      final data = response.data;
+      if (data is! Map<String, dynamic>) {
+        throw Exception('Resposta inválida do servidor');
+      }
+      return AnalyticsData.fromJson(data);
     } on DioException catch (e) {
       throw Exception(e.error ?? 'Erro ao carregar analytics');
     }

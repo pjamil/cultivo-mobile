@@ -19,7 +19,11 @@ class DashboardRepository {
   Future<DashboardData> getDashboard() async {
     try {
       final response = await _api.get(Endpoints.dashboard);
-      return DashboardData.fromJson(response.data);
+      final data = response.data;
+      if (data is! Map<String, dynamic>) {
+        throw Exception('Resposta inválida do servidor');
+      }
+      return DashboardData.fromJson(data);
     } on DioException catch (e) {
       throw Exception(e.error ?? 'Erro ao carregar dashboard');
     }
