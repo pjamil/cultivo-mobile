@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/crud/crud_provider.dart';
 import '../providers/dashboard_provider.dart';
@@ -72,6 +73,7 @@ class DashboardPage extends ConsumerWidget {
                   value: '${data.cultivosAtivos}',
                   icon: Icons.spa,
                   color: Colors.green,
+                  onTap: () => context.push('/cultivos'),
                 ),
               ),
               const SizedBox(width: 16),
@@ -81,6 +83,7 @@ class DashboardPage extends ConsumerWidget {
                   value: '${data.tarefasPendentes}',
                   icon: Icons.task_alt,
                   color: Colors.orange,
+                  onTap: () => context.push('/tarefas'),
                 ),
               ),
             ],
@@ -94,6 +97,7 @@ class DashboardPage extends ConsumerWidget {
                   value: '${data.alertasEstoque}',
                   icon: Icons.warning,
                   color: data.alertasEstoque > 0 ? Colors.red : Colors.grey,
+                  onTap: () => context.push('/insumos'),
                 ),
               ),
               const SizedBox(width: 16),
